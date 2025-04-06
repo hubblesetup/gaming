@@ -233,3 +233,18 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".play-music").forEach(btn => btn.addEventListener("click", () => audio.play()));
     document.querySelectorAll(".pause-music").forEach(btn => btn.addEventListener("click", () => audio.pause()));
 });
+    function updateTime() {
+      const options = {
+        weekday: 'long',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      };
+      const now = new Date();
+      const formattedTime = now.toLocaleString('en-US', options);
+      document.getElementById('time').textContent = formattedTime;
+    }
+
+    // Update the time every second
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call
