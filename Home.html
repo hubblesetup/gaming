@@ -7,22 +7,7 @@
     <link rel="icon" type="image/x-icon" href="IMGS/Orion.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script>function toggleMusicList() {
-      var musicList = document.getElementById("music-list");
-      if (musicList.style.display === "none") {
-          musicList.style.display = "block";
-      } else {
-          musicList.style.display = "none";
-      }
-  }
- 
-  function playSong(song) {
-      var audio = document.getElementById("background-music");
-      var source = document.getElementById("audio-source");
-      source.src = song;
-      audio.load();
-      audio.play();
-  }</script>
+    <
     <style>
    html{}
         * {
@@ -113,19 +98,7 @@
             margin-top: 5px; /* Space between icon and text */
             font-size: 1rem; /* Smaller font size for the text */
         }
-        .music-buttons-container button {
-            padding: 10px 15px;
-            font-size: 16px;
-            background-color: #333;
-            color: white;
-            border: 1px solid #555;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .music-buttons-container button:hover {
-            background-color: #555;
-        }
+      
     </style>
 </head>
 <body>
@@ -153,15 +126,10 @@
             <a href="chat.html?prev=Home.html"><i class="fas fa-comments"></i><span>Chat</span></a>
             <a href="Forms.html"><i class="fa-solid fa-pen-to-square"></i><span>Forms</span></a>
             <div class="music-buttons-container">
-              <button onclick="document.getElementById('background-music').play()">Play Music</button>
-              <button onclick="document.getElementById('background-music').pause()">Pause Music</button>
+             
           </div>
         </div>
     </div>
-    <audio id="background-music">
-      <source id="audio-source" src="CS.mp3" type="audio/mp3">
-      Your browser does not support the audio element.
-  </audio>
   <canvas id="particleCanvas"></canvas>
 
   <!-- Example Website Content -->
