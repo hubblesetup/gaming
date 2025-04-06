@@ -233,18 +233,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".play-music").forEach(btn => btn.addEventListener("click", () => audio.play()));
     document.querySelectorAll(".pause-music").forEach(btn => btn.addEventListener("click", () => audio.pause()));
 });
-    function updateTime() {
-      const options = {
-        weekday: 'long',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      };
-      const now = new Date();
-      const formattedTime = now.toLocaleString('en-US', options);
-      document.getElementById('time').textContent = formattedTime;
-    }
+ const siteVersion = "V1.7";
 
-    // Update the time every second
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call
+// Wait for the DOM to load
+window.addEventListener("DOMContentLoaded", () => {
+  const titleEl = document.querySelector(".site-title"); // or whatever your H1 has as a class
+
+  if (titleEl) {
+    titleEl.innerHTML += ` <span style="font-size: 1rem; color: #aaa;">${siteVersion}</span>`;
+  }
+});
+
