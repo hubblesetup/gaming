@@ -62,15 +62,35 @@
               width: 100%;
           }
         
-          .header {
-              display: flex;
-              align-items: center; /* Align logo and text horizontally */
-              justify-content: center; /* Center the content (logo + title) */
-              padding: 10px 0; /* Thinner black background */
-              width: 100%;
-              background-color: #131418;
-              color: white;
-          }
+        .header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background-color: #131418;
+  color: white;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#time {
+  font-size: 1rem;
+  color: #aaa;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.logo {
+  height: 50px;
+}
+
           .content {
               position: relative;
               color: white;
@@ -207,10 +227,13 @@
 
 
       <div class="container">
-          <div class="header">
-              <img src="IMGS/Orion.png" alt="Afterlife Logo">
-              <h1 onclick="openGame()">Afterlife Gaming </h1>
-          </div>
+         <div class="header">
+  <img src="IMGS/Orion.png" alt="Afterlife Logo" class="logo">
+  <div class="header-info">
+    <h1 onclick="openGame()">Afterlife Gaming</h1>
+    <div id="time"></div>
+  </div>
+</div>
         
           <div class="nav-bar">
               <a href="Home.html"><i class="fas fa-home"></i><span>Home</span></a>
@@ -929,6 +952,20 @@
               searchBar.style.display = "block"; // Makes it visible
           });
       });
+             function updateTime() {
+      const options = {
+        weekday: 'long',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      };
+      const now = new Date();
+      const formattedTime = now.toLocaleString('en-US', options);
+      document.getElementById('time').textContent = formattedTime;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
   </script>
 
         </body>
