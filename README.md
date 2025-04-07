@@ -1,2 +1,2 @@
-# Afterlife Gamin Repo
+# Afterlife Gaming Repo
 ## I don't think you should be here...
