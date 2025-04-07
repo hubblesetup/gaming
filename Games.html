@@ -31,20 +31,7 @@
               flex-direction: column;
               align-items: center;
           }
-          .LOL img {
-      max-width: 100%;
-      width: 150px;
-      height: 150px;
-      margin: 10px auto;
-      filter: brightness(1);
-      border-radius: 10px;
-      transition: filter 0.3s, box-shadow 0.3s;
-  }
-
-  .LOL:hover img {
-      filter: brightness(1.2);
-      box-shadow: 0 0 10px 6px gray;
-  }
+    
           .container {
               width: 100%;
               display: flex;
@@ -215,6 +202,31 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+        .LOL {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.LOL::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  padding: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 14px;
+}
+
+.LOL:hover::after {
+  opacity: 1;
+}
+
 
       </style>
   </head>
@@ -360,7 +372,7 @@
         </div>
 
      <div class="LOL" data-name="Doge Unblocker">
-  <a href="#" onclick="('https://classwork.wikilegia.com')">
+  <a href="#" onclick="openpage('https://classwork.wikilegia.com')">
     <img src="IMGS/DogeUnblocker.png" width="150px" alt="Doge Unblocker">
   </a>
 </div>
