@@ -252,8 +252,7 @@
       </style>
   </head>
   <body>
-<a href="Games.html" class="back-arrow">← Back</a>
-     
+   <a href="#" class="back-arrow" style="display: none;">← Back</a>
 </div>
       </ul>
 
@@ -854,25 +853,29 @@
   const searchBar = document.getElementById("searchBar");
 
   // Initially hide the back arrow
-  backArrow.style.display = "none";
+   document.addEventListener("DOMContentLoaded", () => {
+            const gameContainer = document.getElementById("game-container");
+            const gameFrame = document.getElementById("game-frame");
+            const backArrow = document.querySelector(".back-arrow");
 
-  // Function to open a game
-  window.openpage = function(gameUrl) {
-    gameFrame.src = gameUrl; // Set the iframe source
-    gameContainer.style.display = "flex"; // Show the game container
-    backArrow.style.display = "block"; // Show the back arrow
-    window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" }); // Scroll to game container
-    searchBar.style.display = "none"; // Hide the search bar when viewing the game
-  };
+            // Initially hide the back arrow
+            backArrow.style.display = "none";
 
-  // Event listener for the back arrow
-  backArrow.addEventListener("click", (event) => {
-    event.preventDefault(); // Prevent the default action (i.e., navigating)
-    gameContainer.style.display = "none"; // Hide the game container
-    backArrow.style.display = "none"; // Hide the back arrow
-    gameFrame.src = ""; // Clear the iframe source
-    searchBar.style.display = "block"; // Show the search bar again
-  });
+            // Function to open a game
+            window.openpage = function(gameUrl) {
+                gameFrame.src = gameUrl; // Set the iframe source
+                gameContainer.style.display = "flex"; // Show the game container
+                backArrow.style.display = "block"; // Show the back arrow
+                window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" }); // Scroll to game container
+            };
+
+            // Event listener for the back arrow
+            backArrow.addEventListener("click", (event) => {
+                event.preventDefault(); // Prevent the default action (i.e., navigating)
+                gameContainer.style.display = "none"; // Hide the game container
+                backArrow.style.display = "none"; // Hide the back arrow
+                gameFrame.src = ""; // Clear the iframe source
+            });
 });
 
              function updateTime() {
