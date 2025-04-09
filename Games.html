@@ -846,42 +846,31 @@
           }
       });
   });
- document.addEventListener("DOMContentLoaded", () => {
-  const gameContainer = document.getElementById("game-container");
-  const gameFrame = document.getElementById("game-frame");
-  const backArrow = document.querySelector(".back-arrow");
-  const searchBar = document.getElementById("searchBar");
-
-  // Initially hide the back arrow
-   document.addEventListener("DOMContentLoaded", () => {
-            const gameContainer = document.getElementById("game-container");
-            const gameFrame = document.getElementById("game-frame");
-            const backArrow = document.querySelector(".back-arrow");
-
-            // Initially hide the back arrow
-            backArrow.style.display = "none";
-
-            // Function to open a game
-           function openpage(gameUrl) {
-    const gameFrame = document.getElementById("game-frame");
+document.addEventListener("DOMContentLoaded", function () {
     const gameContainer = document.getElementById("game-container");
+    const gameFrame = document.getElementById("game-frame");
     const backArrow = document.querySelector(".back-arrow");
 
-    gameFrame.src = gameUrl;  // Set the iframe source
-    gameContainer.style.display = "flex";  // Show the game container
-    backArrow.style.display = "block";  // Show the back arrow
-    window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" }); // Scroll to the game container
-}
+    // Initially hide the back arrow
+    backArrow.style.display = "none";
 
+    // Function to open a game
+    window.openpage = function(gameUrl) {
+        gameFrame.src = gameUrl;  // Set the iframe source
+        gameContainer.style.display = "flex";  // Show the game container
+        backArrow.style.display = "block";  // Show the back arrow
+        window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" }); // Scroll to game container
+    };
 
-            // Event listener for the back arrow
-            backArrow.addEventListener("click", (event) => {
-                event.preventDefault(); // Prevent the default action (i.e., navigating)
-                gameContainer.style.display = "none"; // Hide the game container
-                backArrow.style.display = "none"; // Hide the back arrow
-                gameFrame.src = ""; // Clear the iframe source
-            });
+    // Event listener for the back arrow
+    backArrow.addEventListener("click", (event) => {
+        event.preventDefault(); // Prevent the default action (i.e., navigating)
+        gameContainer.style.display = "none"; // Hide the game container
+        backArrow.style.display = "none"; // Hide the back arrow
+        gameFrame.src = ""; // Clear the iframe source
+    });
 });
+
 
              function updateTime() {
       const options = {
