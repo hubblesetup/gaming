@@ -284,31 +284,6 @@
     </div>
   </body>
      
-    <script>
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
-    document.addEventListener("keydown", (e) => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-        (e.ctrlKey && e.key.toLowerCase() === "u")
-      ) {
-        e.preventDefault();
-      }
-    });
-    let devtoolsOpen = false;
-    const checkDevTools = () => {
-      const threshold = 160;
-      if ((window.outerWidth - window.innerWidth > threshold) ||
-          (window.outerHeight - window.innerHeight > threshold)) {
-        devtoolsOpen = true;
-        window.location.replace("https://launchpad.classlink.com/lwsd);
-      } else {
-        devtoolsOpen = false;
-      }
-    };
-    setInterval(checkDevTools, 1000);
-  </script>
-     
 <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
         <script>
           function openGame() {
