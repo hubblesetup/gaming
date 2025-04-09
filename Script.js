@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".play-music").forEach(btn => btn.addEventListener("click", () => audio.play()));
     document.querySelectorAll(".pause-music").forEach(btn => btn.addEventListener("click", () => audio.pause()));
 });
- const siteVersion = "V3.41";
+ const siteVersion = "V3.5";
 
 // Wait for the DOM to load
 window.addEventListener("DOMContentLoaded", () => {
