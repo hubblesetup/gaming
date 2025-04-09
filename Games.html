@@ -1,11 +1,11 @@
-   <!DOCTYPE html>
+   <!DOCTYPE html> 
   <html lang="en">
   <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Afterlife - Games</title>
       <link rel="icon" type="image/x-icon" href="IMGS/Orion.png">
-      
+     
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
       <style>
     html{
@@ -20,7 +20,7 @@
               box-sizing: border-box;
           }
           body {
-              
+             
                font-family: 'Consolas', 'Courier New', monospace;
               overflow-y: scroll; /* Allows vertical scrolling */
       overflow-x: hidden; /* Prevents horizontal scrolling */
@@ -31,7 +31,7 @@
               flex-direction: column;
               align-items: center;
           }
-    
+   
           .container {
               width: 100%;
               display: flex;
@@ -39,7 +39,7 @@
               align-items: center;
               box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
           }
-          
+         
           footer {
               text-align: center;
               padding: 20px;
@@ -48,7 +48,7 @@
               bottom: 0;
               width: 100%;
           }
-        
+       
         .header {
   display: flex;
   align-items: center;
@@ -94,7 +94,7 @@
           .header h1 {
               font-size: 3rem;
           }
-        
+       
           .nav-bar {
               display: flex;
               justify-content: center; /* Center the nav icons */
@@ -136,7 +136,7 @@
           .nav-bar a:hover {
               color: #52177C; /* Change icon color to gray on hover */
               transform: scale(1.2); /* Slightly enlarge the icon */
-          
+         
           }
           .nav-bar span {
               margin-top: 5px; /* Space between icon and text */
@@ -162,13 +162,13 @@
       color: #0056b3;
   }
   canvas {
-    position: fixed; 
+    position: fixed;
     z-index: -999;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none; 
+      pointer-events: none;
   }
   /* Loading screen styles */
 #loading-screen {
@@ -266,7 +266,7 @@
     <div id="time"></div>
   </div>
 </div>
-        
+       
           <div class="nav-bar">
               <a href="Home.html"><i class="fas fa-home"></i><span>Home</span></a>
               <a href="Games.html"><i class="fas fa-gamepad"></i><span>Games</span></a>
@@ -280,7 +280,7 @@
 
     <!-- Example Website Content -->
     <div class="content">
-      
+     
     </div>
   </body>
      
@@ -361,7 +361,7 @@
                   // Glow effect
                   ctx.shadowBlur = 20;
                   ctx.shadowColor = "rgba(82, 23, 124, 1)"; // Bright blue glow
-                  
+                 
                   ctx.fillStyle = `rgba(82, 23, 124, ${this.opacity})`; // Dark blue color
                   ctx.fill();
                   ctx.closePath();
@@ -379,7 +379,7 @@
 
           function animate() {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              
+             
               particles.forEach(particle => {
                   particle.update();
                   particle.draw();
@@ -393,18 +393,18 @@
           animate();
       </script>
     <h1 style="position: absolute;top: 17%;left: 20%;transform: translateY(-50%);margin: 0;font-size: 2vw;font-family: Arial, sans-serif;text-align: left;" id="countDisplay";><strong></strong></h1>
-    
-          
-    
+   
+         
+   
     <body onload="countLOLDivs()">
       <input type="text" id="searchBar"   placeholder="Search for a game..."
   style="  font-family: 'Consolas', 'Courier New', monospace; width: 800px; padding: 10px; margin: 10px auto; display: block; font-size: 16px;
   background-color: #333; color: white; border: 1px solid #555; border-radius: 5px;
-  position: absolute; top: 27%; left: 18%;">   
+  position: absolute; top: 27%; left: 18%;">  
     </body>
 
   <div class="game-container">
-      
+     
       <div class="LOL" data-name="Ryan's Sussy Gaming">
   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/')">
     <img src="IMGS/RSG.png" width="150px" alt="Ryan's Sus Gaming">
@@ -565,7 +565,7 @@
     <img src="IMGS/BMD2.png" width="150px" alt="Bacon May Die">
   </a>
 </div>
-              
+             
         <div class="LOL" data-name="Slope2">
   <a href="#" onclick="openpage('https://studyisimportant.github.io/slope2/')">
     <img src="IMGS/Slope2.png" width="150px" alt="Slope 2 ">
@@ -661,7 +661,7 @@
     <img src="IMGS/B-star.png" width="150px" alt="Basketball Stars">
   </a>
 </div>
-        
+       
         <div class="LOL" data-name="Vex 3">
   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/vex-3/index.html')">
     <img src="IMGS/V3.png" width="150px" alt="Vex 3">
@@ -802,7 +802,7 @@
     <img src="IMGS/Core.png" width="150px" alt="Coreball">
   </a>
 </div>
-    
+   
       <div class="LOL" data-name="Soccer Random">
   <a href="#" onclick="openpage('https://wetlandgamesjack.github.io/games/games/SoccerRandom/index.html')">
     <img src="IMGS/SR.png" width="150px" alt="Soccer Random">
@@ -838,17 +838,17 @@
     <img src="IMGS/GOI.png" width="150px" alt="Getting Over It">
   </a>
 </div>
-        
-          
-          
-  <div class="game-container">   
+       
+         
+         
+  <div class="game-container">  
             </div>
           </div>
           <div id="game-container">
             <iframe id="game-frame" src=""></iframe>
         </div>
 
-      
+     
   <script src="Script.js"></script>
           <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -921,4 +921,5 @@ window.addEventListener("DOMContentLoaded", () => {
         </body>
         </head>
       </div>
-  </body> </html>
+  </body> 
+</html>
