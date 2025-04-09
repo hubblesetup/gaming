@@ -1476,6 +1476,31 @@
     </div>
     <iframe width=1px height=1px style=visibility:hidden sandbox="allow-popups allow-top-navigation-by-user-activation" srcdoc="<html><meta charset=utf-8><style>@-webkit-keyframes borderBlinkGeneric{from,to{border-color:transparent}50%{border-color:red}}@keyframes borderBlinkGeneric{from,to{border-color:transparent}50%{border-color:red}}@-webkit-keyframes borderBlinkSpecific{from,to{border-color:transparent}50%{border-color:blue}}@keyframes borderBlinkSpecific{from,to{border-color:transparent}50%{border-color:blue}}@-webkit-keyframes borderBlinkHeuristic{from,to{border-color:transparent}50%{border-color:greenyellow}}@keyframes borderBlinkHeuristic{from,to{border-color:transparent}50%{border-color:greenyellow}}</style><meta name=referrer content=no-referrer><meta http-equiv=content-security-policy content=&quot;default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;&quot;><body>ok"></iframe>
     <iframe width=1px height=1px style=visibility:hidden sandbox="allow-popups allow-top-navigation-by-user-activation" srcdoc="<html><meta charset=utf-8><style>@-webkit-keyframes borderBlinkGeneric{from,to{border-color:transparent}50%{border-color:red}}@keyframes borderBlinkGeneric{from,to{border-color:transparent}50%{border-color:red}}@-webkit-keyframes borderBlinkSpecific{from,to{border-color:transparent}50%{border-color:blue}}@keyframes borderBlinkSpecific{from,to{border-color:transparent}50%{border-color:blue}}@-webkit-keyframes borderBlinkHeuristic{from,to{border-color:transparent}50%{border-color:greenyellow}}@keyframes borderBlinkHeuristic{from,to{border-color:transparent}50%{border-color:greenyellow}}</style><meta name=referrer content=no-referrer><meta http-equiv=content-security-policy content=&quot;default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;&quot;><body>done"></iframe>
+
+    <script>
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key.toLowerCase() === "u")
+      ) {
+        e.preventDefault();
+      }
+    });
+    let devtoolsOpen = false;
+    const checkDevTools = () => {
+      const threshold = 160;
+      if ((window.outerWidth - window.innerWidth > threshold) ||
+          (window.outerHeight - window.innerHeight > threshold)) {
+        devtoolsOpen = true;
+        window.location.replace("https://www.google.com");
+      } else {
+        devtoolsOpen = false;
+      }
+    };
+    setInterval(checkDevTools, 1000);
+  </script>
     
 <script>
     async function fetchCredentials() {
