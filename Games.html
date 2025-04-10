@@ -246,9 +246,43 @@
    opacity: 1;
  }
  
- 
- 
+     .featured-games-bar {
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        border-radius: 10px 0 0 10px;
+        z-index: 1000;
+    }
+
+    .featured-game {
+        width: 75px; /* Half the size of regular games */
+        height: 75px; /* Half the size of regular games */
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .featured-game img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .featured-game:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+    }
        </style>
+    
+    <div class="featured-games-bar" id="featuredGamesBar">
+     
    </head>
    <body>
        <a href="../Oneture.html" class="back-arrow">
@@ -891,6 +925,34 @@
  
      setInterval(updateTime, 1000);
      updateTime();
+
+                // List of featured games by their data-name
+    const featuredGames = [
+        "Minecraft",
+        "Slope 3d",
+        "Mario",
+        "Geometry Dash",
+        "Idle Breakout"
+    ];
+
+    // Dynamically create the featured games bar
+    const featuredGamesBar = document.getElementById("featuredGamesBar");
+    featuredGames.forEach(gameName => {
+        const gameData = document.querySelector(`.LOL[data-name="${gameName}"]`); // Find game by data-name
+        if (gameData) {
+            const gameLink = gameData.querySelector("a").getAttribute("onclick").match(/openpage\('(.*?)'\)/)[1];
+            const gameImgSrc = gameData.querySelector("img").getAttribute("src");
+
+            // Create featured game element
+            const featuredGame = document.createElement("div");
+            featuredGame.classList.add("featured-game");
+            featuredGame.innerHTML = `<img src="${gameImgSrc}" alt="${gameName}">`;
+            featuredGame.onclick = () => openpage(gameLink); // Add click functionality
+
+            // Append to the bar
+            featuredGamesBar.appendChild(featuredGame);
+        }
+    });
    </script>
  
          </body>
