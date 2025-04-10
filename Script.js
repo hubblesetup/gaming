@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Set the volume to 50% (0.5)
     if (audio) {
-        audio.volume = 0.5;
+        audio.volume = 1;
     }
 
     // Restore the music state from local storage
