@@ -316,6 +316,26 @@
 .featured-game:hover img {
     transform: translateY(-5px); /* Float the image up */
 }
+        .loading-text {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  width: 200px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
+
 
        </style>
      
@@ -357,7 +377,16 @@
  
      </div>
    </body>
- 
+
+    <div id="loading-screen">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Loading...</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+    
  <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
          <script>
            function openGame() {
@@ -451,11 +480,7 @@
    background-color: #333; color: white; border: 1px solid #555; border-radius: 5px;
    position: absolute; top: 27%; left: 18%;">   
      </body>
-           <!-- Loading Screen -->
- <div id="loading-screen">
-   <div class="spinner"></div>
-   <p>Loading...</p>
- </div>
+           <!-- Loading Screen -
  
    <div class="game-container">
  
