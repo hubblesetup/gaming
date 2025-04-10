@@ -280,3 +280,25 @@ document.addEventListener("DOMContentLoaded", () => {
         audio.muted = false;
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const audio = document.getElementById("background-music");
+    
+    // Set the volume to 50% (0.5)
+    if (audio) {
+        audio.volume = 0.5;
+    }
+
+    // Restore the music state from local storage
+    if (localStorage.getItem("musicPaused") === "false") {
+        audio.currentTime = localStorage.getItem("musicTime") || 0;
+        audio.play();
+    }
+
+    // Save the music state before the user navigates away
+    window.addEventListener("beforeunload", function () {
+        if (audio) {
+            localStorage.setItem("musicTime", audio.currentTime);
+            localStorage.setItem("musicPaused", audio.paused);
+        }
+    });
+});
