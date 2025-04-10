@@ -280,8 +280,6 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
    margin: 10px auto;
-   overflow: hidden;
-   cursor: pointer;
    transition: transform 0.3s ease; 
 }
 
@@ -290,8 +288,12 @@
     height: 100%;
     object-fit: cover;
    border-radius: 10px;
-   display: block;
 }
+
+        .featured-game:hover {
+            transform: translateY(-5px);
+        }
+        
 
 .featured-game::after {
     content: attr(data-name); /* Use data-name for the game name */
