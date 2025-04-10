@@ -246,19 +246,20 @@
    opacity: 1;
  }
  
-     .featured-games-bar {
-        position: fixed;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 10px;
-        border-radius: 10px 0 0 10px;
-        z-index: 1000;
-    }
+.featured-games-bar {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: rgba(19, 20, 24, 0.8); /* Match color with low opacity */
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Optional shadow for better visibility */
+}
 
     .featured-game {
         width: 75px; /* Half the size of regular games */
