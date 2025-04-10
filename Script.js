@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Set the volume to 50% (0.5)
     if (audio) {
-        audio.volume = 0.5;
+        audio.volume = 0.25;
     }
 
     // Restore the music state from local storage
@@ -293,52 +293,5 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("beforeunload", function () {
         localStorage.setItem("musicTime", audio.currentTime);
         localStorage.setItem("musicPaused", audio.paused);
-    });
-});
-document.addEventListener("DOMContentLoaded", function () {
-    const audio = document.getElementById("background-music");
-    
-    if (audio) {
-        // Attempt to play audio automatically
-        const playPromise = audio.play();
-
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                console.warn("Autoplay failed. Waiting for user interaction to start the music.");
-                // Retry playback when the user interacts
-                const resumeAudio = () => {
-                    audio.play();
-                    document.removeEventListener("click", resumeAudio);
-                };
-                document.addEventListener("click", resumeAudio);
-            });
-        }
-    }
-
-    const gameContainer = document.getElementById("game-container");
-    const gameFrame = document.getElementById("game-frame");
-    const backArrow = document.querySelector(".back-arrow");
-
-    // Open game and pause background audio
-    window.openpage = function (gameUrl) {
-        if (audio) {
-            audio.pause(); // Stop background music
-        }
-
-        gameFrame.src = gameUrl;
-        gameContainer.style.display = "flex";
-        backArrow.style.display = "block";
-    };
-
-    // Close game and resume background audio
-    backArrow.addEventListener("click", (event) => {
-        event.preventDefault();
-        gameContainer.style.display = "none";
-        backArrow.style.display = "none";
-        gameFrame.src = "";
-
-        if (audio) {
-            audio.play(); // Resume background music
-        }
     });
 });
