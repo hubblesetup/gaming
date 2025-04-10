@@ -588,7 +588,7 @@
    </a>
  </div>
          <div class="LOL" data-name="Slither.io">
-   <a href="#" onclick="openpage('Games/slither.io-master/index.html')">
+   <a href="#" onclick="openpage('https://artclasshomework.github.io/-ewourgw9utg9e7/')">
      <img src="IMGS/Slither.png" width="150px" alt="Slither.io">
    </a>
  </div>
@@ -629,7 +629,7 @@
    </a>
  </div>
          <div class="LOL" data-name="Poly Track">
-   <a href="#" onclick="openpage('Games/polytrack-clone-main/index.html')">
+   <a href="#" onclick="openpage('https://astroid5710.github.io/polytrack-clone/')">
      <img src="IMGS/Poly.png" width="150px" alt="Poly Track">
    </a>
  </div>
@@ -921,13 +921,18 @@
    document.addEventListener("DOMContentLoaded", () => {
            const gameContainer = document.getElementById("game-container");
            const gameFrame = document.getElementById("game-frame");
-           const backArrow = document.querySelector(".back-arrow");
+           const FG = document.querySelector(".featured-game");
+    const FG2 = document.querySelector(".featured-games-bar");
+    const backArrow = document.querySelector(".back-arrow");
            backArrow.style.display = "none";
  
            window.openpage = function(gameUrl) {
                gameFrame.src = gameUrl;
                gameContainer.style.display = "flex";
                backArrow.style.display = "block";
+               FG.style.display = "none";
+               FG2.style.display = "none";
+            
                window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" });
                var hidesearchbar = true;
                searchBar.style.display = "none";
