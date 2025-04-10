@@ -185,55 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
-document.addEventListener("DOMContentLoaded", function () {
-    const audio = document.getElementById("background-music");
-
-    // Restore the music state from local storage
-    if (localStorage.getItem("musicPaused") === "false") {
-        audio.currentTime = localStorage.getItem("musicTime") || 0;
-        audio.play();
-    }
-
-    // Save the music state before the user navigates away
-    window.addEventListener("beforeunload", function () {
-        localStorage.setItem("musicTime", audio.currentTime);
-        localStorage.setItem("musicPaused", audio.paused);
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    let audio;
-
-    // Check if audio already exists in another page
-    if (window.parent && window.parent.document.getElementById("background-music")) {
-        audio = window.parent.document.getElementById("background-music"); // Get the main audio element from index.html
-    } else {
-        // If this is the main page, create the audio element
-        audio = document.createElement("audio");
-        audio.id = "background-music";
-        audio.loop = true;
-        audio.innerHTML = '<source src="CS.mp3" type="audio/mpeg">';
-        document.body.appendChild(audio);
-    }
-
-    // Restore the last state of music
-    if (localStorage.getItem("musicPaused") === "false") {
-        audio.currentTime = localStorage.getItem("musicTime") || 0;
-        audio.play();
-    }
-
-    // Save the music state before leaving the page
-    window.addEventListener("beforeunload", function () {
-        localStorage.setItem("musicTime", audio.currentTime);
-        localStorage.setItem("musicPaused", audio.paused);
-    });
-
-    // Add event listeners for play/pause buttons if they exist
-    document.querySelectorAll(".play-music").forEach(btn => btn.addEventListener("click", () => audio.play()));
-    document.querySelectorAll(".pause-music").forEach(btn => btn.addEventListener("click", () => audio.pause()));
-});
- const siteVersion = "V3.5";
+ const siteVersion = "v3.5 [Password: msgisback]";
 
 // Wait for the DOM to load
 window.addEventListener("DOMContentLoaded", () => {
@@ -243,6 +195,16 @@ window.addEventListener("DOMContentLoaded", () => {
     titleEl.innerHTML += ` <span style="font-size: 1rem; color: #aaa;">${siteVersion}</span>`;
   }
 });
+
+
+
+
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const audio = document.getElementById('background-music');
@@ -285,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Set the volume to 50% (0.5)
     if (audio) {
-        audio.volume = 0.50;
+        audio.volume = 0.5;
     }
 
     // Restore the music state from local storage
@@ -300,5 +262,36 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("musicTime", audio.currentTime);
             localStorage.setItem("musicPaused", audio.paused);
         }
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let audio;
+
+    // Check if the audio element already exists in the parent window (for multi-page persistence)
+    if (window.parent && window.parent.document.getElementById("background-music")) {
+        audio = window.parent.document.getElementById("background-music"); // Use the existing audio element
+    } else {
+        // If this is the main page, create the audio element
+        audio = document.createElement("audio");
+        audio.id = "background-music";
+        audio.loop = true;
+        audio.innerHTML = '<source src="CS.mp3" type="audio/mpeg">';
+        document.body.appendChild(audio);
+    }
+
+    // Restore the last state of the music
+    let savedTime = parseFloat(localStorage.getItem("musicTime")) || 0;
+    let isPaused = localStorage.getItem("musicPaused") === "true";
+
+    // Set the playback position and play/pause state
+    audio.currentTime = savedTime;
+    if (!isPaused) {
+        audio.play();
+    }
+
+    // Save the music state before leaving the page
+    window.addEventListener("beforeunload", function () {
+        localStorage.setItem("musicTime", audio.currentTime);
+        localStorage.setItem("musicPaused", audio.paused);
     });
 });
