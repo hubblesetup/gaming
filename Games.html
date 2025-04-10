@@ -245,16 +245,16 @@
  .LOL:hover::after {
    opacity: 1;
  }
-
-.featured-games-title {
-    font-size: 12px;
+        .featured-games-title {
+    font-size: 16px; /* Adjust the font size for better readability */
     font-weight: bold;
     color: yellow; /* Bright yellow text */
     text-align: center;
-    margin-bottom: 5px; /* Add spacing below the title */
+    margin-bottom: 10px; /* Add spacing below the title */
     text-shadow: 0 0 5px rgba(255, 255, 0, 0.8); /* Optional glowing effect */
+    transition: transform 0.3s ease; /* Smooth transition for hover effect */
 }
-        
+
 .featured-games-bar {
     position: fixed;
     top: 50%;
@@ -272,49 +272,51 @@
 
 .featured-game {
     position: relative;
-    width: 100px; /* Half the size of regular games */
-    height: 100px; /* Half the size of regular games */
+    width: 100px; /* Adjust size for featured games */
+    height: 100px; /* Adjust size for featured games */
     border-radius: 5px;
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
     margin: 10px auto;
-   transition: transform 0.3s ease; 
 }
 
 .featured-game img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-   border-radius: 10px;
+    border-radius: 10px;
 }
 
-        .featured-game img:hover {
-            transform: translateY(-5px);
-        }
-        
+.featured-game:hover {
+    transform: scale(1.05); /* Add a slight zoom effect on hover */
+}
 
 .featured-game::after {
-    content: attr(data-name); /* Use data-name for the game name */
+    content: attr(data-name); /* Display the game name from the 'data-name' attribute */
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 5px;
     text-align: center;
-    background: rgba(0, 0, 0, 0.6); /* Match the main hover effect */
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
     color: white;
-    font-size: 12px; /* Adjust font size for smaller games */
+    font-size: 14px; /* Font size for the game title */
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     pointer-events: none;
- 
 }
 
 .featured-game:hover::after {
     opacity: 1;
+    transform: translateY(-5px); /* Slide up the title slightly on hover */
 }
+
+.featured-game:hover img {
+    transform: translateY(-5px); /* Float the image up */
+}
+
        </style>
      
    </head>
