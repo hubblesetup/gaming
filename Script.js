@@ -244,3 +244,39 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    const audio = document.getElementById('background-music');
+    
+    // Ensure the music plays automatically but doesn't play on the index page
+    if (window.location.pathname.includes("index.html")) {
+        audio.pause();
+    } else {
+        audio.play();
+    }
+
+    // Functionality to mute audio when opening a game
+    const gameContainer = document.getElementById("game-container");
+    const gameFrame = document.getElementById("game-frame");
+    const backArrow = document.querySelector(".back-arrow");
+
+    // Open game and mute audio
+    window.openpage = function(gameUrl) {
+        gameFrame.src = gameUrl;
+        gameContainer.style.display = "flex";
+        backArrow.style.display = "block";
+
+        // Mute background music
+        audio.muted = true;
+    };
+
+    // Return to main page and unmute audio
+    backArrow.addEventListener("click", (event) => {
+        event.preventDefault();
+        gameContainer.style.display = "none";
+        backArrow.style.display = "none";
+        gameFrame.src = "";
+
+        // Unmute background music
+        audio.muted = false;
+    });
+});
