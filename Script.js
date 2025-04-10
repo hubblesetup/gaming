@@ -295,3 +295,52 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("musicPaused", audio.paused);
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    let audio;
+    const audioId = "background-music";
+
+    // Check if the audio element already exists in any tab (use sessionStorage or localStorage)
+    if (window.parent && window.parent.document.getElementById(audioId)) {
+        audio = window.parent.document.getElementById(audioId); // Use the existing audio element
+    } else if (!document.getElementById(audioId)) {
+        // If this is the main tab, create the audio element
+        audio = document.createElement("audio");
+        audio.id = audioId;
+        audio.loop = true;
+        audio.innerHTML = '<source src="CS.mp3" type="audio/mpeg">';
+        document.body.appendChild(audio);
+    } else {
+        audio = document.getElementById(audioId);
+    }
+
+    // Restore the last state of the music
+    let savedTime = parseFloat(localStorage.getItem("musicTime")) || 0;
+    let isPaused = localStorage.getItem("musicPaused") === "true";
+
+    // Set the playback position and play/pause state
+    audio.currentTime = savedTime;
+    if (!isPaused) {
+        audio.play();
+    }
+
+    // Save the music state continuously
+    setInterval(() => {
+        localStorage.setItem("musicTime", audio.currentTime);
+        localStorage.setItem("musicPaused", audio.paused);
+    }, 1000);
+
+    // Listen for changes in localStorage (other tabs)
+    window.addEventListener("storage", function (event) {
+        if (event.key === "musicTime" && audio) {
+            audio.currentTime = parseFloat(event.newValue) || 0;
+        } else if (event.key === "musicPaused" && audio) {
+            const paused = event.newValue === "true";
+            if (paused) {
+                audio.pause();
+            } else {
+                audio.play();
+            }
+        }
+    });
+});
