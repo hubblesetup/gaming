@@ -120,6 +120,7 @@
        width: 100%;
        height: 100%;
        border: none;
+            z-index: 999999999999999999999999;
    }
  
            .nav-bar a {
@@ -169,38 +170,6 @@
        height: 100%;
        pointer-events: none; 
    }
-   /* Loading screen styles */
- #loading-screen {
-     display: none; /* Hidden by default */
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background: rgba(0, 0, 0, 0.9);
-     color: white;
-     font-size: 24px;
-     text-align: center;
-     justify-content: center;
-     align-items: center;
-     flex-direction: column;
-     z-index: 9999;
- }
- 
- /* Spinner animation */
- .spinner {
-     border: 6px solid rgba(255, 255, 255, 0.3);
-     border-top: 6px solid #fff;
-     border-radius: 50%;
-     width: 50px;
-     height: 50px;
-     animation: spin 1s linear infinite;
-     margin-bottom: 10px;
- }
- 
- @keyframes spin {
-     0% { transform: rotate(0deg); }
-     100% { transform: rotate(360deg); }
  }
  .LOL {
    position: relative;
@@ -320,24 +289,46 @@
 
 
 }
-        .loading-text {
-  font-size: 18px;
-  margin-bottom: 10px;
+/* Loading Screen Container */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   z-index: 999999999999999999999999;
+    opacity: 1;
+    pointer-events: none; /* Prevent interaction with other elements */
+    transition: opacity 0.5s ease-out; /* Fade out effect */
+  display: none;
 }
 
-.progress-bar {
-  width: 200px;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  overflow: hidden;
+/* Loading Spinner */
+#loading-screen .spinner {
+    border: 8px solid #f3f3f3; /* Light gray */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite; 
+ display: none;
 }
 
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background-color: #fff;
-  transition: width 0.3s ease;
+/* Spin animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Faded-out state of the loading screen */
+.loading-hidden {
+    opacity: 0;
+}
+
 }
 
 
@@ -950,6 +941,8 @@
            const FG = document.querySelector(".featured-game");
     const FG2 = document.querySelector(".featured-games-bar");
     const backArrow = document.querySelector(".back-arrow");
+       const Loading = document.querySelector("#loading-screen");
+    const Spinner = document.querySelector("#loading-screen .spinner");
            backArrow.style.display = "none";
  
            window.openpage = function(gameUrl) {
@@ -958,6 +951,8 @@
                backArrow.style.display = "block";
                FG.style.display = "none";
                FG2.style.display = "none";
+           Loading.style.display = "block";
+            Spinner.style.display = "block";
             
                window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" });
                var hidesearchbar = true;
@@ -967,6 +962,8 @@
            backArrow.addEventListener("click", (event) => {
           FG.style.display = "block";
             FG2.style.display = "block";
+             Loading.style.display = "none";
+             Spinner.style.display = "none";
                event.preventDefault();
                gameContainer.style.display = "none";
                backArrow.style.display = "none";
