@@ -210,12 +210,11 @@
    border-radius: 10px;
    overflow: hidden;
    cursor: pointer;
-   transition: transform 0.3s ease-in-out;
+   transition: transform 0.3s easy;
  }
  
  .LOL:hover {
-    transform: translateY(-5px);
-   transition: transform 0.3s ease-in-out; 
+   transform: translateY(-5px);
  }
  
  .LOL img {
@@ -288,8 +287,7 @@
 }
 
 .featured-game:hover {
-      transform: translateY(-3px);
-   transition: transform 0.2s ease-in-out; 
+    transform: scale(1.05); /* Add a slight zoom effect on hover */
 }
 
 .featured-game::after {
@@ -310,11 +308,11 @@
 
 .featured-game:hover::after {
     opacity: 1;
+    transform: translateY(-5px); /* Slide up the title slightly on hover */
 }
 
 .featured-game:hover img {
-   transform: translateY(-3px);
-   transition: transform 0.2s ease-in-out; 
+    transform: translateY(-5px); /* Float the image up */
 }
         .loading-text {
   font-size: 18px;
