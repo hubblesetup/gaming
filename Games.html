@@ -876,7 +876,7 @@
             
    <script src="Script.js"></script>
            <script>
-       document.addEventListener("DOMContentLoaded", function () {
+         document.addEventListener("DOMContentLoaded", function () {
        const searchBar = document.getElementById("searchBar");
        const searchBarOriginalTop = searchBar.offsetTop; // Get the original top position
        const searchBarOriginalLeft = searchBar.offsetLeft; // Get the original left position
@@ -884,7 +884,7 @@
        window.addEventListener("scroll", function () {
            if (window.scrollY >= searchBarOriginalTop) {
                searchBar.classList.add("sticky");
-               searchBar.style.left = `${searchBarOriginalLeft}px`; // Lock left position
+               searchBar.style.left = ${searchBarOriginalLeft}px; // Lock left position
            } else {
                searchBar.classList.remove("sticky");
                searchBar.style.left = ""; // Reset left position when scrolling back up
@@ -900,6 +900,7 @@
        const Loading = document.querySelector("#loading-screen");
     const Spinner = document.querySelector("#loading-screen .spinner");
            backArrow.style.display = "none";
+         var hidesearchbar = true;
  
            window.openpage = function(gameUrl) {
                gameFrame.src = gameUrl;
@@ -909,6 +910,7 @@
                FG2.style.display = "none";
            Loading.style.display = "block";
             Spinner.style.display = "block";
+            searchBar.style.display = "block";
             
                window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" });
                var hidesearchbar = true;
