@@ -177,10 +177,24 @@ document.addEventListener("DOMContentLoaded", function () {
             searchBar.style.left = "18%"; // Keep original left position
             searchBar.style.width = "800px"; // Maintain width
             searchBar.style.zIndex = "1000"; // Ensure it's above other elements
+            if (hidesearchbar) {
+                  searchBar.style.display = "none";
+            }
+                else {
+                searchBar.style.display = "block";
+            }
+
         } else {
             searchBar.style.position = "absolute";
             searchBar.style.top = "27%"; // Restore original position
             searchBar.style.left = "18%";
+              
+            if (hidesearchbar) {
+                  searchBar.style.display = "none";
+            }
+                else {
+                searchBar.style.display = "block";
+            }
             
         }
     });
