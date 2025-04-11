@@ -120,7 +120,6 @@
        width: 100%;
        height: 100%;
        border: none;
-            z-index: 9999999999999999999999999999999999999999999999999999999999999;
    }
  
            .nav-bar a {
@@ -170,7 +169,39 @@
        height: 100%;
        pointer-events: none; 
    }
+   /* Loading screen styles */
+ #loading-screen {
+     display: none; /* Hidden by default */
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.9);
+     color: white;
+     font-size: 24px;
+     text-align: center;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     z-index: 9999;
+ }
  
+ /* Spinner animation */
+ .spinner {
+     border: 6px solid rgba(255, 255, 255, 0.3);
+     border-top: 6px solid #fff;
+     border-radius: 50%;
+     width: 50px;
+     height: 50px;
+     animation: spin 1s linear infinite;
+     margin-bottom: 10px;
+ }
+ 
+ @keyframes spin {
+     0% { transform: rotate(0deg); }
+     100% { transform: rotate(360deg); }
+ }
  .LOL {
    position: relative;
    width: 150px;
@@ -179,14 +210,13 @@
    border-radius: 10px;
    overflow: hidden;
    cursor: pointer;
-   transition: transform 0.3s ease-in-out;
+   transition: transform 0.3s easy;
  }
  
-.LOL:hover {
-   transform: translateY(-5px); /* Slightly more lift */
-   transition: transform 0.3s ease-in-out; /* Smooth easing */
-}
-
+ .LOL:hover {
+   transform: translateY(-5px);
+ }
+ 
  .LOL img {
    max-width: 100%;
    width: 100%;
@@ -208,7 +238,7 @@
    color: white;
    font-size: 14px;
    opacity: 0;
-   transition: opacity 0.4s ease;
+   transition: opacity 0.3s ease;
    pointer-events: none;
  }
  
@@ -250,7 +280,6 @@
 }
 
 .featured-game img {
-
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -258,10 +287,7 @@
 }
 
 .featured-game:hover {
-   transform: translateY(-4px); /* Slightly more lift */
-   transition: transform 0.3s ease-in-out; /* Smooth easing */
-
-
+    transform: scale(1.05); /* Add a slight zoom effect on hover */
 }
 
 .featured-game::after {
@@ -282,16 +308,31 @@
 
 .featured-game:hover::after {
     opacity: 1;
+    transform: translateY(-5px); /* Slide up the title slightly on hover */
 }
 
 .featured-game:hover img {
-   transform: translateY(-4px); /* Slightly more lift */
-   transition: transform 0.3s ease-in-out; /* Smooth easing */
+    transform: translateY(-5px); /* Float the image up */
+}
+        .loading-text {
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
+.progress-bar {
+  width: 200px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
 
-
-
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
 
 
        </style>
@@ -329,13 +370,19 @@
        </div>
      <canvas id="particleCanvas"></canvas>
  
-
+     <!-- Example Website Content -->
      <div class="content">
  
      </div>
    </body>
 
-
+    <div id="loading-screen">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Loading...</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
 
     
  <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
@@ -876,7 +923,7 @@
             
    <script src="Script.js"></script>
            <script>
-         document.addEventListener("DOMContentLoaded", function () {
+       document.addEventListener("DOMContentLoaded", function () {
        const searchBar = document.getElementById("searchBar");
        const searchBarOriginalTop = searchBar.offsetTop; // Get the original top position
        const searchBarOriginalLeft = searchBar.offsetLeft; // Get the original left position
@@ -884,7 +931,7 @@
        window.addEventListener("scroll", function () {
            if (window.scrollY >= searchBarOriginalTop) {
                searchBar.classList.add("sticky");
-               searchBar.style.left = ${searchBarOriginalLeft}px; // Lock left position
+               searchBar.style.left = `${searchBarOriginalLeft}px`; // Lock left position
            } else {
                searchBar.classList.remove("sticky");
                searchBar.style.left = ""; // Reset left position when scrolling back up
@@ -897,10 +944,7 @@
            const FG = document.querySelector(".featured-game");
     const FG2 = document.querySelector(".featured-games-bar");
     const backArrow = document.querySelector(".back-arrow");
-       const Loading = document.querySelector("#loading-screen");
-    const Spinner = document.querySelector("#loading-screen .spinner");
            backArrow.style.display = "none";
-         var hidesearchbar = true;
  
            window.openpage = function(gameUrl) {
                gameFrame.src = gameUrl;
@@ -908,9 +952,6 @@
                backArrow.style.display = "block";
                FG.style.display = "none";
                FG2.style.display = "none";
-           Loading.style.display = "block";
-            Spinner.style.display = "block";
-            searchBar.style.display = "block";
             
                window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" });
                var hidesearchbar = true;
@@ -920,8 +961,6 @@
            backArrow.addEventListener("click", (event) => {
           FG.style.display = "block";
             FG2.style.display = "block";
-             Loading.style.display = "none";
-             Spinner.style.display = "none";
                event.preventDefault();
                gameContainer.style.display = "none";
                backArrow.style.display = "none";
