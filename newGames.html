@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afterlife | Games</title>
+  <link rel="icon" type="image/x-icon" href="IMGS/Orion.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      document.getElementById("time").textContent = now.toLocaleString("en-US", {
+        weekday: "long",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      });
+    }
+    setInterval(updateTime, 1000);
+    window.onload = updateTime;
+  </script>
+  <style>
+    .nav-bar a {
+      position: relative;
+    }
+    .nav-bar a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background-color: rgba(168, 85, 247, 0.6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-bar a:hover::after {
+      transform: scaleX(1);
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans relative min-h-screen overflow-hidden m-0 p-0 w-screen overflow-x-hidden">
+  <audio id="background-music" autoplay loop>
+    <source src="background-music.mp3" type="audio/mpeg" />
+  </audio>
+  <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
+
+  <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
+    <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
+    <div class="text-center">
+      <h1 class="text-4xl font-bold">Afterlife Gaming</h1>
+      <div id="time" class="text-sm text-gray-300"></div>
+    </div>
+  </header>
+  <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
+  <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
+    <a href="Home.html" class="hover:text-purple-400"><i class="fas fa-home"></i> Home</a>
+    <a href="Games.html" class="hover:text-purple-400"><i class="fas fa-gamepad"></i> Games</a>
+    <a href="chat.html?prev=Games.html" class="hover:text-purple-400"><i class="fas fa-comments"></i> Chat</a>
+    <a href="Forms.html" class="hover:text-purple-400"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
+    <a href="appel-levels.html" class="hover:text-purple-400"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
+  </nav>
+
+  <input type="text" id="searchBar" placeholder="Search for a game..."
+    class="block w-4/5 max-w-xl mx-auto my-6 p-3 text-white bg-gray-800 border border-gray-700 rounded">
+
+  <div class="fixed top-1/2 right-0 transform -translate-y-1/2 flex flex-col gap-2 p-3 bg-gray-900/80 shadow-lg rounded-l-lg z-50" id="featuredGamesBar">
+  </div>
+
+  <main class="px-6 py-8 max-w-6xl mx-auto z-10 relative">
+    <div id="gameGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+  </main>
+
+  <div id="game-container" class="fixed inset-0 bg-black bg-opacity-0 z-50 flex items-center justify-center transition-opacity duration-500 pointer-events-none">
+    <button id="back-button" onclick="closeGame()" class="absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-purple-600 z-50 hidden">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <iframe id="game-frame" src="" class="w-full h-full border-none"></iframe>
+  </div>
+
+  <script>
+    const games = [
+      { name: "Appel", img: "IMGS/Appel.png", url: "Games/appel.html" },
+      { name: "Geometry Dash", img: "IMGS/GD.png", url: "Games/geodash.html" },
+      { name: "Mario 64", img: "IMGS/SM64.png", url: "https://mario64.example" },
+      { name: "Minecraft", img: "IMGS/EC.png", url: "https://minecraft.example" },
+      { name: "Monkey Mart", img: "IMGS/Monkey.png", url: "https://monkeymart.example" },
+      { name: "Paper.io", img: "IMGS/Paperio.png", url: "https://paperio.example" },
+      { name: "Retrobowl", img: "IMGS/RB.png", url: "https://retrobowl.example" },
+      { name: "Slope", img: "IMGS/Slope.png", url: "Games/slope.html" }
+    ];
+
+    const featuredGameNames = ["Slope", "Monkey Mart", "Mario 64"];
+
+    function renderGames(list) {
+      const container = document.getElementById("gameGrid");
+      container.innerHTML = "";
+      list.forEach(game => {
+        const div = document.createElement("div");
+        div.className = "LOL cursor-pointer";
+        div.setAttribute("data-name", game.name);
+        div.innerHTML = `
+          <a href="#" onclick="openpage('${game.url}')">
+            <img src="${game.img}" alt="${game.name}" class="rounded-lg w-full h-full object-cover" />
+          </a>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderFeaturedGames() {
+      const container = document.getElementById("featuredGamesBar");
+      const title = document.createElement("div");
+      title.className = "text-yellow-400 font-semibold text-sm text-center mb-2";
+      title.textContent = "Featured Games";
+      container.innerHTML = "";
+      container.appendChild(title);
+
+      const featured = games.filter(game => featuredGameNames.includes(game.name));
+      featured.forEach(game => {
+        const div = document.createElement("div");
+        div.className = "featured-game w-24 h-24 cursor-pointer rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50";
+        div.setAttribute("data-name", game.name);
+        div.innerHTML = `<img src="${game.img}" alt="${game.name}">`;
+        div.onclick = () => openpage(game.url);
+        container.appendChild(div);
+      });
+    }
+
+    function openpage(url) {
+      const gameFrame = document.getElementById('game-frame');
+      const container = document.getElementById('game-container');
+      gameFrame.src = url;
+      container.classList.remove("pointer-events-none", "hidden");
+      document.getElementById("back-button").classList.remove("hidden");
+      requestAnimationFrame(() => {
+        container.classList.replace("bg-opacity-0", "bg-opacity-90");
+      });
+    }
+
+    function closeGame() {
+      const container = document.getElementById('game-container');
+      const gameFrame = document.getElementById('game-frame');
+      container.classList.replace("bg-opacity-90", "bg-opacity-0");
+      container.classList.add("pointer-events-none");
+      setTimeout(() => {
+        container.classList.add("hidden");
+        gameFrame.src = "";
+      document.getElementById("back-button").classList.add("hidden");
+      }, 500);
+    }
+
+    document.getElementById("searchBar").addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      const scored = games
+        .map(g => ({
+          ...g,
+          score: g.name.toLowerCase().includes(query) ? g.name.toLowerCase().indexOf(query) : Infinity
+        }))
+        .filter(g => g.score !== Infinity)
+        .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+      if (query === '') {
+        renderGames([...games].sort((a, b) => a.name.localeCompare(b.name)));
+      } else {
+        renderGames(scored);
+      }
+    });
+
+    renderGames([...games].sort((a, b) => a.name.localeCompare(b.name)));
+    renderFeaturedGames();
+  </script>
+</body>
+</html>
