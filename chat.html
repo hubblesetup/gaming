@@ -1421,6 +1421,12 @@
           chatBox.scrollTop = chatBox.scrollHeight;
         }
       }
+      document.addEventListener("keydown", function (e) {
+  // If Shift is held and the key pressed is "=" (which becomes "+" when shifted)
+  if (e.shiftKey && e.code === "Equal") {
+    window.location.href = "https://launchpad.classlink.com/lwsd";
+  }
+});
     </script>
   </div>
 </div>
