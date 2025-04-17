@@ -214,8 +214,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("keydown", function (e) {
-  // Check for Shift + Backtick (`) key
-  if ((e.key === "`" || e.code === "Backquote") && e.shiftKey) {
+  // Check for Shift + Equal (=) key, which results in a "+"
+  if ((e.key === "+" || e.code === "Equal") && e.shiftKey) {
     const isIndex =
       window.location.pathname.endsWith("index.html") ||
       window.location.pathname === "/" ||
