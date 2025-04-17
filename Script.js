@@ -213,7 +213,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
-
+document.addEventListener("keydown", function (e) {
+  // Check if the key pressed is the backtick ` key (key code 192)
+  if (e.key === "`" || e.keyCode === 192) {
+    // Make sure you're not on the index (e.g., index.html)
+    const isIndex = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+    if (!isIndex) {
+      window.location.href = "https://launchpad.classlink.com/lwsd";
+    }
+  }
+});
 
 
 
