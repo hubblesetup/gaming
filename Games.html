@@ -1,1020 +1,320 @@
- <!DOCTYPE html>
-   <html lang="en">
-   <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>Afterlife | Games</title>
-       <link rel="icon" type="image/x-icon" href="IMGS/Orion.png">
- 
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-       <style>
-     html{
-       scrollbar-width: none;
-     }
-     ::-webkit-scrollbar {
-       display: none;
-   }
-           * {
-               margin: 0;
-               padding: 0;
-               box-sizing: border-box;
-           }
-           body {
- 
-                font-family: 'Consolas', 'Courier New', monospace;
-               overflow-y: scroll; /* Allows vertical scrolling */
-       overflow-x: hidden; /* Prevents horizontal scrolling */
-               color: white;
-               background-color: black;
-               text-align: center;
-               display: flex;
-               flex-direction: column;
-               align-items: center;
-           }
- 
-           .container {
-               width: 100%;
-               display: flex;
-               flex-direction: column;
-               align-items: center;
-               box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-           }
- 
-           footer {
-               text-align: center;
-               padding: 20px;
-               background-color: black;
-               position: fixed;
-               bottom: 0;
-               width: 100%;
-           }
- 
-         .header {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   gap: 20px;
-   background-color: #131418;
-   color: white;
-   padding: 10px 20px;
-   width: 100%;
- }
- 
- .header-info {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
- }
- 
- #time {
-   font-size: 1rem;
-   color: white;
-   font-family: 'Consolas', 'Courier New', monospace;
-   margin-top: 5px;
- }
- 
- .logo {
-   height: 50px;
- }
- 
-           .content {
-               position: relative;
-               color: white;
-               text-align: center;
-               padding: 20px;
-               font-family: Arial, sans-serif;
-           }
-           .header img {
-               width: 80px;
-               height: auto;
-               margin-right: 15px;
-               /* Adds space between the logo and text */
-           }
-           .header h1 {
-               font-size: 3rem;
-           }
- 
-           .nav-bar {
-               display: flex;
-               justify-content: center; /* Center the nav icons */
-               gap: 30px; /* Space between icons */
-               width: 100%;
-               background-color: #131418;
-               padding: 10px 0;
-           }
-           #game-container {
-       display: none;
-       width: 100%;
-       height: 100vh;
-       position: fixed;
-       top: 0;
-       left: 0;
-       background: rgba(0, 0, 0, 0.8);
-       justify-content: center;
-       align-items: center;
-   }
- 
- 
-           iframe {
-       width: 100%;
-       height: 100%;
-       border: none;
-   }
- 
-           .nav-bar a {
-               text-align: center;
-               color:  white;
-               font-size: 2rem; /* Increase icon size */
-               transition: 0.3s; /* Smooth transition for hover effects */
-               display: flex;
-               flex-direction: column; /* Arrange icon and text vertically */
-               align-items: center; /* Center the text under the icon */
-               text-decoration: none; /* Remove underline */
-           }
-           .nav-bar a:hover {
-               color: #52177C; /* Change icon color to gray on hover */
-               transform: scale(1.2); /* Slightly enlarge the icon */
- 
-           }
-           .nav-bar span {
-               margin-top: 5px; /* Space between icon and text */
-               font-size: 1rem; /* Smaller font size for the text */
-           }
- 
-           .back-arrow {
-       position: absolute;
-       top: 10px;
-       left: 10px;
-       text-decoration: none;
-       font-size: 18px;
-       font-weight: bold;
-       color: #007BFF;
-       padding: 5px 10px;
-       border-radius: 4px;
-       transition: background-color 0.3s;
-       z-index: 1;
-   }
- 
-   .back-arrow:hover {
-       background-color: #f0f0f0;
-       color: #0056b3;
-   }
-   canvas {
-     position: fixed; 
-     z-index: -999;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100%;
-       pointer-events: none; 
-   }
-   /* Loading screen styles */
- #loading-screen {
-     display: none; /* Hidden by default */
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background: rgba(0, 0, 0, 0.9);
-     color: white;
-     font-size: 24px;
-     text-align: center;
-     justify-content: center;
-     align-items: center;
-     flex-direction: column;
-     z-index: 9999;
- }
- 
- /* Spinner animation */
- .spinner {
-     border: 6px solid rgba(255, 255, 255, 0.3);
-     border-top: 6px solid #fff;
-     border-radius: 50%;
-     width: 50px;
-     height: 50px;
-     animation: spin 1s linear infinite;
-     margin-bottom: 10px;
- }
- 
- @keyframes spin {
-     0% { transform: rotate(0deg); }
-     100% { transform: rotate(360deg); }
- }
- .LOL {
-   position: relative;
-   width: 150px;
-   height: 150px;
-   margin: 10px auto;
-   border-radius: 10px;
-   overflow: hidden;
-   cursor: pointer;
-   transition: transform 0.3s easy;
- }
- 
- .LOL:hover {
-   transform: translateY(-5px);
- }
- 
- .LOL img {
-   max-width: 100%;
-   width: 100%;
-   height: 100%;
-   object-fit: cover;
-   border-radius: 10px;
-   display: block;
- }
- 
- .LOL::after {
-   content: attr(data-name);
-   position: absolute;
-   bottom: 0;
-   left: 0;
-   right: 0;
-   padding: 5px;
-   text-align: center;
-   background: rgba(0, 0, 0, 0.6);
-   color: white;
-   font-size: 14px;
-   opacity: 0;
-   transition: opacity 0.3s ease;
-   pointer-events: none;
- }
- 
- .LOL:hover::after {
-   opacity: 1;
- }
-.featured-games-title {
-    font-size: 12px;
-    font-weight: bold;
-    color: yellow; /* Bright yellow text */
-    text-align: center;
-    margin-bottom: 5px; /* Add spacing below the title */
-    text-shadow: 0 0 5px rgba(255, 255, 0, 0.8); /* Optional glowing effect */
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afterlife | Games</title>
+  <link rel="icon" type="image/x-icon" href="IMGS/Orion.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      document.getElementById("time").textContent = now.toLocaleString("en-US", {
+        weekday: "long",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      });
+    }
+    setInterval(updateTime, 1000);
+    window.onload = updateTime;
+  </script>
+  <style>
+    .nav-bar a {
+      position: relative;
+    }
+    .nav-bar a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background-color: rgba(168, 85, 247, 0.6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-bar a:hover::after {
+      transform: scaleX(1);
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden m-0 p-0 w-screen">
+  <!-- Audio + Background -->
+  <audio id="background-music" autoplay loop>
+    <source src="background-music.mp3" type="audio/mpeg" />
+  </audio>
+  <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
 
-.featured-games-bar {
-    position: fixed;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: rgba(19, 20, 24, 0.8); /* Match color with low opacity */
-    padding: 10px;
-    border-radius: 10px 0 0 10px;
-    z-index: 1000;
-    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.5); /* White glow effect */
-}
+  <!-- Header -->
+  <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
+    <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
+    <div class="text-center">
+      <h1 class="text-4xl font-bold">Afterlife Gaming</h1>
+      <div id="time" class="text-sm text-gray-300"></div>
+    </div>
+  </header>
 
-.featured-game {
-    position: relative;
-    width: 100px; /* Half the size of regular games */
-    height: 100px; /* Half the size of regular games */
-    border-radius: 5px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+  <!-- Nav + UI -->
+  <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
+  <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
+    <a href="Home.html" class="hover:text-purple-400"><i class="fas fa-home"></i> Home</a>
+    <a href="Games.html" class="hover:text-purple-400"><i class="fas fa-gamepad"></i> Games</a>
+    <a href="chat.html?prev=Games.html" class="hover:text-purple-400"><i class="fas fa-comments"></i> Chat</a>
+    <a href="Forms.html" class="hover:text-purple-400"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
+    <a href="appel-levels.html" class="hover:text-purple-400"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
+    <a href="Haks.html" class="hover:text-purple-400"><i class="fa-solid fa-bolt"></i> Hacks</a>
+  </nav>
 
-.featured-game img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-}
+  <!-- Sticky Search Bar -->
+  <input type="text" id="searchBar" placeholder="Search for a game..."
+    class="block w-4/5 max-w-xl mx-auto my-6 p-3 text-white bg-gray-800 border border-gray-700 rounded sticky top-3 z-40 shadow-md backdrop-blur" />
 
-.featured-game:hover {
-    transform: scale(1.05); /* Add a slight zoom effect on hover */
-}
+  <!-- Featured Sidebar -->
+  <div class="fixed top-1/2 right-0 transform -translate-y-1/2 flex flex-col gap-2 p-3 bg-gray-900/80 shadow-lg rounded-l-lg z-50" id="featuredGamesBar"></div>
 
-.featured-game::after {
-    content: attr(data-name); /* Display the game name from the 'data-name' attribute */
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 5px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-    color: white;
-    font-size: 14px; /* Font size for the game title */
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    pointer-events: none;
-}
+  <!-- Main Game Grid -->
+  <main class="px-6 py-8 max-w-7xl mx-auto z-10 relative">
+    <div id="gameGrid" class="grid grid-cols-3 md:grid-cols-6 gap-4"></div>
+  </main>
 
-.featured-game:hover::after {
-    opacity: 1;
-    transform: translateY(-5px); /* Slide up the title slightly on hover */
-}
-
-.featured-game:hover img {
-    transform: translateY(-5px); /* Float the image up */
-}
-        .loading-text {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.progress-bar {
-  width: 200px;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background-color: #fff;
-  transition: width 0.3s ease;
-}
-
-
-       </style>
-     
-   </head>
-   <body>
-     <audio id="background-music" autoplay loop>
-    <source src="background-music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
-       <a href="../Oneture.html" class="back-arrow">
-         ← Back
-     </a>
- 
-       </ul>
- 
- 
-       <div class="container">
-          <div class="header">
-   <img src="IMGS/Orion.png" alt="Afterlife Logo" class="logo">
-   <div class="header-info">
-     <h1 class="site-title" onclick="openGame()">Afterlife Gaming</h1>
-     <div id="time"></div>
-   </div>
- </div>
- 
-           <div class="nav-bar">
-               <a href="Home.html"><i class="fas fa-home"></i><span>Home</span></a>
-               <a href="Games.html"><i class="fas fa-gamepad"></i><span>Games</span></a>
-               <a href="chat.html?prev=Games.html"><i class="fas fa-comments"></i><span>Chat</span></a>
-               <a href="Forms.html"><i class="fa-solid fa-pen-to-square"></i><span>Forms</span></a>
-                <a href="appel-levels.html"><i class="fa-solid fa-apple-whole"></i><span>Appel Levels</span></a>
-             </div>
-           </div>
-       </div>
-     <canvas id="particleCanvas"></canvas>
- 
-     <!-- Example Website Content -->
-     <div class="content">
- 
-     </div>
-   </body>
-
-    <div id="loading-screen">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loading-text">Loading...</div>
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill"></div>
+  <!-- Game Iframe Viewer -->
+  <div id="game-container" class="fixed inset-0 bg-black bg-opacity-0 z-50 flex items-center justify-center transition-opacity duration-[3000ms] pointer-events-none hidden">
+    <button id="back-button" onclick="closeGame()" class="absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-purple-600 z-50 hidden">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <iframe id="game-frame" src="" class="w-full h-full border-none opacity-0 transition-opacity duration-[3000ms]"></iframe>
   </div>
-</div>
 
-    
- <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
-         <script>
-           function openGame() {
-       var win = window.open();
-       var url = "Games.html";
-       win.document.write('<html><head><link rel="icon" id="favicon" href="https://flyclipart.com/thumbs/launchpad-classlink-1278294.png"><title>Login</title><style>body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }</style></head><body></body></html>');
-       var iframe = win.document.createElement('iframe');
-       iframe.style.width = "100%";
-       iframe.style.height = "100%";
-       iframe.style.border = "none";
-       iframe.src = url;
-       win.document.body.appendChild(iframe);
-   }
- 
-   window.onload = openGame;
- 
-   const canvas = document.getElementById("particleCanvas");
-           const ctx = canvas.getContext("2d");
- 
-           function resizeCanvas() {
-               canvas.width = window.innerWidth;
-               canvas.height = window.innerHeight;
-           }
- 
-           resizeCanvas(); // Initial resize
-           window.addEventListener("resize", resizeCanvas);
- 
-           // Particle class
-           class Particle {
-               constructor() {
-                   this.radius = Math.random() * 6 + 4; // Larger size
-                   this.x = Math.random() * canvas.width;
-                   this.y = canvas.height + this.radius; // Start from bottom
-                   this.speedY = Math.random() * 4 + 2; // Faster speed up
-                   this.opacity = Math.random() * 0.5 + 0.5; // More visible
-               }
- 
-               update() {
-                   this.y -= this.speedY; // Move up
-                   if (this.y < -this.radius) {
-                       this.y = canvas.height + this.radius; // Reset to bottom
-                       this.x = Math.random() * canvas.width; // Random X position
-                   }
-               }
- 
-               draw() {
-                   ctx.beginPath();
-                   ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
- 
-                   // Glow effect
-                   ctx.shadowBlur = 20;
-                   ctx.shadowColor = "rgba(82, 23, 124, 1)"; // Bright blue glow
- 
-                   ctx.fillStyle = `rgba(82, 23, 124, ${this.opacity})`; // Dark blue color
-                   ctx.fill();
-                   ctx.closePath();
-               }
-           }
- 
-           let particles = [];
- 
-           function init() {
-               particles = [];
-               for (let i = 100; i--; ) {
-                   particles.push(new Particle());
-               }
-           }
- 
-           function animate() {
-               ctx.clearRect(0, 0, canvas.width, canvas.height);
- 
-               particles.forEach(particle => {
-                   particle.update();
-                   particle.draw();
-               });
- 
-               requestAnimationFrame(animate);
-           }
- 
-           // Start animation
-           init();
-           animate();
-       </script>
-     <h1 style="position: absolute;top: 17%;left: 20%;transform: translateY(-50%);margin: 0;font-size: 2vw;font-family: Arial, sans-serif;text-align: left;" id="countDisplay";><strong></strong></h1>
- 
- 
- 
-     <body onload="countLOLDivs()">
-       <input type="text" id="searchBar"   placeholder="Search for a game..."
-   style="  font-family: 'Consolas', 'Courier New', monospace; width: 800px; padding: 10px; margin: 10px auto; display: block; font-size: 16px;
-   background-color: #333; color: white; border: 1px solid #555; border-radius: 5px;
-   position: absolute; top: 27%; left: 18%;">   
-     </body>
-          
- 
-   <div class="game-container">
- 
-      <div class="LOL" data-name="Ryan's Sussy Gaming">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/')">
-     <img src="IMGS/RSG.png" width="150px" alt="Ryan's Sus Gaming">
-   </a>
-         </div>
-      <div class="LOL" data-name="Minecraft">
-   <a href="#" onclick="openpage('https://d1tm91r4ytbt54.cloudfront.net/2779cbcb-a02f-48a3-9e2e-95a8d123d165/1685483461665/web/index.html')">
-     <img src="IMGS/EC.png" width="150px" alt="Minecraft">
-   </a>
- </div>
-      <div class="LOL" data-name="Acorn13">
-   <a href="#" onclick="openpage('https://acorn13.github.io')">
-     <img src="IMGS/Acorn13.png" width="150px" alt="Acorn13">
-   </a>
- </div>
-      <div class="LOL" data-name="Gams">
-   <a href="#" onclick="openpage('https://spotify-playlist11.github.io/4o5231o4u1o/Gams.html')">
-     <img src="IMGS/GamsB.png" width="150px" alt="Gams">
-   </a>
- </div>
-      <div class="LOL" data-name="MonkeyGG2">
-   <a href="#" onclick="openpage('https://Jake1283645473.github.io/AbyanIsBetter')">
-     <img src="IMGS/MK.png" width="150px" alt="MonkeyGG2">
-   </a>
- </div>
-      <div class="LOL" data-name="Hub-Pro">
-   <a href="#" onclick="openpage('https://hub-pro.github.io')">
-     <img src="IMGS/Hub-Pro.png" width="150px" alt="Hub-Pro">
-   </a>
- </div>
-      <div class="LOL" data-name="Slope 3d">
-   <a href="#" onclick="openpage('https://slope3d.github.io')">
-     <img src="IMGS/Slope3d.png" width="150px" alt="Slope 3d">
-   </a>
- </div>
-      <div class="LOL" data-name="Mario">
-   <a href="#" onclick="openpage('https://fulscreenmario.github.io/')">
-     <img src="IMGS/SM2.png" width="150px" alt="Mario">
-   </a>
- </div>
-      <div class="LOL" data-name="Subway surfers">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/subway-surfers/')">
-     <img src="IMGS/Subway.png" width="150px" alt="Subway Surfers">
-   </a>
- </div>
-      <div class="LOL" data-name="KrishyDaFishy">
-   <a href="#" onclick="openpage('https://bio.link/booleanbob')">
-     <img src="IMGS/KTF.png" width="150px" alt="KrishyDaFishy">
-   </a>
- </div>
-      <div class="LOL" data-name="Super Mario 64">
-   <a href="#" onclick="openpage('https://7s-4a2.pages.dev/g/supermario64')">
-     <img src="IMGS/SM64.png" width="150px" alt="Super Mario 64">
-   </a>
- </div>
- <div class="LOL" data-name="Ironsnout">
-   <a href="#" onclick="openpage('https://betterbull.com/uploads/5/5/6/7/5567194/custom_themes/811766381464516446/files/index.html')">
-     <img src="IMGS/IS.png" width="150px" alt="Ironsnout">
-   </a>
- </div>
- <div class="LOL" data-name="Unblocked Cave">
-   <a href="#" onclick="openpage('https://wetlandgamesjack.github.io/games/games.html')">
-     <img src="IMGS/UC.PNG" width="150px" height="150px" alt="Unblocked Cave">
-   </a>
- </div>
- <div class="LOL" data-name="Idle Breakout">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io//games/idle-breakout/')">
-     <img src="IMGS/Idle.png" width="150px" height="150px" alt="Idle Breakout">
-   </div>
-         <div class="LOL"  data-name="Drift Boss">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/drift-boss/')">
-     <img src="IMGS/Boss.png" width="150px" alt="Drift Boss">
-   </a>
- </div>
- <div class="LOL" data-name="Slope">
-   <a href="#" onclick="openpage('Games/slope.html')">
-     <img src="IMGS/Slope.png" width="150px" alt="Slope">
-   </a>
- </div>
- <div class="LOL" data-name="Retrobowl">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/retro-bowl/')">
-     <img src="IMGS/RB.png" width="150px" alt="Retrobowl">
-   </a>
- </div>
- <div class="LOL" data-name="Basketball Random">
-   <a href="#" onclick="openpage('https://basket-random-game.github.io/file/')">
-     <img src="IMGS/BR.png" width="150px" alt="Basketball Random">
-   </a>
- </div>
- <div class="LOL" data-name="Burger Bounty">
-   <a href="#" onclick="openpage('https://Burger-Bounty.github.io')">
-     <img src="IMGS/BB.png" width="150px" alt="Bruger Bounty">
-   </a>
- </div>
- <div class="LOL" data-name="NintendoBoi">
-   <a href="#" onclick="openpage('https://skibidiman23132.github.io/')">
-     <img src="IMGS/Nint.png" width="150px" alt="Nintendoboi">
-   </a>
- </div>
- <div class="LOL" data-name="Blooket.pages.dev">
-   <a href="#" onclick="openpage('https://polight1.github.io')">
-     <img src="IMGS/Blook.png" width="150px" alt="Blooket.pages.dev">
-   </a>
- </div>
- <div class="LOL" data-name="Geometry Dash">
-   <a href="#" onclick="openpage('Games/geodash.html')">
-     <img src="IMGS/GD.png" width="150px" alt="Geometry Dash">
-   </a>
- </div>
- <div class="LOL" data-name="Block Blast">
-   <a href="#" onclick="openpage('https://why12389.github.io/block.io/')">
-     <img src="IMGS/Blok.png" width="150px" alt="Block Blast">
-   </a>
- </div>
- <div class="LOL" data-name="Burrito Bison">
-   <a href="#" onclick="openpage('https://polight1.github.io/iueouryw3i-urghfdruogfo4wqy9-4-FEW5-GYHT6IY23-UYWHYQE8URBNU3egf97nr-5p-/file/index.html')">
-     <img src="IMGS/BB2.png" width="150px" alt="Burrito Bison">
-   </a>
- </div>
- <div class="LOL" data-name="Flappy Bird">
-   <a href="#" onclick="openpage('https://calcmathprojects.github.io/calcmathpro.github.io/')">
-     <img src="IMGS/FB2.png" width="150px" alt="Flappy Bird">
-   </a>
- </div>
- 
-         <div class="LOL" data-name="Appel">
-   <a href="#" onclick="openpage('Games/appel.html')">
-     <img src="IMGS/Appel.png" width="150px" alt="Appel">
-   </a>
- </div>
-            <div class="LOL" data-name="Absurd Appel">
-   <a href="#" onclick="openpage('Games/absurdappel.html')">
-     <img src="IMGS/AbsurdApple.png" width="150px" alt="Absurd Appel">
-   </a>
- </div>
-            <div class="LOL"  data-name="Agar.io lite">
-   <a href="#" onclick="openpage('Games/Agar.io.html')">
-     <img src="IMGS/Agar.io.png" width="150px" alt="Agar.io lite">
-   </a>
- </div>
-         <div class="LOL" data-name="Slither.io">
-   <a href="#" onclick="openpage('Games/slither.io-master/index.html')">
-     <img src="IMGS/Slither.png" width="150px" alt="Slither.io">
-   </a>
- </div>
-         <div class="LOL" data-name="Bacon May Die">
-   <a href="#" onclick="openpage('https://www.betterbull.com/uploads/5/5/6/7/5567194/custom_themes/320690105873469650/files/index.html')">
-     <img src="IMGS/BMD2.png" width="150px" alt="Bacon May Die">
-   </a>
- </div>
- 
-         <div class="LOL" data-name="Slope2">
-   <a href="#" onclick="openpage('https://studyisimportant.github.io/slope2/')">
-     <img src="IMGS/Slope2.png" width="150px" alt="Slope 2 ">
-   </a>
- </div>
-         <div class="LOL" data-name="Friday Night Funkin'">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/friday-night-funkin/')">
-     <img src="IMGS/FNF.png" width="150px" alt="Friday Night Funkin'">
-   </a>
- </div>
-         <div class="LOL" data-name="Ball Blast">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/w-rt2hoeyh2uoe1ygh9w/Ball%20Blast%20-%20Mobile%20friendly.html')">
-     <img src="IMGS/Ballblast.png" width="150px" alt="Ball Blast">
-   </a>
- </div>
-         <div class="LOL" data-name="Google Island Games">
-   <a href="#" onclick="openpage('https://gameblabla.github.io/doodle-champion-island-games-Google/')">
-     <img src="IMGS/GoogleIsland.png" width="150px" alt="Google Island Games">
-   </a>
- </div>
-         <div class="LOL" data-name="Paper.io">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/paperio2/')">
-     <img src="IMGS/Paperio.png" width="150px" alt="Paper.io">
-   </a>
- </div>
-         <div class="LOL" data-name="Monkey Mart">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/monkey-mart')">
-     <img src="IMGS/Monkey.png" width="150px" alt="Monkey Mart">
-   </a>
- </div>
-         <div class="LOL" data-name="Poly Track">
-   <a href="#" onclick="openpage('https://astroid5710.github.io/polytrack-clone/')">
-     <img src="IMGS/Poly.png" width="150px" alt="Poly Track">
-   </a>
- </div>
-          <div class="LOL" data-name="Hole.io">
-   <a href="#" onclick="openpage('https://google-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/gertdoro/Toolkit@93a27eabbbe5eb626af5b9b7dd0926ac16810a41/Code/Java/hole.xml&container=ig')">
-     <img src="IMGS/Holeio.png" width="150px" alt="Hole.io">
-   </a>
- </div>
-         <div class="LOL" data-name="Paperclip clicker">
-   <a href="#" onclick="openpage('https://www.decisionproblem.com/paperclips/index2.html')">
-     <img src="IMGS/PaperClip.png" width="150px" alt="Paperclip Clicker">
-   </a>
- </div>
-         <div class="LOL" data-name="Yohoho.io">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/yohoho/index.html')">
-     <img src="IMGS/Yohoho.png" width="150px" alt="Yohoho.io">
-   </a>
- </div>
-         <div class="LOL" data-name="Cookie Clicker">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io//games/cookie-clicker/index.html')">
-     <img src="IMGS/Cookie.png" width="150px" alt="Cookie Clicker">
-   </a>
- </div>
-         <div class="LOL" data-name="Chrome Dino">
-   <a href="#" onclick="openpage('https://vortexfusion.github.io/nebula/chrome-dino/index.html')">
-     <img src="IMGS/Dino.png" width="150px" alt="Chrome Dino">
-   </a>
- </div>
-         <div class="LOL" data-name="Snowball.io">
-   <a href="#" onclick="openpage('https://kasperisalittlebitch.github.io/snowbattle/')">
-     <img src="IMGS/Snowballio.png" width="150px" alt="Snowball.io">
-   </a>
- </div>
-         <div class="LOL" data-name="N-gon">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io//games/n-gon/index.html')">
-     <img src="IMGS/N-gon.png" width="150px" alt="N-gon">
-   </a>
- </div>
-         <div class="LOL" data-name="Learn To Fly">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io//games/flash/?game=learn-to-fly')">
-     <img src="IMGS/LTF.png" width="150px" alt="Learn to fly">
-   </a>
- </div>
-         <div class="LOL" data-name="Learn To Fly 2">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io//games/flash/?game=learn-to-fly-2')">
-     <img src="IMGS/LTF2.png" width="150px" alt="Learn to fly 2 ">
-   </a>
- </div>
-         <div class="LOL" data-name="Learn To Fly 3">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=learn-to-fly-3')">
-     <img src="IMGS/LTF3.png" width="150px" alt="Learn to fly 3 ">
-   </a>
- </div>
-         <div class="LOL" data-name="Badtime Simulator">
-   <a href="#" onclick="openpage('https://hotamago.github.io/sans/')">
-     <img src="IMGS/BadTime.png" width="150px" alt="Badtime Simulator">
-   </a>
- </div>
-         <div class="LOL" data-name="Basketball Stars">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/basketball-stars/)">
-     <img src="IMGS/B-star.png" width="150px" alt="Basketball Stars">
-   </a>
- </div>
- 
-         <div class="LOL" data-name="Vex 3">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/vex-3/index.html')">
-     <img src="IMGS/V3.png" width="150px" alt="Vex 3">
-   </a>
- </div>
-         <div class="LOL"  data-name="Vex 4">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/vex-4/index.html')">
-     <img src="IMGS/V4.png" width="150px" alt="Vex 4">
-   </a>
- </div>
-         <div class="LOL" data-name="Vex 5">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/vex-5/index.html')">
-     <img src="IMGS/V5.png" width="150px" alt="Vex 5">
-   </a>
- </div>
-         <div class="LOL" data-name="Vex 6">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/vex-6/index.html')">
-     <img src="IMGS/V6.png" width="150px" alt="Vex 6">
-   </a>
- </div>
-         <div class="LOL" data-name="Vex 7">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/vex-7/index.html')">
-     <img src="IMGS/V7.png" width="150px" alt="Vex 7">
-   </a>
- </div>
-         <div class="LOL" data-name="Bitlife">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/bit-life/')">
-     <img src="IMGS/Bitlife.png" width="150px" alt="Bitlife">
-   </a>
- </div>
-               <div class="LOL" data-name="Duck Life">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life')">
-     <img src="IMGS/Duck.png" width="150px" alt="Duck Life">
-   </a>
- </div>
-               <div class="LOL" data-name="Duck Life 2">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-2')">
-     <img src="IMGS/Duck2.png" width="150px" alt="Duck Life 2">
-   </a>
- </div>
-               <div class="LOL" data-name="Duck Life 3">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-3')">
-     <img src="IMGS/Duck3.png" width="150px" alt="Duck Life 3">
-   </a>
- </div>
-               <div class="LOL" data-name="Duck Life 4">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-4')">
-     <img src="IMGS/Duck4.png" width="150px" alt="Duck Life 4">
-   </a>
- </div>
-               <div class="LOL" data-name="Duck Life 5">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-5')">
-     <img src="IMGS/Duck5.png" width="150px" alt="Duck life 5">
-   </a>
- </div>
-               <div class="LOL" data-name="Time Shooter">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/time-shooter/')">
-     <img src="IMGS/Time.png" width="150px" alt="Time Shooter">
-   </a>
- </div>
-               <div class="LOL" data-name="Time Shooter 3">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/time-shooter-3/')">
-     <img src="IMGS/Time3.png" width="150px" alt="Time Shooter 3">
-   </a>
- </div>
-               <div class="LOL" data-name="World's Hardest Game">
-   <a href="#" onclick="openpage('https://kasperisalittlebitch.github.io/worlds-hardest-game/index.html')">
-     <img src="IMGS/WHG.png" width="150px" alt="World's Hardest Game">
-   </a>
- </div>
-               <div class="LOL" data-name="Tiny Fishing">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/tiny-fishing/')">
-     <img src="IMGS/Fishing.png" width="150px" alt="Tiny Fishing">
-   </a>
- </div>
-      <div class="LOL" data-name="Stickman Hook">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/stickman-hook/')">
-     <img src="IMGS/SMhook.png" width="150px" alt="Stickman Hook">
-   </a>
- </div>
-      <div class="LOL" data-name="MotoX3M">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/motox3m/index.html')">
-     <img src="IMGS/Moto.png" width="150px" alt="MotoX3M">
-   </a>
- </div>
-       <div class="LOL" data-name="Tetris">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/tetris/')">
-     <img src="IMGS/Tetris.png" width="150px" alt="Tetris">
-   </a>
- </div>
-            <div class="LOL" data-name="Tanuki Sunset">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/tanuki-sunset/')">
-     <img src="IMGS/Tanuki.png" width="150px" alt="Tanuki Sunset">
-   </a>
- </div>
-      <div class="LOL" data-name="Clicker Heroes">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/clicker-heroes/')">
-     <img src="IMGS/ClickerH.png" width="150px" alt="Clicker Heroes">
-   </a>
- </div>
-       <div class="LOL" data-name="Backrooms">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/backrooms/')">
-     <img src="IMGS/Back.png" width="150px" alt="Backrooms">
-   </a>
- </div>
-            <div class="LOL" data-name="Cut The Rope">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/cut-the-rope/')">
-     <img src="IMGS/CTR.png" width="150px" alt="Cut The Rope">
-   </a>
- </div>
-      <div class="LOL" data-name="Level Devil">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/index.html')">
-     <img src="IMGS/Devil.png" width="150px" alt="Level Devil">
-   </a>
- </div>
-        <div class="LOL" data-name="Appel Multiplayer">
-   <a href="#" onclick="openpage('Games/appelmulti.html')">
-     <img src="IMGS/MPA.png" width="150px" alt="Appel Multiplayer">
-   </a>
- </div>
-            <div class="LOL" data-name="Gun Mayhem">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/gun-mayhem/')">
-     <img src="IMGS/GMYM.png" width="150px" alt="Gun Mayhem">
-   </a>
- </div>
-        <div class="LOL" data-name="Gun Mayhem 2">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/gun-mayhem-2/')">
-     <img src="IMGS/GMYM2.png" width="150px" alt="Gun Mayhem 2">
-   </a>
- </div>
-           <div class="LOL" data-name="Temple Run 2">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/temple-run-2/')">
-     <img src="IMGS/TR2.png" width="150px" alt="Temple Run 2">
-   </a>
- </div>
-      <div class="LOL" data-name="Coreball">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/core-ball/')">
-     <img src="IMGS/Core.png" width="150px" alt="Coreball">
-   </a>
- </div>
- 
-       <div class="LOL" data-name="Soccer Random">
-   <a href="#" onclick="openpage('https://wetlandgamesjack.github.io/games/games/SoccerRandom/index.html')">
-     <img src="IMGS/SR.png" width="150px" alt="Soccer Random">
-   </a>
- </div>
-       <div class="LOL" data-name="Gunspin">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/games/gunspin/')">
-     <img src="IMGS/Gunspin.png" width="150px" alt="Gunspin">
-   </a>
- </div>
-       <div class="LOL" data-name="Hacker Typer">
-   <a href="#" onclick="openpage('https://wetlandgamesjack.github.io/games/games/HackerTyper/index.html')">
-     <img src="IMGS/Hackertyper.png" width="150px" alt="Hacker Typer">
-   </a>
- </div>
-       <div class="LOL" data-name="Game Inside A Game">
-   <a href="#" onclick="openpage('https://skibidijglkdjlkghoieyu.github.io/a/game-inside/')">
-     <img src="IMGS/GIAG.png" width="150px" alt="Game Inside A Game">
-   </a>
- </div>
-         <div class="LOL" data-name="Edge Not Found">
-   <a href="#" onclick="openpage('v')">
-     <img src="IMGS/ENF.png" width="150px" alt="Edge not Found">
-   </a>
- </div>
-      <div class="LOL" data-name="Tomb Of The Mask">
-   <a href="#" onclick="openpage('https://tomb-of-the-mask-online.github.io/file/')">
-     <img src="IMGS/Tomb.png" width="150px" alt="Tomb Of The Mask">
-   </a>
- </div>
-        <div class="LOL" data-name="Getting Over It">
-   <a href="#" onclick="openpage('Games/gettingoverit.html')">
-     <img src="IMGS/GOI.png" width="150px" alt="Getting Over It">
-   </a>
- </div>
-             <div class="LOL" data-name="Snow Rider 3D">
-   <a href="#" onclick="openpage('Games/snowrider3D-main/index.html')">
-     <img src="Games/snowrider3D-main/snow-rider-3d.png" width="150px" alt="Snow Rider 3D">
-   </a>
- </div>
-   <div class="game-container">   
-             </div>
-           </div>
-               <div class="featured-games-bar" id="featuredGamesBar">
-    <div class="featured-games-title">Featured Games</div>
-    <!-- Malcolm, make sure you only put games and UI elements over this line or else everything will break -->
-</div>
-           <div id="game-container">
-             <iframe id="game-frame" src=""></iframe>
-         </div>
-            
-   <script src="Script.js"></script>
-           <script>
-       document.addEventListener("DOMContentLoaded", function () {
-       const searchBar = document.getElementById("searchBar");
-       const searchBarOriginalTop = searchBar.offsetTop; // Get the original top position
-       const searchBarOriginalLeft = searchBar.offsetLeft; // Get the original left position
- 
-       window.addEventListener("scroll", function () {
-           if (window.scrollY >= searchBarOriginalTop) {
-               searchBar.classList.add("sticky");
-               searchBar.style.left = `${searchBarOriginalLeft}px`; // Lock left position
-           } else {
-               searchBar.classList.remove("sticky");
-               searchBar.style.left = ""; // Reset left position when scrolling back up
-           }
-       });
-   });
-   document.addEventListener("DOMContentLoaded", () => {
-           const gameContainer = document.getElementById("game-container");
-           const gameFrame = document.getElementById("game-frame");
-           const FG = document.querySelector(".featured-game");
-    const FG2 = document.querySelector(".featured-games-bar");
-    const backArrow = document.querySelector(".back-arrow");
-           backArrow.style.display = "none";
- 
-           window.openpage = function(gameUrl) {
-               gameFrame.src = gameUrl;
-               gameContainer.style.display = "flex";
-               backArrow.style.display = "block";
-               FG.style.display = "none";
-               FG2.style.display = "none";
-            
-               window.scrollTo({ top: gameContainer.offsetTop, behavior: "smooth" });
-               var hidesearchbar = true;
-               searchBar.style.display = "none";
-           };
- 
-           backArrow.addEventListener("click", (event) => {
-          FG.style.display = "block";
-            FG2.style.display = "block";
-               event.preventDefault();
-               gameContainer.style.display = "none";
-               backArrow.style.display = "none";
-               gameFrame.src = "";
-               var hidesearchbar = false;
-               searchBar.style.display = "block"; // Makes it visible
-           });
-       });
-              function updateTime() {
-       const options = {
-         weekday: 'long',
-         hour: 'numeric',
-         minute: '2-digit',
-         hour12: true
-       };
-       const now = new Date();
-       const formattedTime = now.toLocaleString('en-US', options);
-       document.getElementById('time').textContent = formattedTime;
-     }
- 
-     setInterval(updateTime, 1000);
-     updateTime();
-
-                // List of featured games by their data-name
-    const featuredGames = [
-        "Snow Rider 3D",
-        "Slope",
-        "Getting Over It",
-        "Geometry Dash",
-        "Slither.io"
+  <!-- Game Logic -->
+  <script>
+    const games = [
+      { name: "Cookie Clicker", img: "IMGS/Cookie.png", url: "https://skibidijglkdjlkghoieyu.github.io//games/cookie-clicker/index.html" },
+      { name: "Acorn13", img: "IMGS/Acorn13.png", url: "https://acorn13.github.io" },
+      { name: "Appel", img: "IMGS/Appel.png", url: "Games/appel.html" },
+      { name: "Geometry Dash", img: "IMGS/GD.png", url: "Games/geodash.html" },
+      { name: "Mario 64", img: "IMGS/SM64.png", url: "https://7s-4a2.pages.dev/g/supermario64" },
+      { name: "Minecraft", img: "IMGS/EC.png", url: "https://d1tm91r4ytbt54.cloudfront.net/2779cbcb-a02f-48a3-9e2e-95a8d123d165/1685483461665/web/index.html" },
+      { name: "Monkey Mart", img: "IMGS/Monkey.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/monkey-mart" },
+      { name: "Paper.io", img: "IMGS/Paperio.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/paperio2/" },
+      { name: "Retrobowl", img: "IMGS/RB.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/retro-bowl/" },
+      { name: "Slope", img: "IMGS/Slope.png", url: "Games/slope.html" },
+      { name: "Ryan's Sussy Gaming", img: "IMGS/RSG.png", url: "https://skibidijglkdjlkghoieyu.github.io/" },
+      { name: "Gams", img: "IMGS/GamsB.png", url: "https://spotify-playlist11.github.io/4o5231o4u1o/Gams.html" },
+      { name: "MonkeyGG2", img: "IMGS/MK.png", url: "https://Jake1283645473.github.io/AbyanIsBetter" },
+      { name: "Hub-Pro", img: "IMGS/Hub-Pro.png", url: "https://hub-pro.github.io" },
+      { name: "Slope 3D", img: "IMGS/Slope3d.png", url: "https://slope3d.github.io" },
+      { name: "Mario", img: "IMGS/SM2.png", url: "https://fulscreenmario.github.io/" },
+      { name: "Subway Surfers", img: "IMGS/Subway.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/subway-surfers/" },
+      { name: "KrishyDaFishy", img: "IMGS/KTF.png", url: "https://bio.link/booleanbob" },
+      { name: "Ironsnout", img: "IMGS/IS.png", url: "https://betterbull.com/uploads/5/5/6/7/5567194/custom_themes/811766381464516446/files/index.html" },
+      { name: "Unblocked Cave", img: "IMGS/UC.PNG", url: "https://wetlandgamesjack.github.io/games/games.html" },
+      { name: "Idle Breakout", img: "IMGS/Idle.png", url: "https://skibidijglkdjlkghoieyu.github.io//games/idle-breakout/" },
+      { name: "Drift Boss", img: "IMGS/Boss.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/drift-boss/" },
+      { name: "Basketball Random", img: "IMGS/BR.png", url: "https://basket-random-game.github.io/file/" },
+      { name: "Burger Bounty", img: "IMGS/BB.png", url: "https://Burger-Bounty.github.io" },
+      { name: "NintendoBoi", img: "IMGS/Nint.png", url: "https://skibidiman23132.github.io/" },
+      { name: "Blooket.pages.dev", img: "IMGS/Blook.png", url: "https://polight1.github.io" },
+      { name: "Block Blast", img: "IMGS/Blok.png", url: "https://why12389.github.io/block.io/" },
+      { name: "Burrito Bison", img: "IMGS/BB2.png", url: "https://polight1.github.io/iueouryw3i-urghfdruogfo4wqy9-4-FEW5-GYHT6IY23-UYWHYQE8URBNU3egf97nr-5p-/file/index.html" },
+      { name: "Flappy Bird", img: "IMGS/FB2.png", url: "https://calcmathprojects.github.io/calcmathpro.github.io/" },
+      { name: "Absurd Appel", img: "IMGS/AbsurdApple.png", url: "Games/absurdappel.html" },
+      { name: "Agar.io lite", img: "IMGS/Agar.io.png", url: "Games/Agar.io.html" },
+      { name: "Slither.io", img: "IMGS/Slither.png", url: "Games/slither.io-master/index.html" },
+      { name: "Bacon May Die", img: "IMGS/BMD2.png", url: "https://www.betterbull.com/uploads/5/5/6/7/5567194/custom_themes/320690105873469650/files/index.html" },
+      { name: "Slope 2", img: "IMGS/Slope2.png", url: "https://studyisimportant.github.io/slope2/" },
+      { name: "Friday Night Funkin", img: "IMGS/FNF.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/friday-night-funkin/" },
+      { name: "Ball Blast", img: "IMGS/Ballblast.png", url: "https://skibidijglkdjlkghoieyu.github.io/w-rt2hoeyh2uoe1ygh9w/Ball%20Blast%20-%20Mobile%20friendly.html" },
+      { name: "Google Island Games", img: "IMGS/GoogleIsland.png", url: "https://gameblabla.github.io/doodle-champion-island-games-Google/" },
+      { name: "Poly Track", img: "IMGS/Poly.png", url: "https://astroid5710.github.io/polytrack-clone/" },
+      { name: "Hole.io", img: "IMGS/Holeio.png", url: "https://google-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/gertdoro/Toolkit@93a27eabbbe5eb626af5b9b7dd0926ac16810a41/Code/Java/hole.xml&container=ig')" },
+      { name: "Paperclip clicker", img: "IMGS/PaperClip.png", url: "https://www.decisionproblem.com/paperclips/index2.html" },
+      { name: "Yohoho.io", img: "IMGS/Yohoho.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/yohoho/index.html" },
+      { name: "Chrome Dino", img: "IMGS/Dino.png", url: "https://vortexfusion.github.io/nebula/chrome-dino/index.html" },
+      { name: "Snowball.io", img: "IMGS/Snowballio.png", url: "https://kasperisalittlebitch.github.io/snowbattle/" },
+      { name: "N-gon", img: "IMGS/N-gon.png", url: "https://skibidijglkdjlkghoieyu.github.io//games/n-gon/index.html" },
+      { name: "Learn To Fly", img: "IMGS/LTF.png", url: "https://skibidijglkdjlkghoieyu.github.io//games/flash/?game=learn-to-fly" },
+      { name: "Learn To Fly 2", img: "IMGS/LTF2.png", url: "https://skibidijglkdjlkghoieyu.github.io//games/flash/?game=learn-to-fly-2" },
+      { name: "Learn To Fly 3", img: "IMGS/LTF3.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=learn-to-fly-3" },
+      { name: "Badtime Simulator", img: "IMGS/BadTime.png", url: "https://hotamago.github.io/sans/" },
+      { name: "Basketball Stars", img: "IMGS/B-star.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/basketball-stars/" },
+      { name: "Vex 3", img: "IMGS/V4.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/vex-3/index.html" },
+      { name: "Vex 4", img: "IMGS/V4.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/vex-4/index.html" },
+      { name: "Vex 5", img: "IMGS/V5.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/vex-5/index.html" },
+      { name: "Vex 6", img: "IMGS/V6.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/vex-6/index.html" },
+      { name: "Vex 7", img: "IMGS/V7.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/vex-7/index.html" },
+      { name: "Bitlife", img: "IMGS/Bitlife.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/bit-life/" },
+      { name: "Duck Life", img: "IMGS/Duck.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life" },
+      { name: "Duck Life 2", img: "IMGS/Duck2.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-2" },
+      { name: "Duck Life 3", img: "IMGS/Duck3.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-3" },
+      { name: "Duck Life 4", img: "IMGS/Duck4.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-4" },
+      { name: "Duck Life 5", img: "IMGS/Duck5.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/flash/?game=duck-life-5" },
+      { name: "Time Shooter", img: "IMGS/Time.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/time-shooter/" },
+      { name: "Time Shooter 3", img: "IMGS/Time3.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/time-shooter-3/" },
+      { name: "World's Hardest Game", img: "IMGS/WHG.png", url: "https://kasperisalittlebitch.github.io/worlds-hardest-game/index.html" },
+      { name: "Tiny Fishing", img: "IMGS/Fishing.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/tiny-fishing/" },
+      { name: "Stickman Hook", img: "IMGS/SMhook.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/stickman-hook/" },
+      { name: "MotoX3M", img: "IMGS/Moto.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/motox3m/index.html" },
+      { name: "Tetris", img: "IMGS/Tetris.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/tetris/" },
+      { name: "Tanuki Sunset", img: "IMGS/Tanuki.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/tanuki-sunset/" },
+      { name: "Clicker Heroes", img: "IMGS/ClickerH.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/clicker-heroes/" },
+      { name: "Backrooms", img: "IMGS/Back.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/backrooms/" },
+      { name: "Cut The Rope", img: "IMGS/CTR.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/cut-the-rope/" },
+      { name: "Level Devil", img: "IMGS/Devil.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/index.html" },
+      { name: "Appel Multiplayer", img: "IMGS/MPA.png", url: "Games/appelmulti.html" },
+      { name: "Gun Mayhem", img: "IMGS/GMYM.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/gun-mayhem/" },
+      { name: "Gun Mayhem 2", img: "IMGS/GMYM2.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/gun-mayhem-2/" },
+      { name: "Temple Run 2", img: "IMGS/TR2.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/temple-run-2/" },
+      { name: "Coreball", img: "IMGS/Core.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/core-ball/" },
+      { name: "Soccer Random", img: "IMGS/SR.png", url: "https://wetlandgamesjack.github.io/games/games/SoccerRandom/index.html" },
+      { name: "Gunspin", img: "IMGS/Gunspin.png", url: "https://skibidijglkdjlkghoieyu.github.io/games/gunspin/" },
+      { name: "Hacker Typer", img: "IMGS/Hackertyper.png", url: "https://wetlandgamesjack.github.io/games/games/HackerTyper/index.html" },
+      { name: "Game Inside A Game", img: "IMGS/GIAG.png", url: "https://skibidijglkdjlkghoieyu.github.io/a/game-inside/" },
+      { name: "Tomb Of The Mask", img: "IMGS/Tomb.png", url: "https://tomb-of-the-mask-online.github.io/file/" },
+      { name: "Getting Over It", img: "IMGS/GOI.png", url: "Games/gettingoverit.html" },
+      { name: "Snow Rider 3D", img: "Games/snowrider3D-main/snow-rider-3d.png", url: "Games/snowrider3D-main/index.html" }
     ];
 
-// Dynamically create the featured games bar
-const featuredGamesBar = document.getElementById("featuredGamesBar");
-featuredGames.forEach(gameName => {
-    const gameData = document.querySelector(`.LOL[data-name="${gameName}"]`); // Find game by data-name
-    if (gameData) {
-        const gameLink = gameData.querySelector("a").getAttribute("onclick").match(/openpage\('(.*?)'\)/)[1];
-        const gameImgSrc = gameData.querySelector("img").getAttribute("src");
+    const featuredGameNames = ["Slope", "Monkey Mart", "Mario 64", "Snow Rider 3D", "Getting Over It"];
 
-        // Create featured game element
-        const featuredGame = document.createElement("div");
-        featuredGame.classList.add("featured-game");
-        featuredGame.setAttribute("data-name", gameName); // Add data-name for hover effect
-        featuredGame.innerHTML = `<img src="${gameImgSrc}" alt="${gameName}">`;
-        featuredGame.onclick = () => openpage(gameLink); // Add click functionality
-
-        // Append to the bar
-        featuredGamesBar.appendChild(featuredGame);
+    function renderGames(list) {
+      const container = document.getElementById("gameGrid");
+      container.innerHTML = "";
+      list.forEach(game => {
+        const div = document.createElement("div");
+        div.className = "LOL cursor-pointer transition-transform duration-300 hover:scale-95 hover:shadow-md hover:shadow-purple-500/30";
+        div.setAttribute("data-name", game.name);
+        div.innerHTML = `
+          <a href="#" onclick="openpage('${game.url}')">
+            <img src="${game.img}" alt="${game.name}" class="rounded-lg w-full h-full object-cover" />
+          </a>
+        `;
+        container.appendChild(div);
+      });
     }
-});
-   </script>
- 
-         </body>
-         </head>
-       </div>
-   </body> </html>
+
+    function renderFeaturedGames() {
+      const container = document.getElementById("featuredGamesBar");
+      const title = document.createElement("div");
+      title.className = "text-yellow-400 font-semibold text-sm text-center mb-2";
+      title.textContent = "Featured Games";
+      container.innerHTML = "";
+      container.appendChild(title);
+
+      const featured = games.filter(game => featuredGameNames.includes(game.name));
+      featured.forEach(game => {
+        const div = document.createElement("div");
+        div.className = "featured-game w-24 h-24 cursor-pointer rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50";
+        div.setAttribute("data-name", game.name);
+        div.innerHTML = `<img src="${game.img}" alt="${game.name}">`;
+        div.onclick = () => openpage(game.url);
+        container.appendChild(div);
+      });
+    }
+
+    function openpage(url) {
+      const gameFrame = document.getElementById('game-frame');
+      const container = document.getElementById('game-container');
+      gameFrame.src = url;
+      container.classList.remove("pointer-events-none", "hidden");
+      document.getElementById("back-button").classList.remove("hidden");
+      requestAnimationFrame(() => {
+        container.classList.replace("bg-opacity-0", "bg-opacity-90");
+        gameFrame.classList.remove("opacity-0");
+      });
+    }
+
+    function closeGame() {
+      const container = document.getElementById('game-container');
+      const gameFrame = document.getElementById('game-frame');
+      container.classList.replace("bg-opacity-90", "bg-opacity-0");
+      container.classList.add("pointer-events-none");
+      gameFrame.classList.add("opacity-0");
+      document.getElementById("back-button").classList.add("hidden");
+      setTimeout(() => {
+        container.classList.add("hidden");
+        gameFrame.src = "";
+      }, 3000);
+    }
+
+    document.getElementById("searchBar").addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      const scored = games
+        .map(g => ({
+          ...g,
+          score: g.name.toLowerCase().includes(query) ? g.name.toLowerCase().indexOf(query) : Infinity
+        }))
+        .filter(g => g.score !== Infinity)
+        .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+      if (query === '') {
+        renderGames([...games].sort((a, b) => a.name.localeCompare(b.name)));
+      } else {
+        renderGames(scored);
+      }
+    });
+
+    renderGames([...games].sort((a, b) => a.name.localeCompare(b.name)));
+    renderFeaturedGames();
+      const canvas = document.getElementById("particleCanvas");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() {
+      this.radius = Math.random() * 6 + 4;
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + this.radius;
+      this.speedY = Math.random() * 4 + 2;
+      this.opacity = Math.random() * 0.5 + 0.5;
+    }
+
+    update() {
+      this.y -= this.speedY;
+      if (this.y < -this.radius) {
+        this.y = canvas.height + this.radius;
+        this.x = Math.random() * canvas.width;
+      }
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "rgba(82, 23, 124, 1)";
+      ctx.fillStyle = `rgba(82, 23, 124, ${this.opacity})`;
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+
+  let particles = [];
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+
+  resizeCanvas();
+  initParticles();
+  animateParticles();
+  window.addEventListener("resize", resizeCanvas);
+  </script>
+</body>
+</html>
