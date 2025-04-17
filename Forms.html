@@ -1,55 +1,57 @@
-  
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afterlife | Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
 
-        .back-arrow {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: #007BFF;
-            background-color: transparent;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-arrow:hover {
-            background-color: #f0f0f0;
-            color: #0056b3;
-        }
-
-        .content {
-            padding: 20px;
-            text-align: center;
-        }
-    </style>
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+      z-index: 10;
+    }
+  </style>
 </head>
+
 <body>
-   <audio id="background-music" autoplay loop>
-    <source src="background-music.mp3" type="audio/mpeg">
+  <!-- Background Audio -->
+  <audio id="background-music" autoplay loop>
+    <source src="background-music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
-</audio>
-   <a href="Games.html" class="back-arrow">
-        ← Back
-    </a>
-  <iframe src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__5Wp-IVURFFGRko2SkxLOUY0UjVWSDRNWlY0SzlUQy4u" title="Games" width="100%" height="100%" style="border: none; overflow: hidden;"></iframe>
-</body>
+  </audio>
 
-<script src="Script.js"></script>
+  <!-- Games-style back button -->
+  <button onclick="goBack()" class="absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-purple-600 z-50 transition duration-300">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
 
-      <script>
+  <!-- Embedded form -->
+  <iframe
+    src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__5Wp-IVURFFGRko2SkxLOUY0UjVWSDRNWlY0SzlUQy4u"
+    title="Games"
+  ></iframe>
+
+  <!-- Panic + Anti-inspect -->
+  <script src="Script.js"></script>
+  <script>
+    function goBack() {
+      window.location.href = "Games.html";
+    }
+
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (
@@ -60,18 +62,18 @@
         e.preventDefault();
       }
     });
-    let devtoolsOpen = false;
+
     const checkDevTools = () => {
       const threshold = 160;
-      if ((window.outerWidth - window.innerWidth > threshold) ||
-          (window.outerHeight - window.innerHeight > threshold)) {
-        devtoolsOpen = true;
+      if (
+        window.outerWidth - window.innerWidth > threshold ||
+        window.outerHeight - window.innerHeight > threshold
+      ) {
         window.location.replace("https://launchpad.classlink.com/lwsd");
-      } else {
-        devtoolsOpen = false;
       }
     };
+
     setInterval(checkDevTools, 1000);
   </script>
-
+</body>
 </html>
