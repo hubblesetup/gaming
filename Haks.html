@@ -82,25 +82,30 @@
   </div>
 
   <!-- Hacks Grid -->
-  <main class="flex flex-wrap justify-center mt-6 px-4 pb-12">
-    <a href="" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
-      <h3 class="text-xl font-bold mb-2">Blooket Hacks</h3>
-      <p class="text-sm text-gray-300">Use this bookmark while in Blooket to have plenty of cheats. Never loose again!</p>
-    </a>
+<main class="flex flex-wrap justify-center mt-6 px-4 pb-12">
 
-    <main class="flex flex-wrap justify-center mt-6 px-4 pb-12">
-    <a href="javascript:fetch(`https://create.kahoot.it/rest/kahoots/${prompt("Paste the Kahoot ID")}/card/?includeKahoot=true`).then(res=>res.json()).then(json=>json.kahoot.questions.map((q,number)=>{const{choices}=q;for(let i=0;i<choices.length;i+=1){if(choices[i].correct){switch(i){case 0:return `Q${number+1}: red triangle - ${choices[i].answer }`;break;case 1:return `Q${number+1}: blue diamond - ${choices[i].answer }`;break;case 2:return `Q${number+1}: yellow circle - ${choices[i].answer }`;break;case 3:return `Q${number+1}: green square - ${choices[i].answer }`;break}}}}).join("\n")).then(answers=>open().document.body.innerText=answers);" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
-      <h3 class="text-xl font-bold mb-2">Kahoot Answer Hack</h3>
-      <p class="text-sm text-gray-300">Changes page background to green.</p>
-    </a>
+  <!-- Blooket Hack -->
+  <a href="javascript:void(0)" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
+    <h3 class="text-xl font-bold mb-2">Blooket Hacks</h3>
+    <p class="text-sm text-gray-300">Use this bookmark while in Blooket to have plenty of cheats. Never lose again!</p>
+  </a>
+
+  <!-- Kahoot Answer Hack -->
+  <a href="javascript:fetch(`https://create.kahoot.it/rest/kahoots/${prompt('Paste the Kahoot ID')}/card/?includeKahoot=true`).then(res=>res.json()).then(json=>json.kahoot.questions.map((q,number)=>{const{choices}=q;for(let i=0;i<choices.length;i++){if(choices[i].correct){switch(i){case 0:return `Q${number+1}: red triangle - ${choices[i].answer}`;case 1:return `Q${number+1}: blue diamond - ${choices[i].answer}`;case 2:return `Q${number+1}: yellow circle - ${choices[i].answer}`;case 3:return `Q${number+1}: green square - ${choices[i].answer}`;}}}}).join('\n')).then(answers=>open().document.body.innerText=answers);" 
+     class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
+    <h3 class="text-xl font-bold mb-2">Kahoot Answer Hack</h3>
+    <p class="text-sm text-gray-300">Get all the answers for a Kahoot game instantly.</p>
+  </a>
+
+  <!-- Typing Club Autotyper -->
+  <a href="javascript:(function(){const minDelay=45,maxDelay=45,keyOverrides={[String.fromCharCode(160)]:' '};function getTargetCharacters(){return Array.from(document.querySelectorAll('.token span.token_unit')).map(el=>{if(el.firstChild?.classList?.contains('_enter')) return '\n';let text=el.textContent[0];return keyOverrides.hasOwnProperty(text)?keyOverrides[text]:text;});}function recordKey(chr){window.core.record_keydown_time(chr);}function sleep(ms){return new Promise(r=>setTimeout(r,ms));}async function autoPlay(finish){const chrs=getTargetCharacters();for(let i=0;i<chrs.length-(!finish);++i){const c=chrs[i];recordKey(c);await sleep(Math.random()*(maxDelay-minDelay)+minDelay);}}autoPlay(true);})()" 
+     class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
+    <h3 class="text-xl font-bold mb-2">Typing Club Autotyper</h3>
+    <p class="text-sm text-gray-300">Reload the lesson tab, then drag and use this for flawless automated typing.</p>
+  </a>
+
 </main>
-    
-      <main class="flex flex-wrap justify-center mt-6 px-4 pb-12">
-    <a href="javascript:const minDelay = 45;const maxDelay = 45;const keyOverrides = {  [String.fromCharCode(160)]: ' '};function getTargetCharacters() {  const els = Array.from(document.querySelectorAll('.token span.token_unit'));  const chrs = els    .map(el => {      if (el.firstChild?.classList?.contains(%27_enter%27)) {        return %27\n%27;      }      let text = el.textContent[0];      return text;    })    .map(c => keyOverrides.hasOwnProperty(c) ? keyOverrides[c] : c);  return chrs;}function recordKey(chr) {  window.core.record_keydown_time(chr);}function sleep(ms) {  return new Promise(r => setTimeout(r, ms));}async function autoPlay(finish) {  const chrs = getTargetCharacters();  for (let i = 0; i < chrs.length - (!finish); ++i) {    const c = chrs[i];    recordKey(c);    await sleep(Math.random() * (maxDelay - minDelay) + minDelay);  }}autoPlay(true);" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
-      <h3 class="text-xl font-bold mb-2">Typing Club Autotyper</h3>
-      <p class="text-sm text-gray-300">Use this in any normal lesson (not any lesson that introcices the ltters). It only works if you go into a lesson then relod the tab then use the bookmark. Enjoy your new speed!</p>
-    </a>
-    </main>
+
     
     <!-- Add more hacks here as needed -->
   </main>
