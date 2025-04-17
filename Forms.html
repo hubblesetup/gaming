@@ -24,6 +24,11 @@
       height: 100vh;
       z-index: 10;
     }
+
+    /* Ensure the button appears above iframe */
+    #back-button {
+      z-index: 50;
+    }
   </style>
 </head>
 
@@ -35,7 +40,7 @@
   </audio>
 
   <!-- Games-style back button -->
-  <button onclick="goBack()" class="absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-purple-600 z-50 transition duration-300">
+  <button id="back-button" onclick="goBack()" class="absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-purple-600 transition duration-300">
     <i class="fas fa-arrow-left"></i> Back
   </button>
 
@@ -46,7 +51,6 @@
   ></iframe>
 
   <!-- Panic + Anti-inspect -->
-  <script src="Script.js"></script>
   <script>
     function goBack() {
       window.location.href = "Games.html";
