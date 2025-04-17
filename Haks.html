@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afterlife | Hacks</title>
+  <link rel="icon" type="image/x-icon" href="IMGS/Orion.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      document.getElementById("time").textContent = now.toLocaleString("en-US", {
+        weekday: "long",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      });
+    }
+    setInterval(updateTime, 1000);
+    window.onload = updateTime;
+  </script>
+  <style>
+    .nav-bar a {
+      position: relative;
+    }
+    .nav-bar a:hover {
+      color: #a855f7;
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans min-h-screen overflow-x-hidden">
+
+  <!-- Canvas Background -->
+  <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
+
+  <!-- Header -->
+  <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
+    <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
+    <div class="text-center">
+      <h1 class="text-4xl font-bold">Afterlife Gaming</h1>
+      <div id="time" class="text-sm text-gray-300"></div>
+    </div>
+  </header>
+
+  <!-- Divider -->
+  <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
+
+  <!-- Navigation -->
+  <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg z-10 relative">
+    <a href="Home.html"><i class="fas fa-home"></i> Home</a>
+    <a href="Games.html"><i class="fas fa-gamepad"></i> Games</a>
+    <a href="chat.html?prev=Hacks.html"><i class="fas fa-comments"></i> Chat</a>
+    <a href="Forms.html"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
+    <a href="appel-levels.html"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
+    <a href="Hacks.html" class="text-purple-400"><i class="fa-solid fa-bolt"></i> Hacks</a>
+  </nav>
+
+  <!-- Instructions -->
+  <div class="text-center mt-6 text-sm text-gray-400">
+    Drag any block below to your bookmarks bar to use it as a hack.
+  </div>
+
+  <!-- Hacks Grid -->
+  <main class="flex flex-wrap justify-center mt-6 px-4 pb-12">
+    <a href="javascript:(function(){alert('This is a test hack!');})()" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
+      <h3 class="text-xl font-bold mb-2">Test Hack</h3>
+      <p class="text-sm text-gray-300">Click or drag this to your bookmarks bar to use it.</p>
+    </a>
+
+    <a href="javascript:(function(){document.body.style.background='lime';})()" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
+      <h3 class="text-xl font-bold mb-2">Green Background</h3>
+      <p class="text-sm text-gray-300">Changes page background to green.</p>
+    </a>
+
+    <a href="javascript:(function(){document.querySelectorAll('*').forEach(e => e.style.fontFamily='Comic Sans MS');})()" class="block bg-gray-800 text-white rounded-xl p-4 m-4 w-60 shadow-lg cursor-move hover:scale-105 transition-transform duration-200">
+      <h3 class="text-xl font-bold mb-2">Comic Sans</h3>
+      <p class="text-sm text-gray-300">Makes everything look goofy.</p>
+    </a>
+    
+    <!-- Add more hacks here as needed -->
+  </main>
+
+  <!-- Background Particles -->
+  <script>
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+      constructor() {
+        this.radius = Math.random() * 6 + 4;
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + this.radius;
+        this.speedY = Math.random() * 4 + 2;
+        this.opacity = Math.random() * 0.5 + 0.5;
+      }
+
+      update() {
+        this.y -= this.speedY;
+        if (this.y < -this.radius) {
+          this.y = canvas.height + this.radius;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(82, 23, 124, 1)";
+        ctx.fillStyle = `rgba(82, 23, 124, ${this.opacity})`;
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+
+    let particles = [];
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 100; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+    window.addEventListener("resize", resizeCanvas);
+  </script>
+</body>
+</html>
