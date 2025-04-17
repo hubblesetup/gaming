@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Afterlife | Games</title>
-  <link rel="icon" type="image/x-icon" href="IMGS/Orion.png">
+  <link rel="icon" type="image/x-icon" href="IMGS/Orion.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
   <script>
@@ -42,9 +42,11 @@
   </style>
 </head>
 <body class="bg-black text-white font-sans relative min-h-screen overflow-hidden m-0 p-0 w-screen overflow-x-hidden">
+
   <audio id="background-music" autoplay loop>
     <source src="background-music.mp3" type="audio/mpeg" />
   </audio>
+
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
 
   <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
@@ -54,7 +56,9 @@
       <div id="time" class="text-sm text-gray-300"></div>
     </div>
   </header>
+
   <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
+
   <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
     <a href="Home.html" class="hover:text-purple-400"><i class="fas fa-home"></i> Home</a>
     <a href="Games.html" class="hover:text-purple-400"><i class="fas fa-gamepad"></i> Games</a>
@@ -64,16 +68,17 @@
   </nav>
 
   <input type="text" id="searchBar" placeholder="Search for a game..."
-    class="block w-4/5 max-w-xl mx-auto my-6 p-3 text-white bg-gray-800 border border-gray-700 rounded">
+    class="block w-4/5 max-w-xl mx-auto my-6 p-3 text-white bg-gray-800 border border-gray-700 rounded" />
 
   <div class="fixed top-1/2 right-0 transform -translate-y-1/2 flex flex-col gap-2 p-3 bg-gray-900/80 shadow-lg rounded-l-lg z-50" id="featuredGamesBar">
+    <!-- JS will populate this -->
   </div>
 
-  <main class="px-6 py-8 max-w-6xl mx-auto z-10 relative">
-    <div id="gameGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+  <main class="px-6 py-8 max-w-7xl mx-auto z-10 relative">
+    <div id="gameGrid" class="grid grid-cols-3 md:grid-cols-6 gap-4"></div>
   </main>
 
-  <div id="game-container" class="fixed inset-0 bg-black bg-opacity-0 z-50 flex items-center justify-center transition-opacity duration-500 pointer-events-none">
+  <div id="game-container" class="fixed inset-0 bg-black bg-opacity-0 z-50 flex items-center justify-center transition-opacity duration-500 pointer-events-none hidden">
     <button id="back-button" onclick="closeGame()" class="absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-purple-600 z-50 hidden">
       <i class="fas fa-arrow-left"></i> Back
     </button>
@@ -89,7 +94,17 @@
       { name: "Monkey Mart", img: "IMGS/Monkey.png", url: "https://monkeymart.example" },
       { name: "Paper.io", img: "IMGS/Paperio.png", url: "https://paperio.example" },
       { name: "Retrobowl", img: "IMGS/RB.png", url: "https://retrobowl.example" },
-      { name: "Slope", img: "IMGS/Slope.png", url: "Games/slope.html" }
+      { name: "Slope", img: "IMGS/Slope.png", url: "Games/slope.html" },
+      { name: "Dumb Game 1", img: "IMGS/Dummy1.png", url: "#" },
+      { name: "Dumb Game 2", img: "IMGS/Dummy2.png", url: "#" },
+      { name: "Dumb Game 3", img: "IMGS/Dummy3.png", url: "#" },
+      { name: "Dumb Game 4", img: "IMGS/Dummy4.png", url: "#" },
+      { name: "Dumb Game 5", img: "IMGS/Dummy5.png", url: "#" },
+      { name: "Dumb Game 6", img: "IMGS/Dummy6.png", url: "#" },
+      { name: "Dumb Game 7", img: "IMGS/Dummy7.png", url: "#" },
+      { name: "Dumb Game 8", img: "IMGS/Dummy8.png", url: "#" },
+      { name: "Dumb Game 9", img: "IMGS/Dummy9.png", url: "#" },
+      { name: "Dumb Game 10", img: "IMGS/Dummy10.png", url: "#" }
     ];
 
     const featuredGameNames = ["Slope", "Monkey Mart", "Mario 64"];
@@ -147,10 +162,10 @@
       container.classList.replace("bg-opacity-90", "bg-opacity-0");
       container.classList.add("pointer-events-none");
       gameFrame.classList.add("opacity-0");
+      document.getElementById("back-button").classList.add("hidden");
       setTimeout(() => {
         container.classList.add("hidden");
         gameFrame.src = "";
-      document.getElementById("back-button").classList.add("hidden");
       }, 500);
     }
 
