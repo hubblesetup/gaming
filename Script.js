@@ -214,9 +214,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("keydown", function (e) {
-  // Check for the backtick (`) key — it's keyCode 192 or key === '`'
-  if (e.key === "`" || e.code === "Backquote") {
-    const isIndex = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+  // Check for Shift + Backtick (`) key
+  if ((e.key === "`" || e.code === "Backquote") && e.shiftKey) {
+    const isIndex =
+      window.location.pathname.endsWith("index.html") ||
+      window.location.pathname === "/" ||
+      window.location.pathname === "/index";
+
     if (!isIndex) {
       window.location.href = "https://launchpad.classlink.com/lwsd";
     }
