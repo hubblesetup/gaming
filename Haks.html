@@ -21,11 +21,23 @@
     window.onload = updateTime;
   </script>
   <style>
-    .nav-bar a {
+ .nav-bar a {
       position: relative;
     }
-    .nav-bar a:hover {
-      color: #a855f7;
+    .nav-bar a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background-color: rgba(168, 85, 247, 0.6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-bar a:hover::after {
+      transform: scaleX(1);
     }
   </style>
 </head>
