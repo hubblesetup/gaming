@@ -50,13 +50,13 @@
   <header class="w-full bg-gray-900 flex items-center justify-between px-6 py-4">
     <h1 class="text-3xl font-bold text-purple-400">Leaderboard</h1>
     <nav class="nav-bar flex gap-4">
-    <a href="Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
-    <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
-    <a href="chat.html?prev=Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-comments"></i> Chat</a>
-    <a href="Forms.html" class="hover:text-purple-400 nav-tab"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
-    <a href="appel-levels.html" class="hover:text-purple-400 nav-tab"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
-    <a href="Haks.html" class="hover:text-purple-400"><i class="fa-solid fa-bolt"></i> Hacks</a>
-    <a href="Leaderboard.html" class="hover:text-purple-400"><i class="fa-solid fa-medal"></i></i> Leaderboard</a>
+      <a href="Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
+      <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
+      <a href="chat.html?prev=Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-comments"></i> Chat</a>
+      <a href="Forms.html" class="hover:text-purple-400 nav-tab"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
+      <a href="appel-levels.html" class="hover:text-purple-400 nav-tab"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
+      <a href="Haks.html" class="hover:text-purple-400"><i class="fa-solid fa-bolt"></i> Hacks</a>
+      <a href="Leaderboard.html" class="hover:text-purple-400"><i class="fa-solid fa-medal"></i> Leaderboard</a>
       <button id="adminLoginBtn" class="text-white bg-purple-600 px-3 py-1 rounded hover:bg-purple-700">Admin Login</button>
     </nav>
   </header>
@@ -68,7 +68,22 @@
         <option value="appel">Appel</option>
         <option value="slope">Slope</option>
       </select>
-      <input type="number" id="score" placeholder="Time" required class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600" />
+      <!-- CHANGED: Split score into two inputs for Appel -->
+      <div id="scoreLevelContainer" class="flex gap-2">
+        <input
+          type="number"
+          id="score"
+          placeholder="Time"
+          required
+          class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+        />
+        <input
+          type="text"
+          id="level"
+          placeholder="Level"
+          class="hidden p-2 rounded bg-gray-900 text-white border border-gray-600"
+        />
+      </div>
       <p class="text-sm text-gray-300">📷 Send a screenshot of your final screen to <strong>afterlifegaminghelp@outlook.com</strong></p>
       <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold">Submit Score</button>
     </form>
@@ -107,6 +122,7 @@
     const form = document.getElementById("scoreForm");
     const gameSelect = document.getElementById("game");
     const scoreInput = document.getElementById("score");
+    const levelInput = document.getElementById("level"); // NEW
     const adminLoginBtn = document.getElementById("adminLoginBtn");
     const adminModal = document.getElementById("adminModal");
     const cancelLogin = document.getElementById("cancelLogin");
@@ -115,18 +131,28 @@
     const adminPanel = document.getElementById("adminPanel");
     const successPopup = document.getElementById("successPopup");
 
+    // UPDATED: toggle time vs score + level inputs
     gameSelect.addEventListener("change", () => {
-      scoreInput.placeholder = gameSelect.value === "appel" ? "Time" : "Score";
+      const isAppel = gameSelect.value === "appel";
+      scoreInput.placeholder = isAppel ? "Time" : "Score";
+      if (isAppel) {
+        levelInput.classList.remove("hidden");
+        scoreInput.classList.replace("w-full", "w-1/2");
+        levelInput.classList.add("w-1/2");
+        levelInput.required = true;
+      } else {
+        levelInput.classList.add("hidden");
+        scoreInput.classList.replace("w-1/2", "w-full");
+        levelInput.required = false;
+      }
     });
 
     adminLoginBtn.addEventListener("click", () => {
       adminModal.classList.remove("hidden");
     });
-
     cancelLogin.addEventListener("click", () => {
       adminModal.classList.add("hidden");
     });
-
     confirmLogin.addEventListener("click", () => {
       const code = adminPassword.value.trim();
       fetch("config.json")
@@ -145,27 +171,21 @@
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const lastSubmit = localStorage.getItem("lastSubmitTime");
       const now = Date.now();
       if (lastSubmit && now - parseInt(lastSubmit) < 30000) {
         alert("Please wait a few seconds before submitting again.");
         return;
       }
-
       const name = document.getElementById("name").value.trim();
       const score = parseFloat(scoreInput.value);
       const game = gameSelect.value;
+      const level = levelInput.value.trim(); // if needed when submitting
 
-      if (!name || isNaN(score)) return;
+      if (!name || isNaN(score) || (game === "appel" && !level)) return;
 
-      const entry = {
-        name,
-        score,
-        game,
-        timestamp: Date.now(),
-        approved: false
-      };
+      const entry = { name, score, game, timestamp: Date.now(), approved: false };
+      if (game === "appel") entry.level = level;
 
       try {
         await firebase.database().ref(`${game}_scores`).push(entry);
