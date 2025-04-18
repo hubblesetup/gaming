@@ -45,21 +45,11 @@
     }
   </style>
 </head>
-<!-- Header -->
-  <header class="w-full bg-gray-900 flex items-center justify-center py-6 px-4 space-x-4 relative z-10">
-    <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
-    <div class="text-center">
-      <h1 class="text-4xl font-bold cursor-pointer" onclick="openGame()">Afterlife Gaming 
-      </h1>
-      <div id="time" class="text-sm text-gray-300"></div>
-    </div>
-  </header>
-
-  <!-- Divider -->
-  <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
-
-  <!-- Navigation -->
-    <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
+<body class="bg-black text-white min-h-screen font-sans overflow-x-hidden">
+  <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
+  <header class="w-full bg-gray-900 flex items-center justify-between px-6 py-4">
+    <h1 class="text-3xl font-bold text-purple-400">Leaderboard</h1>
+    <nav class="nav-bar flex gap-4">
     <a href="Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
     <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
     <a href="chat.html?prev=Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-comments"></i> Chat</a>
@@ -381,14 +371,6 @@ function loadLeaderboard(game, elementId, sortAsc = false) {
 // Load both leaderboards on page load
 loadLeaderboard("appel", "appelBoard", true);
 loadLeaderboard("slope", "slopeBoard", false);
-      // Time display
-    function updateTime() {
-      const options = { weekday: 'long', hour: 'numeric', minute: '2-digit', hour12: true };
-      const now = new Date();
-      document.getElementById('time').textContent = now.toLocaleString('en-US', options);
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
   </script>
 </body>
 </html>
