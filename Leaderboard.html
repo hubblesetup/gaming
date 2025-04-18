@@ -83,15 +83,56 @@
       <h2 class="text-xl font-bold text-green-400 mb-4">Pending Submissions</h2>
       <ul id="pendingList" class="space-y-4"></ul>
     </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+      <div class="bg-gray-800 p-6 rounded shadow-lg w-80">
+        <h2 class="text-xl font-semibold mb-4">Admin Login</h2>
+        <input type="password" id="adminPassword" placeholder="Enter Secret Code" class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 mb-4" />
+        <div class="flex justify-end gap-2">
+          <button id="cancelLogin" class="bg-gray-600 px-4 py-1 rounded hover:bg-gray-700">Cancel</button>
+          <button id="confirmLogin" class="bg-purple-600 px-4 py-1 rounded hover:bg-purple-700">Login</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script>
     const form = document.getElementById("scoreForm");
     const gameSelect = document.getElementById("game");
     const scoreInput = document.getElementById("score");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const adminModal = document.getElementById("adminModal");
+    const cancelLogin = document.getElementById("cancelLogin");
+    const confirmLogin = document.getElementById("confirmLogin");
+    const adminPassword = document.getElementById("adminPassword");
+    const adminPanel = document.getElementById("adminPanel");
 
     gameSelect.addEventListener("change", () => {
       scoreInput.placeholder = gameSelect.value === "appel" ? "Time" : "Score";
+    });
+
+    adminLoginBtn.addEventListener("click", () => {
+      adminModal.classList.remove("hidden");
+    });
+
+    cancelLogin.addEventListener("click", () => {
+      adminModal.classList.add("hidden");
+    });
+
+    confirmLogin.addEventListener("click", () => {
+      const code = adminPassword.value.trim();
+      fetch("config.json")
+        .then(res => res.json())
+        .then(config => {
+          if (code === config.secretCode) {
+            adminPanel.classList.remove("hidden");
+            adminModal.classList.add("hidden");
+          } else {
+            alert("Incorrect code.");
+          }
+        })
+        .catch(() => alert("Could not load config."));
     });
 
     form.addEventListener("submit", async (e) => {
@@ -153,6 +194,65 @@
       const item = document.getElementById(`pending-${key}`);
       if (item) item.remove();
     }
+  <!-- Particle Background Script -->
+  const canvas = document.getElementById("particleCanvas");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() {
+      this.radius = Math.random() * 6 + 4;
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + this.radius;
+      this.speedY = Math.random() * 4 + 2;
+      this.opacity = Math.random() * 0.5 + 0.5;
+    }
+
+    update() {
+      this.y -= this.speedY;
+      if (this.y < -this.radius) {
+        this.y = canvas.height + this.radius;
+        this.x = Math.random() * canvas.width;
+      }
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "rgba(168, 85, 247, 1)";
+      ctx.fillStyle = `rgba(168, 85, 247, ${this.opacity})`;
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+
+  let particles = [];
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+
+  resizeCanvas();
+  initParticles();
+  animateParticles();
+  window.addEventListener("resize", resizeCanvas);
   </script>
 </body>
 </html>
