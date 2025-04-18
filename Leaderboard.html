@@ -72,11 +72,15 @@
 
     <div id="successPopup" class="hidden fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow z-50">Score submitted successfully!</div>
 
-    <div class="w-full max-w-2xl">
-      <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Appel</h2>
-      <ul id="appelBoard" class="space-y-2 mb-10"></ul>
-      <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Slope</h2>
-      <ul id="slopeBoard" class="space-y-2"></ul>
+    <div class="w-full max-w-6xl flex gap-6 overflow-x-auto">
+      <div class="w-1/2 overflow-y-auto max-h-[400px]">
+        <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Appel</h2>
+        <ul id="appelBoard" class="space-y-2"></ul>
+      </div>
+      <div class="w-1/2 overflow-y-auto max-h-[400px]">
+        <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Slope</h2>
+        <ul id="slopeBoard" class="space-y-2"></ul>
+      </div>
     </div>
 
     <div id="adminPanel" class="hidden w-full max-w-2xl mt-12 bg-gray-900 p-6 rounded-lg">
