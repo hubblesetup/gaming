@@ -279,6 +279,77 @@
     init();
     animate();
     window.addEventListener("resize", resizeCanvas);
+    // ✅ Add this logic inside your <script> tag if it's not already there
+
+// 🔐 Admin login logic
+confirmLogin.addEventListener("click", () => {
+  const code = adminPassword.value.trim();
+  fetch("config.json")
+    .then(res => res.json())
+    .then(config => {
+      if (code === config.secretCode) {
+        adminPanel.classList.remove("hidden");
+        adminModal.classList.add("hidden");
+        loadPending();
+      } else {
+        alert("Incorrect code.");
+      }
+    })
+    .catch(() => alert("Could not load config."));
+});
+
+// 📥 Load pending entries for admin review
+function loadPending() {
+  const pendingList = document.getElementById("pendingList");
+  pendingList.innerHTML = "";
+  ["appel", "slope"].forEach(game => {
+    firebase.database().ref(`${game}_scores`).orderByChild("approved").equalTo(false).once("value", snapshot => {
+      snapshot.forEach(child => {
+        const data = child.val();
+        const li = document.createElement("li");
+        li.id = `pending-${child.key}`;
+        li.className = "bg-gray-800 p-3 rounded shadow flex justify-between items-center";
+        li.innerHTML = `
+          <span>${data.name} (${game}) - ${data.score}</span>
+          <div class="flex gap-2">
+            <button onclick="approveEntry('${game}', '${child.key}')" class="bg-green-600 hover:bg-green-700 px-2 py-1 rounded">Approve</button>
+            <button onclick="denyEntry('${game}', '${child.key}')" class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded">Deny</button>
+          </div>`;
+        pendingList.appendChild(li);
+      });
+    });
+  });
+}
+
+// ✅ Approval logic
+function approveEntry(game, key) {
+  firebase.database().ref(`${game}_scores/${key}/approved`).set(true);
+  const item = document.getElementById(`pending-${key}`);
+  if (item) item.remove();
+}
+
+function denyEntry(game, key) {
+  firebase.database().ref(`${game}_scores/${key}`).remove();
+  const item = document.getElementById(`pending-${key}`);
+  if (item) item.remove();
+}
+
+// ✅ Updated leaderboard loader with numbering
+function loadLeaderboard(game, elementId, sortAsc = false) {
+  const board = document.getElementById(elementId);
+  firebase.database().ref(`${game}_scores`).orderByChild("approved").equalTo(true).once("value", (snapshot) => {
+    const scores = [];
+    snapshot.forEach(child => scores.push(child.val()));
+    scores.sort((a, b) => sortAsc ? a.score - b.score : b.score - a.score);
+    board.innerHTML = "";
+    scores.forEach((entry, index) => {
+      const li = document.createElement("li");
+      li.className = "bg-gray-800 p-3 rounded shadow";
+      li.textContent = `#${index + 1} ${entry.name}: ${entry.score}`;
+      board.appendChild(li);
+    });
+  });
+}
   </script>
 </body>
 </html>
