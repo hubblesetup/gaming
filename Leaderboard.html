@@ -7,6 +7,19 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPKc8wc6SWu6jCAOLQhdI4zADrTbiuNuE",
+      authDomain: "afterlifeleaderboard.firebaseapp.com",
+      databaseURL: "https://afterlifeleaderboard-default-rtdb.firebaseio.com",
+      projectId: "afterlifeleaderboard",
+      storageBucket: "afterlifeleaderboard.firebasestorage.app",
+      messagingSenderId: "799716843731",
+      appId: "1:799716843731:web:f41e5cded386453c83f426",
+      measurementId: "G-D3E3W4ZKJD"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <style>
     .nav-bar a {
       position: relative;
@@ -54,14 +67,16 @@
         <option value="appel">Appel</option>
         <option value="slope">Slope</option>
       </select>
-      <input type="number" id="score" placeholder="Score" required class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600" />
+      <input type="number" id="score" placeholder="Time" required class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600" />
       <p class="text-sm text-gray-300">📷 Send a screenshot of your final screen to <strong>afterlifegaminghelp@outlook.com</strong></p>
       <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold">Submit Score</button>
     </form>
 
     <div class="w-full max-w-2xl">
-      <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores</h2>
-      <ul id="leaderboard" class="space-y-2"></ul>
+      <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Appel</h2>
+      <ul id="appelBoard" class="space-y-2 mb-10"></ul>
+      <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Slope</h2>
+      <ul id="slopeBoard" class="space-y-2"></ul>
     </div>
 
     <div id="adminPanel" class="hidden w-full max-w-2xl mt-12 bg-gray-900 p-6 rounded-lg">
@@ -72,13 +87,26 @@
 
   <script>
     const form = document.getElementById("scoreForm");
-    const leaderboardList = document.getElementById("leaderboard");
+    const gameSelect = document.getElementById("game");
+    const scoreInput = document.getElementById("score");
+
+    gameSelect.addEventListener("change", () => {
+      scoreInput.placeholder = gameSelect.value === "appel" ? "Time" : "Score";
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const lastSubmit = localStorage.getItem("lastSubmitTime");
+      const now = Date.now();
+      if (lastSubmit && now - parseInt(lastSubmit) < 30000) {
+        alert("Please wait a few seconds before submitting again.");
+        return;
+      }
+
       const name = document.getElementById("name").value.trim();
-      const score = parseInt(document.getElementById("score").value);
-      const game = document.getElementById("game").value;
+      const score = parseFloat(scoreInput.value);
+      const game = gameSelect.value;
 
       if (!name || isNaN(score)) return;
 
@@ -92,6 +120,7 @@
 
       try {
         await firebase.database().ref(`${game}_scores`).push(entry);
+        localStorage.setItem("lastSubmitTime", Date.now());
         alert("Score submitted successfully!");
         form.reset();
       } catch (error) {
@@ -99,6 +128,25 @@
         alert("Submission failed. Check console for details.");
       }
     });
+
+    function loadLeaderboard(game, elementId, sortAsc = false) {
+      const board = document.getElementById(elementId);
+      firebase.database().ref(`${game}_scores`).orderByChild("approved").equalTo(true).once("value", (snapshot) => {
+        const scores = [];
+        snapshot.forEach(child => scores.push(child.val()));
+        scores.sort((a, b) => sortAsc ? a.score - b.score : b.score - a.score);
+        board.innerHTML = "";
+        scores.forEach(entry => {
+          const li = document.createElement("li");
+          li.className = "bg-gray-800 p-3 rounded shadow";
+          li.textContent = `${entry.name}: ${entry.score}`;
+          board.appendChild(li);
+        });
+      });
+    }
+
+    loadLeaderboard("appel", "appelBoard", true);
+    loadLeaderboard("slope", "slopeBoard", false);
 
     function approveEntry(game, key) {
       firebase.database().ref(`${game}_scores/${key}/approved`).set(true);
