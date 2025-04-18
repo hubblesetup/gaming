@@ -72,6 +72,8 @@
       <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold">Submit Score</button>
     </form>
 
+    <div id="successPopup" class="hidden fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow z-50">Score submitted successfully!</div>
+
     <div class="w-full max-w-2xl">
       <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores - Appel</h2>
       <ul id="appelBoard" class="space-y-2 mb-10"></ul>
@@ -107,6 +109,7 @@
     const confirmLogin = document.getElementById("confirmLogin");
     const adminPassword = document.getElementById("adminPassword");
     const adminPanel = document.getElementById("adminPanel");
+    const successPopup = document.getElementById("successPopup");
 
     gameSelect.addEventListener("change", () => {
       scoreInput.placeholder = gameSelect.value === "appel" ? "Time" : "Score";
@@ -128,6 +131,7 @@
           if (code === config.secretCode) {
             adminPanel.classList.remove("hidden");
             adminModal.classList.add("hidden");
+            loadPending();
           } else {
             alert("Incorrect code.");
           }
@@ -162,7 +166,8 @@
       try {
         await firebase.database().ref(`${game}_scores`).push(entry);
         localStorage.setItem("lastSubmitTime", Date.now());
-        alert("Score submitted successfully!");
+        successPopup.classList.remove("hidden");
+        setTimeout(() => successPopup.classList.add("hidden"), 3000);
         form.reset();
       } catch (error) {
         console.error("Error submitting score:", error);
@@ -186,6 +191,23 @@
       });
     }
 
+    function loadPending() {
+      const pendingList = document.getElementById("pendingList");
+      pendingList.innerHTML = "";
+      ["appel", "slope"].forEach(game => {
+        firebase.database().ref(`${game}_scores`).orderByChild("approved").equalTo(false).once("value", snapshot => {
+          snapshot.forEach(child => {
+            const data = child.val();
+            const li = document.createElement("li");
+            li.id = `pending-${child.key}`;
+            li.className = "bg-gray-800 p-3 rounded shadow flex justify-between items-center";
+            li.innerHTML = `<span>${data.name} (${game}) - ${data.score}</span><button class='bg-green-600 px-2 py-1 rounded hover:bg-green-700' onclick='approveEntry("${game}", "${child.key}")'>Approve</button>`;
+            pendingList.appendChild(li);
+          });
+        });
+      });
+    }
+
     loadLeaderboard("appel", "appelBoard", true);
     loadLeaderboard("slope", "slopeBoard", false);
 
@@ -194,65 +216,61 @@
       const item = document.getElementById(`pending-${key}`);
       if (item) item.remove();
     }
-  <!-- Particle Background Script -->
-  const canvas = document.getElementById("particleCanvas");
-  const ctx = canvas.getContext("2d");
+        // Particle canvas
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  class Particle {
-    constructor() {
-      this.radius = Math.random() * 6 + 4;
-      this.x = Math.random() * canvas.width;
-      this.y = canvas.height + this.radius;
-      this.speedY = Math.random() * 4 + 2;
-      this.opacity = Math.random() * 0.5 + 0.5;
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
 
-    update() {
-      this.y -= this.speedY;
-      if (this.y < -this.radius) {
-        this.y = canvas.height + this.radius;
+    class Particle {
+      constructor() {
+        this.radius = Math.random() * 6 + 4;
         this.x = Math.random() * canvas.width;
+        this.y = canvas.height + this.radius;
+        this.speedY = Math.random() * 4 + 2;
+        this.opacity = Math.random() * 0.5 + 0.5;
+      }
+
+      update() {
+        this.y -= this.speedY;
+        if (this.y < -this.radius) {
+          this.y = canvas.height + this.radius;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(82, 23, 124, 1)";
+        ctx.fillStyle = `rgba(82, 23, 124, ${this.opacity})`;
+        ctx.fill();
+        ctx.closePath();
       }
     }
 
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = "rgba(168, 85, 247, 1)";
-      ctx.fillStyle = `rgba(168, 85, 247, ${this.opacity})`;
-      ctx.fill();
-      ctx.closePath();
+    let particles = [];
+    function init() {
+      particles = [];
+      for (let i = 100; i--; ) {
+        particles.push(new Particle());
+      }
     }
-  }
 
-  let particles = [];
-
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < 100; i++) {
-      particles.push(new Particle());
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
     }
-  }
 
-  function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
-    requestAnimationFrame(animateParticles);
-  }
-
-  resizeCanvas();
-  initParticles();
-  animateParticles();
-  window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    init();
+    animate();
+    window.addEventListener("resize", resizeCanvas);
   </script>
 </body>
 </html>
