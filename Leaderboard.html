@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Afterlife | Leaderboard</title>
+  <title>Leaderboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
   <style>
     .nav-bar a {
       position: relative;
       transition: color 0.3s ease;
     }
-
     .nav-bar a::after {
       content: "";
       position: absolute;
@@ -25,11 +25,9 @@
       transform-origin: left;
       transition: transform 0.3s ease;
     }
-
     .nav-bar a:hover {
       color: #a855f7;
     }
-
     .nav-bar a:hover::after {
       transform: scaleX(1);
     }
@@ -37,10 +35,8 @@
 </head>
 <body class="bg-black text-white min-h-screen font-sans overflow-x-hidden">
 
-  <!-- Canvas Background -->
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
 
-  <!-- Header with Tabs -->
   <header class="w-full bg-gray-900 flex items-center justify-between px-6 py-4">
     <h1 class="text-3xl font-bold text-purple-400">Leaderboard</h1>
     <nav class="nav-bar flex gap-4">
@@ -48,43 +44,40 @@
       <a href="Games.html">Games</a>
       <a href="chat.html">Chat</a>
       <a href="Forms.html">Forms</a>
+      <button id="adminLoginBtn" class="text-white bg-purple-600 px-3 py-1 rounded hover:bg-purple-700">Admin Login</button>
     </nav>
   </header>
 
-  <!-- Score Submission Form -->
   <main class="flex flex-col items-center mt-10 px-4">
     <form id="scoreForm" class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md mb-8 space-y-4">
-      <input type="text" id="name" placeholder="Your Name" required
-        class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
-
+      <input type="text" id="name" placeholder="Your Name" required class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600" />
       <select id="game" required class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600">
         <option value="appel">Appel</option>
         <option value="slope">Slope</option>
       </select>
-
-      <input type="number" id="score" placeholder="Score" required
-        class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"/>
-
-      <input type="file" id="imageUpload" accept="image/*"
-        class="w-full p-2 bg-gray-700 text-white rounded" />
-
-      <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold transition">Submit Score</button>
+      <input type="number" id="score" placeholder="Score" required class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600" />
+      <input type="file" id="imageUpload" accept="image/*" class="w-full p-2 bg-gray-700 text-white rounded" />
+      <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold">Submit Score</button>
     </form>
 
     <div class="w-full max-w-2xl">
       <h2 class="text-xl font-semibold mb-3 text-purple-300">Top Scores</h2>
       <ul id="leaderboard" class="space-y-2"></ul>
     </div>
+
+    <div id="adminPanel" class="hidden w-full max-w-2xl mt-12 bg-gray-900 p-6 rounded-lg">
+      <h2 class="text-xl font-bold text-green-400 mb-4">Pending Submissions</h2>
+      <ul id="pendingList" class="space-y-4"></ul>
+    </div>
   </main>
 
-  <!-- Firebase Config + Logic -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBPKc8wc6SWu6jCAOLQhdI4zADrTbiuNuE",
       authDomain: "afterlifeleaderboard.firebaseapp.com",
       databaseURL: "https://afterlifeleaderboard-default-rtdb.firebaseio.com",
       projectId: "afterlifeleaderboard",
-      storageBucket: "afterlifeleaderboard.firebasestorage.app",
+      storageBucket: "afterlifeleaderboard.appspot.com",
       messagingSenderId: "799716843731",
       appId: "1:799716843731:web:f41e5cded386453c83f426",
       measurementId: "G-D3E3W4ZKJD"
@@ -92,6 +85,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const storage = firebase.storage();
 
     const form = document.getElementById("scoreForm");
     const leaderboardList = document.getElementById("leaderboard");
@@ -101,15 +95,24 @@
       const name = document.getElementById("name").value.trim();
       const score = parseInt(document.getElementById("score").value);
       const game = document.getElementById("game").value;
+      const file = document.getElementById("imageUpload").files[0];
 
       if (!name || isNaN(score)) return;
+
+      let imageUrl = "";
+      if (file) {
+        const storageRef = storage.ref(`${game}_images/${Date.now()}_${file.name}`);
+        await storageRef.put(file);
+        imageUrl = await storageRef.getDownloadURL();
+      }
 
       const entry = {
         name,
         score,
         game,
+        imageUrl,
         timestamp: Date.now(),
-        approved: false // Needs manual approval to show on leaderboard
+        approved: false
       };
 
       await db.ref(`${game}_scores`).push(entry);
@@ -139,9 +142,53 @@
     document.getElementById("game").addEventListener("change", (e) => {
       loadLeaderboard(e.target.value);
     });
+
+    // Admin Login
+    document.getElementById("adminLoginBtn").addEventListener("click", async () => {
+      const res = await fetch("config.json");
+      const config = await res.json();
+      const code = prompt("Enter Admin Secret Code:");
+      if (code === config.secretCode) {
+        document.getElementById("adminPanel").classList.remove("hidden");
+        loadPendingSubmissions();
+      } else {
+        alert("Incorrect code.");
+      }
+    });
+
+    function loadPendingSubmissions() {
+      const games = ["appel", "slope"];
+      const pendingList = document.getElementById("pendingList");
+      pendingList.innerHTML = "";
+
+      games.forEach(game => {
+        db.ref(`${game}_scores`).on("value", (snapshot) => {
+          snapshot.forEach(child => {
+            const val = child.val();
+            if (!val.approved) {
+              const li = document.createElement("li");
+              li.className = "bg-gray-800 p-4 rounded";
+              li.innerHTML = `
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p><strong>${val.name}</strong> - ${val.score} (${game})</p>
+                    ${val.imageUrl ? `<img src="${val.imageUrl}" class="mt-2 max-w-xs rounded">` : ""}
+                  </div>
+                  <button class="bg-green-600 px-3 py-1 rounded hover:bg-green-700" onclick="approveEntry('${game}', '${child.key}')">Approve</button>
+                </div>
+              `;
+              pendingList.appendChild(li);
+            }
+          });
+        });
+      });
+    }
+
+    function approveEntry(game, key) {
+      db.ref(`${game}_scores/${key}/approved`).set(true);
+    }
   </script>
 
-  <!-- Background Particle Script -->
   <script>
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
