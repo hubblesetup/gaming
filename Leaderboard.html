@@ -46,9 +46,7 @@
   </style>
 </head>
 <body class="bg-black text-white min-h-screen font-sans overflow-x-hidden">
-
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
-
   <header class="w-full bg-gray-900 flex items-center justify-between px-6 py-4">
     <h1 class="text-3xl font-bold text-purple-400">Leaderboard</h1>
     <nav class="nav-bar flex gap-4">
@@ -86,7 +84,6 @@
       <ul id="pendingList" class="space-y-4"></ul>
     </div>
 
-    <!-- Admin Login Modal -->
     <div id="adminModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
       <div class="bg-gray-800 p-6 rounded shadow-lg w-80">
         <h2 class="text-xl font-semibold mb-4">Admin Login</h2>
@@ -201,22 +198,33 @@
             const li = document.createElement("li");
             li.id = `pending-${child.key}`;
             li.className = "bg-gray-800 p-3 rounded shadow flex justify-between items-center";
-            li.innerHTML = `<span>${data.name} (${game}) - ${data.score}</span><button class='bg-green-600 px-2 py-1 rounded hover:bg-green-700' onclick='approveEntry("${game}", "${child.key}")'>Approve</button>`;
+            li.innerHTML = `
+              <span>${data.name} (${game}) - ${data.score}</span>
+              <div class="flex gap-2">
+                <button class='bg-green-600 px-2 py-1 rounded hover:bg-green-700' onclick='approveEntry("${game}", "${child.key}")'>Approve</button>
+                <button class='bg-red-600 px-2 py-1 rounded hover:bg-red-700' onclick='denyEntry("${game}", "${child.key}")'>Deny</button>
+              </div>`;
             pendingList.appendChild(li);
           });
         });
       });
     }
 
-    loadLeaderboard("appel", "appelBoard", true);
-    loadLeaderboard("slope", "slopeBoard", false);
-
     function approveEntry(game, key) {
       firebase.database().ref(`${game}_scores/${key}/approved`).set(true);
       const item = document.getElementById(`pending-${key}`);
       if (item) item.remove();
     }
-        // Particle canvas
+
+    function denyEntry(game, key) {
+      firebase.database().ref(`${game}_scores/${key}`).remove();
+      const item = document.getElementById(`pending-${key}`);
+      if (item) item.remove();
+    }
+
+    loadLeaderboard("appel", "appelBoard", true);
+    loadLeaderboard("slope", "slopeBoard", false);
+
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -233,7 +241,6 @@
         this.speedY = Math.random() * 4 + 2;
         this.opacity = Math.random() * 0.5 + 0.5;
       }
-
       update() {
         this.y -= this.speedY;
         if (this.y < -this.radius) {
@@ -241,7 +248,6 @@
           this.x = Math.random() * canvas.width;
         }
       }
-
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -256,17 +262,15 @@
     let particles = [];
     function init() {
       particles = [];
-      for (let i = 100; i--; ) {
+      for (let i = 100; i--;) {
         particles.push(new Particle());
       }
     }
-
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => { p.update(); p.draw(); });
       requestAnimationFrame(animate);
     }
-
     resizeCanvas();
     init();
     animate();
