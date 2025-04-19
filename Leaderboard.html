@@ -164,27 +164,50 @@
       }
     });
 
-    adminLoginBtn.addEventListener("click", () => {
-      adminModal.classList.remove("hidden");
+   const adminLoginBtn = document.getElementById("adminLoginBtn");
+const adminModal     = document.getElementById("adminModal");
+const cancelLogin    = document.getElementById("cancelLogin");
+const confirmLogin   = document.getElementById("confirmLogin");
+const adminPassword  = document.getElementById("adminPassword");
+const loginError     = document.getElementById("loginError");
+
+// When opening the modal, clear any old error
+adminLoginBtn.addEventListener("click", () => {
+  loginError.textContent = "";
+  loginError.classList.add("hidden");
+  adminModal.classList.remove("hidden");
+});
+
+// Cancel just hides modal and clears error
+cancelLogin.addEventListener("click", () => {
+  loginError.textContent = "";
+  loginError.classList.add("hidden");
+  adminModal.classList.add("hidden");
+});
+
+// On login attempt, show inline error instead of alert
+confirmLogin.addEventListener("click", () => {
+  const code = adminPassword.value.trim();
+  fetch("config.json")
+    .then(res => res.json())
+    .then(config => {
+      if (code === config.secretCode) {
+        loginError.textContent = "";
+        loginError.classList.add("hidden");
+        adminPanel.classList.remove("hidden");
+        adminModal.classList.add("hidden");
+        loadPending();
+      } else {
+        // ← Inline red text
+        loginError.textContent = "Incorrect code. Please try again.";
+        loginError.classList.remove("hidden");
+      }
+    })
+    .catch(() => {
+      loginError.textContent = "Could not load config. Please try later.";
+      loginError.classList.remove("hidden");
     });
-    cancelLogin.addEventListener("click", () => {
-      adminModal.classList.add("hidden");
-    });
-    confirmLogin.addEventListener("click", () => {
-      const code = adminPassword.value.trim();
-      fetch("config.json")
-        .then(res => res.json())
-        .then(config => {
-          if (code === config.secretCode) {
-            adminPanel.classList.remove("hidden");
-            adminModal.classList.add("hidden");
-            loadPending();
-          } else {
-            alert("Incorrect code.");
-          }
-        })
-        .catch(() => alert("Could not load config."));
-    });
+});
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -277,46 +300,6 @@
     }
     setInterval(updateTime, 1000);
     updateTime();
-
-    const loginError    = document.getElementById("loginError");
-
-// Show modal → clear any previous error
-adminLoginBtn.addEventListener("click", () => {
-  loginError.classList.add("hidden");
-  loginError.textContent = "";
-  adminModal.classList.remove("hidden");
-});
-
-// Cancel → clear error
-cancelLogin.addEventListener("click", () => {
-  loginError.classList.add("hidden");
-  loginError.textContent = "";
-  adminModal.classList.add("hidden");
-});
-
-confirmLogin.addEventListener("click", () => {
-  const code = adminPassword.value.trim();
-  fetch("config.json")
-    .then(res => res.json())
-    .then(config => {
-      if (code === config.secretCode) {
-        // success!
-        loginError.classList.add("hidden");
-        loginError.textContent = "";
-        adminPanel.classList.remove("hidden");
-        adminModal.classList.add("hidden");
-        loadPending();
-      } else {
-        // show inline error instead of alert
-        loginError.textContent = "Incorrect code. Please try again.";
-        loginError.classList.remove("hidden");
-      }
-    })
-    .catch(() => {
-      loginError.textContent = "Could not load config. Please try later.";
-      loginError.classList.remove("hidden");
-    });
-});
     
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
