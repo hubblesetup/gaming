@@ -190,35 +190,35 @@ if (code === config.secretCode) {
         .catch(() => alert("Could not load config."));
     });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const lastSubmit = localStorage.getItem("lastSubmitTime");
-      const now = Date.now();
-      if (lastSubmit && now - parseInt(lastSubmit) < 30000) {
-        alert("Please wait a few seconds before submitting again.");
-        return;
-      }
-      const name = document.getElementById("name").value.trim();
-      const score = parseFloat(scoreInput.value);
-      const game = gameSelect.value;
-      const level = levelInput.value.trim(); // if needed when submitting
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      if (!name || isNaN(score) || (game === "appel" && !level)) return;
+  const lastSubmit = localStorage.getItem("lastSubmitTime");
+  const now = Date.now();
+  if (lastSubmit && now - parseInt(lastSubmit) < 30000) {
+    return; // too soon
+  }
 
-      const entry = { name, score, game, timestamp: Date.now(), approved: false };
-      if (game === "appel") entry.level = level;
+  const name = document.getElementById("name").value.trim();
+  const score = parseFloat(scoreInput.value);
+  const game = gameSelect.value;
+  const level = levelInput.value.trim();
 
-      try {
-        await firebase.database().ref(`${game}_scores`).push(entry);
-        localStorage.setItem("lastSubmitTime", Date.now());
-        successPopup.classList.remove("hidden");
-        setTimeout(() => successPopup.classList.add("hidden"), 3000);
-        form.reset();
-      } catch (error) {
-        console.error("Error submitting score:", error);
-        alert("Submission failed. Check console for details.");
-      }
-    });
+  if (!name || isNaN(score) || (game === "appel" && !level)) return;
+
+  const entry = { name, score, game, timestamp: Date.now(), approved: false };
+  if (game === "appel") entry.level = level;
+
+  try {
+    await firebase.database().ref(`${game}_scores`).push(entry);
+    localStorage.setItem("lastSubmitTime", Date.now());
+    successPopup.classList.remove("hidden");
+    setTimeout(() => successPopup.classList.add("hidden"), 3000);
+    form.reset();
+  } catch (error) {
+    console.error("Error submitting score:", error);
+  }
+});
 
     function loadLeaderboard(game, elementId, sortAsc = false) {
       const board = document.getElementById(elementId);
@@ -334,22 +334,6 @@ if (code === config.secretCode) {
     window.addEventListener("resize", resizeCanvas);
     // ✅ Add this logic inside your <script> tag if it's not already there
 
-// 🔐 Admin login logic
-confirmLogin.addEventListener("click", () => {
-  const code = adminPassword.value.trim();
-  fetch("config.json")
-    .then(res => res.json())
-    .then(config => {
-      if (code === config.secretCode) {
-        adminPanel.classList.remove("hidden");
-        adminModal.classList.add("hidden");
-        loadPending();
-      } else {
-        alert("Incorrect code.");
-      }
-    })
-    .catch(() => alert("Could not load config."));
-});
 
 // 📥 Load pending entries for admin review
 function loadPending() {
