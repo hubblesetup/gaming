@@ -47,19 +47,27 @@
 </head>
 <body class="bg-black text-white min-h-screen font-sans overflow-x-hidden">
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
-  <header class="w-full bg-gray-900 flex items-center justify-between px-6 py-4">
-    <h1 class="text-3xl font-bold text-purple-400">Leaderboard</h1>
-    <nav class="nav-bar flex gap-4">
-      <a href="Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
-      <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
-      <a href="chat.html?prev=Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-comments"></i> Chat</a>
-      <a href="Forms.html" class="hover:text-purple-400 nav-tab"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
-      <a href="appel-levels.html" class="hover:text-purple-400 nav-tab"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
-      <a href="Haks.html" class="hover:text-purple-400"><i class="fa-solid fa-bolt"></i> Hacks</a>
-      <a href="Leaderboard.html" class="hover:text-purple-400"><i class="fa-solid fa-medal"></i> Leaderboard</a>
-      <button id="adminLoginBtn" class="text-white bg-purple-600 px-3 py-1 rounded hover:bg-purple-700">Admin Login</button>
-    </nav>
+   <!-- Header -->
+  <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
+    <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
+    <div class="text-center">
+      <h1 class="text-4xl font-bold">Afterlife Gaming</h1>
+      <div id="time" class="text-sm text-gray-300"></div>
+    </div>
   </header>
+
+  <!-- Nav + UI -->
+  <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
+  <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
+    <a href="Home.html" class="hover:text-purple-400"><i class="fas fa-home"></i> Home</a>
+    <a href="Games.html" class="hover:text-purple-400"><i class="fas fa-gamepad"></i> Games</a>
+    <a href="chat.html?prev=Games.html" class="hover:text-purple-400"><i class="fas fa-comments"></i> Chat</a>
+    <a href="Forms.html" class="hover:text-purple-400"><i class="fa-solid fa-pen-to-square"></i> Forms</a>
+    <a href="appel-levels.html" class="hover:text-purple-400"><i class="fa-solid fa-apple-whole"></i> Appel Levels</a>
+    <a href="Haks.html" class="hover:text-purple-400"><i class="fa-solid fa-bolt"></i> Hacks</a>
+    <a href="Leaderboard.html" class="hover:text-purple-400"><i class="fa-solid fa-medal"></i></i> Leaderboard</a>
+    <button id="adminLoginBtn" class="text-white bg-purple-600 px-3 py-1 rounded hover:bg-purple-700">Admin Login</button>
+  </nav>
 
   <main class="flex flex-col items-center mt-10 px-4">
     <form id="scoreForm" class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md mb-8 space-y-4">
