@@ -277,6 +277,46 @@
     }
     setInterval(updateTime, 1000);
     updateTime();
+
+    const loginError    = document.getElementById("loginError");
+
+// Show modal → clear any previous error
+adminLoginBtn.addEventListener("click", () => {
+  loginError.classList.add("hidden");
+  loginError.textContent = "";
+  adminModal.classList.remove("hidden");
+});
+
+// Cancel → clear error
+cancelLogin.addEventListener("click", () => {
+  loginError.classList.add("hidden");
+  loginError.textContent = "";
+  adminModal.classList.add("hidden");
+});
+
+confirmLogin.addEventListener("click", () => {
+  const code = adminPassword.value.trim();
+  fetch("config.json")
+    .then(res => res.json())
+    .then(config => {
+      if (code === config.secretCode) {
+        // success!
+        loginError.classList.add("hidden");
+        loginError.textContent = "";
+        adminPanel.classList.remove("hidden");
+        adminModal.classList.add("hidden");
+        loadPending();
+      } else {
+        // show inline error instead of alert
+        loginError.textContent = "Incorrect code. Please try again.";
+        loginError.classList.remove("hidden");
+      }
+    })
+    .catch(() => {
+      loginError.textContent = "Could not load config. Please try later.";
+      loginError.classList.remove("hidden");
+    });
+});
     
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
@@ -429,45 +469,6 @@ loadLeaderboard("slope", "slopeBoard", false);
       }
     });
     const adminPassword = document.getElementById("adminPassword");
-const loginError    = document.getElementById("loginError");
-
-// Show modal → clear any previous error
-adminLoginBtn.addEventListener("click", () => {
-  loginError.classList.add("hidden");
-  loginError.textContent = "";
-  adminModal.classList.remove("hidden");
-});
-
-// Cancel → clear error
-cancelLogin.addEventListener("click", () => {
-  loginError.classList.add("hidden");
-  loginError.textContent = "";
-  adminModal.classList.add("hidden");
-});
-
-confirmLogin.addEventListener("click", () => {
-  const code = adminPassword.value.trim();
-  fetch("config.json")
-    .then(res => res.json())
-    .then(config => {
-      if (code === config.secretCode) {
-        // success!
-        loginError.classList.add("hidden");
-        loginError.textContent = "";
-        adminPanel.classList.remove("hidden");
-        adminModal.classList.add("hidden");
-        loadPending();
-      } else {
-        // show inline error instead of alert
-        loginError.textContent = "Incorrect code. Please try again.";
-        loginError.classList.remove("hidden");
-      }
-    })
-    .catch(() => {
-      loginError.textContent = "Could not load config. Please try later.";
-      loginError.classList.remove("hidden");
-    });
-});
   </script>
 </body>
 </html>
