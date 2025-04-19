@@ -42,21 +42,32 @@
     }
     .LOL { position: relative; }
 
+.LOL {
+  position: relative;
+}
+
 .LOL::after {
   content: attr(data-name);
   position: absolute;
   left: 50%;
   bottom: 100%;
-  transform: translateX(-50%) translateY(-0.5rem);
-  background: rgba(24, 24, 27, 0.9);
+  transform: translateX(-50%) translateY(-0.5rem) scale(0.9);
+  background: rgba(24, 24, 27, 0.75);
+  backdrop-filter: blur(4px);
   color: #E0E0E0;
-  padding: 0.25em 0.5em;
+  padding: 0.35em 0.6em;
   border-radius: 0.25rem;
   font-size: 0.75rem;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  /* neon glow */
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.6), 
+              0 0 16px rgba(168, 85, 247, 0.4);
+  text-shadow: 0 0 4px rgba(168, 85, 247, 0.8);
+  transition: 
+    opacity 0.2s ease-out,
+    transform 0.2s cubic-bezier(0.2, 1, 0.3, 1);
   z-index: 10;
 }
 
@@ -68,16 +79,20 @@
   transform: translateX(-50%);
   border-width: 6px;
   border-style: solid;
-  border-color: rgba(24, 24, 27, 0.9) transparent transparent;
+  border-color: rgba(24, 24, 27, 0.75) transparent transparent transparent;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease-out;
   z-index: 10;
 }
 
+/* 4) Hover‑state: fade in + pop */
 .LOL:hover::after,
 .LOL:hover::before {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+}
+    
+.LOL:hover::after {
+  transform: translateX(-50%) translateY(0) scale(1.05);
 }
   </style>
 </head>
