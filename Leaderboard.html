@@ -126,7 +126,6 @@
       <div class="bg-gray-800 p-6 rounded shadow-lg w-80">
         <h2 class="text-xl font-semibold mb-4">Admin Login</h2>
         <input type="password" id="adminPassword" placeholder="Enter Secret Code" class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 mb-4" />
-        <p id="loginError" class="text-red-500 text-sm mb-4 hidden"></p>
         <div class="flex justify-end gap-2">
           <button id="cancelLogin" class="bg-gray-600 px-4 py-1 rounded hover:bg-gray-700">Cancel</button>
           <button id="confirmLogin" class="bg-purple-600 px-4 py-1 rounded hover:bg-purple-700">Login</button>
@@ -164,50 +163,27 @@
       }
     });
 
-   const adminLoginBtn = document.getElementById("adminLoginBtn");
-const adminModal     = document.getElementById("adminModal");
-const cancelLogin    = document.getElementById("cancelLogin");
-const confirmLogin   = document.getElementById("confirmLogin");
-const adminPassword  = document.getElementById("adminPassword");
-const loginError     = document.getElementById("loginError");
-
-// When opening the modal, clear any old error
-adminLoginBtn.addEventListener("click", () => {
-  loginError.textContent = "";
-  loginError.classList.add("hidden");
-  adminModal.classList.remove("hidden");
-});
-
-// Cancel just hides modal and clears error
-cancelLogin.addEventListener("click", () => {
-  loginError.textContent = "";
-  loginError.classList.add("hidden");
-  adminModal.classList.add("hidden");
-});
-
-// On login attempt, show inline error instead of alert
-confirmLogin.addEventListener("click", () => {
-  const code = adminPassword.value.trim();
-  fetch("config.json")
-    .then(res => res.json())
-    .then(config => {
-      if (code === config.secretCode) {
-        loginError.textContent = "";
-        loginError.classList.add("hidden");
-        adminPanel.classList.remove("hidden");
-        adminModal.classList.add("hidden");
-        loadPending();
-      } else {
-        // ← Inline red text
-        loginError.textContent = "Incorrect code. Please try again.";
-        loginError.classList.remove("hidden");
-      }
-    })
-    .catch(() => {
-      loginError.textContent = "Could not load config. Please try later.";
-      loginError.classList.remove("hidden");
+    adminLoginBtn.addEventListener("click", () => {
+      adminModal.classList.remove("hidden");
     });
-});
+    cancelLogin.addEventListener("click", () => {
+      adminModal.classList.add("hidden");
+    });
+    confirmLogin.addEventListener("click", () => {
+      const code = adminPassword.value.trim();
+      fetch("config.json")
+        .then(res => res.json())
+        .then(config => {
+          if (code === config.secretCode) {
+            adminPanel.classList.remove("hidden");
+            adminModal.classList.add("hidden");
+            loadPending();
+          } else {
+            alert("Incorrect code.");
+          }
+        })
+        .catch(() => alert("Could not load config."));
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -451,7 +427,6 @@ loadLeaderboard("slope", "slopeBoard", false);
         e.preventDefault();
       }
     });
-    const adminPassword = document.getElementById("adminPassword");
   </script>
 </body>
 </html>
