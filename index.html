@@ -1500,6 +1500,18 @@
       }
     };
     setInterval(checkDevTools, 1000);
+
+       document.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll("input");
+    inputs.forEach(input => {
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          document.getElementById("signin").click();
+        }
+      });
+    });
+  });
   </script>
     
 <script>
