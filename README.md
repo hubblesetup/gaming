@@ -43,7 +43,7 @@ Afterlife Gaming is a dark-themed, game-packed hub designed for quick, unblocked
 
 ## 🚀 Start Here
 
-To experience the site, its as simple as going to [classlinx.github.io](https://classlinx.github.io).
+To experience the site, its as simple as going to **[classlinx.github.io](https://classlinx.github.io)**.
 
 
 ---
