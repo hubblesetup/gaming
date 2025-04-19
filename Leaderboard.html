@@ -126,6 +126,7 @@
       <div class="bg-gray-800 p-6 rounded shadow-lg w-80">
         <h2 class="text-xl font-semibold mb-4">Admin Login</h2>
         <input type="password" id="adminPassword" placeholder="Enter Secret Code" class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600 mb-4" />
+        <p id="loginError" class="text-red-500 text-sm mb-4 hidden"></p>
         <div class="flex justify-end gap-2">
           <button id="cancelLogin" class="bg-gray-600 px-4 py-1 rounded hover:bg-gray-700">Cancel</button>
           <button id="confirmLogin" class="bg-purple-600 px-4 py-1 rounded hover:bg-purple-700">Login</button>
@@ -427,6 +428,46 @@ loadLeaderboard("slope", "slopeBoard", false);
         e.preventDefault();
       }
     });
+    const adminPassword = document.getElementById("adminPassword");
+const loginError    = document.getElementById("loginError");
+
+// Show modal → clear any previous error
+adminLoginBtn.addEventListener("click", () => {
+  loginError.classList.add("hidden");
+  loginError.textContent = "";
+  adminModal.classList.remove("hidden");
+});
+
+// Cancel → clear error
+cancelLogin.addEventListener("click", () => {
+  loginError.classList.add("hidden");
+  loginError.textContent = "";
+  adminModal.classList.add("hidden");
+});
+
+confirmLogin.addEventListener("click", () => {
+  const code = adminPassword.value.trim();
+  fetch("config.json")
+    .then(res => res.json())
+    .then(config => {
+      if (code === config.secretCode) {
+        // success!
+        loginError.classList.add("hidden");
+        loginError.textContent = "";
+        adminPanel.classList.remove("hidden");
+        adminModal.classList.add("hidden");
+        loadPending();
+      } else {
+        // show inline error instead of alert
+        loginError.textContent = "Incorrect code. Please try again.";
+        loginError.classList.remove("hidden");
+      }
+    })
+    .catch(() => {
+      loginError.textContent = "Could not load config. Please try later.";
+      loginError.classList.remove("hidden");
+    });
+});
   </script>
 </body>
 </html>
