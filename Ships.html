@@ -214,6 +214,10 @@ nav button:hover {
   color: #ADD8E6;
   transform: translateY(-1px);
 }
+
+    .upvoted i {
+  color: #007bff !important;
+}
   </style>
 </head>
 <body>
@@ -348,7 +352,7 @@ nav button:hover {
       const card = document.createElement('div');
       card.className = 'ship-card';
       const hasVoted = document.cookie.includes(`upvoted_${ship.id}`);
-      const voteColor = hasVoted ? '#007bff' : '#444';
+      const upvoteClass = hasVoted ? 'upvoted' : '';
       card.innerHTML = `
         <div class="ship-title">${ship.name1} + ${ship.name2}</div>
         <div class="heart-preview">
@@ -357,7 +361,9 @@ nav button:hover {
         </div>
         <div class="card-footer">
             <div>
-    <button onclick="upvote('${ship.id}', this)" title="Upvote"><i class="fas fa-arrow-up" style="color: ${voteColor};"></i></button>
+    <button onclick="upvote('${ship.id}', this)" title="Upvote" class="${upvoteClass}">
+  <i class="fas fa-arrow-up"></i>
+</button>
     <span>${ship.upvotes}</span>
   </div>
   <div>
@@ -375,16 +381,19 @@ nav button:hover {
       return card;
     }
 
-    async function upvote(id, btn) {
-      const cookieKey = `upvoted_${id}`;
-      if (document.cookie.includes(cookieKey)) return;
+async function upvote(id, btn) {
+  const cookieKey = `upvoted_${id}`;
+  if (document.cookie.includes(cookieKey)) return;
 
-      const ref = db.collection("ships").doc(id);
-      await ref.update({ upvotes: firebase.firestore.FieldValue.increment(1) });
-      document.cookie = `upvoted_${id}=true; path=/;`;
-      btn.querySelector('i').style.color = '#007bff';
-      loadShips();
-    }
+  const ref = db.collection("ships").doc(id);
+  await ref.update({ upvotes: firebase.firestore.FieldValue.increment(1) });
+
+  document.cookie = `${cookieKey}=true; path=/;`;
+
+  btn.classList.add('upvoted'); // ✅ Add this here
+
+  loadShips();
+}
 
     async function reportShip(id) {
       await db.collection("ships").doc(id).update({ isReported: true });
@@ -433,18 +442,6 @@ nav button:hover {
     }, 1000);
   });
 }
-
-async function upvote(id, btn) {
-  // Ensure user is signed in
-  if (!window.currentUser) {
-    console.warn("Waiting for user to authenticate...");
-    return;
-  }
-
-  const userId = window.currentUser.uid;
-  const ref = db.collection("ships").doc(id);
-  const doc = await ref.get();
-  const data = doc.data();
 
   // Check if this user has already upvoted
   if (data.upvoters?.includes(userId)) {
