@@ -382,7 +382,7 @@ nav button:hover {
       const ref = db.collection("ships").doc(id);
       await ref.update({ upvotes: firebase.firestore.FieldValue.increment(1) });
       document.cookie = `${cookieKey}=true; path=/;`;
-      btn.querySelector('i').style.color = '#007bff';
+      btn.querySelector('i').style.color = '#444';
       loadShips();
     }
 
