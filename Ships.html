@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -572,9 +571,30 @@ async function upvote(id, btn) {
 }
 
     async function reportShip(id) {
-      await db.collection("ships").doc(id).update({ isReported: true });
-      loadShips();
+  const ref = db.collection("ships").doc(id);
+  const doc = await ref.get();
+
+  if (!doc.exists) {
+    alert("Ship not found.");
+    return;
+  }
+
+  const currentStatus = doc.data().isReported;
+
+  if (isAdmin) {
+    // Admins can toggle
+    await ref.update({ isReported: !currentStatus });
+  } else {
+    // Regular users can only report if not already reported
+    if (!currentStatus) {
+      await ref.update({ isReported: true });
+    } else {
+      alert("This ship has already been reported.");
     }
+  }
+
+  loadShips();
+}
 
     async function deleteShip(id) {
       if (confirm("Are you sure you want to delete this ship?")) {
