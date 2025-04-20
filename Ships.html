@@ -373,13 +373,21 @@ nav button:hover {
     .upvoted i {
   color: #007bff !important;
 }
+    #createButton {
+  background-color: #007bff; /* Bootstrap blue */
+  color: white;
+}
+
+#createButton:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
   </style>
 <body>
   <header>
     <div class="title">ShipSpace</div>
     <nav>
       <button onclick="showPage('shipsPage')">Ships</button>
-      <button onclick="showPage('createPage')">Create</button>
+      <button id="createButton" onclick="showPage('createPage')">Create</button>
       <button id="adminLoginButton" onclick="adminLogin()">Admin Login</button>
       <button id="adminButton" class="hidden" onclick="showPage('reportedPage')">Reported Ships</button>
     </nav>
