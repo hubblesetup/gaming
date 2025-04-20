@@ -9,6 +9,24 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <style>
+         .nav-bar a {
+      position: relative;
+    }
+    .nav-bar a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background-color: rgba(168, 85, 247, 0.6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-bar a:hover::after {
+      transform: scaleX(1);
+    }
    * {
   box-sizing: border-box;
   margin: 0;
@@ -217,27 +235,6 @@ nav button:hover {
 
     .upvoted i {
   color: #007bff !important;
-}
-
-    .nav-bar a {
-  position: relative;
-}
-
-.nav-bar a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 2px;
-  background-color: rgba(168, 85, 247, 0.6);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.nav-bar a:hover::after {
-  transform: scaleX(1);
 }
   </style>
 </head>
