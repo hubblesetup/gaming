@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ship Upvote</title>
+  <title>Afterlife | ShipSpace</title>
   <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -305,7 +305,7 @@ nav button:hover {
       const ship = { id, name1, name2, creator, upvotes: 0, isReported: false };
 
       await db.collection("ships").doc(id).set(ship);
-      document.getElementById('confirmationMessage').innerText = `Your ship has been submitted and your ship ID is ${id}`;
+      document.getElementById('confirmationMessage').innerText = `Your ship has been published and your ship ID is ${id}`;
       showPage('confirmationPage');
       loadShips();
     }
@@ -348,7 +348,7 @@ nav button:hover {
       const card = document.createElement('div');
       card.className = 'ship-card';
       const hasVoted = document.cookie.includes(`upvoted_${ship.id}`);
-      const voteColor = hasVoted ? '#444' : '#007bff';
+      const voteColor = hasVoted ? '#007bff' : '#444';
       card.innerHTML = `
         <div class="ship-title">${ship.name1} + ${ship.name2}</div>
         <div class="heart-preview">
@@ -381,8 +381,8 @@ nav button:hover {
 
       const ref = db.collection("ships").doc(id);
       await ref.update({ upvotes: firebase.firestore.FieldValue.increment(1) });
-      document.cookie = `${cookieKey}=true; path=/;`;
-      btn.querySelector('i').style.color = '#444';
+      document.cookie = `upvoted_${id}=true; path=/;`;
+      btn.querySelector('i').style.color = '#007bff';
       loadShips();
     }
 
