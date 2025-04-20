@@ -306,7 +306,7 @@ nav button:hover {
       if (!name1 || !name2) return alert("Please fill out both name fields.");
 
       const id = await generateUniqueID();
-      const ship = { id, name1, name2, creator, upvotes: 0, isReported: false };
+      const ship = { id, name1, name2, creator, upvotes: 0, isReported: false, upvoters: [] };
 
       await db.collection("ships").doc(id).set(ship);
       document.getElementById('confirmationMessage').innerText = `Your ship has been published and your ship ID is ${id}`;
@@ -351,7 +351,8 @@ nav button:hover {
     function createShipCard(ship) {
       const card = document.createElement('div');
       card.className = 'ship-card';
-      const hasVoted = document.cookie.includes(`upvoted_${ship.id}`);
+      const userId = window.currentUser?.uid;
+      const hasVoted = ship.upvoters?.includes(userId);
       const upvoteClass = hasVoted ? 'upvoted' : '';
       card.innerHTML = `
         <div class="ship-title">${ship.name1} + ${ship.name2}</div>
@@ -382,16 +383,24 @@ nav button:hover {
     }
 
 async function upvote(id, btn) {
-  const cookieKey = `upvoted_${id}`;
-  if (document.cookie.includes(cookieKey)) return;
+  const userId = window.currentUser?.uid;
+  if (!userId) return alert("Not signed in yet");
 
   const ref = db.collection("ships").doc(id);
-  await ref.update({ upvotes: firebase.firestore.FieldValue.increment(1) });
+  const doc = await ref.get();
+  const data = doc.data();
 
-  document.cookie = `${cookieKey}=true; path=/;`;
+  if (data.upvoters?.includes(userId)) {
+    alert("You've already voted!");
+    return;
+  }
 
-  btn.classList.add('upvoted'); // ✅ Add this here
+  await ref.update({
+    upvotes: firebase.firestore.FieldValue.increment(1),
+    upvoters: firebase.firestore.FieldValue.arrayUnion(userId)
+  });
 
+  btn.classList.add('upvoted');
   loadShips();
 }
 
