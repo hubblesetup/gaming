@@ -147,6 +147,7 @@
   </main>
 
   <script>
+    let pendingInterval = null;
     let isAdmin = false; // Track admin login state
     let deleteTarget = null;
     const deleteModal = document.getElementById("deleteModal");
@@ -206,6 +207,11 @@ if (code === config.secretCode) {
   loadPending();
   loadLeaderboard("appel", "appelBoard", true);
   loadLeaderboard("slope", "slopeBoard", false);
+  if (!pendingInterval) {
+  pendingInterval = setInterval(() => {
+    loadPending();
+  }, 60000); // 60000ms = 60 seconds
+}
 } else {
   errorMsg.classList.remove("hidden");
 }
