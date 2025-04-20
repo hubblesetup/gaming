@@ -185,6 +185,8 @@ if (code === config.secretCode) {
   adminModal.classList.add("hidden");
   errorMsg.classList.add("hidden");
   loadPending();
+  loadLeaderboard("appel", "appelBoard", true);
+  loadLeaderboard("slope", "slopeBoard", false);
 } else {
   errorMsg.classList.remove("hidden");
 }
