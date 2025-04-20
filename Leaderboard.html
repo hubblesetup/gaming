@@ -119,6 +119,7 @@
 
     <div id="adminPanel" class="hidden w-full max-w-2xl mt-12 bg-gray-900 p-6 rounded-lg">
       <h2 class="text-xl font-bold text-green-400 mb-4">Pending Submissions</h2>
+      <button id="refreshPendingBtn" class="mb-4 bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded text-sm"><i class="fa-solid fa-rotate"></i></i> Refresh Pending Submissions</button>
       <ul id="pendingList" class="space-y-4"></ul>
     </div>
 
@@ -178,6 +179,10 @@
         levelInput.required = false;
       }
     });
+    
+document.getElementById("refreshPendingBtn").addEventListener("click", () => {
+  loadPending();
+});
 
 adminLoginBtn.addEventListener("click", () => {
   adminModal.classList.remove("hidden");
