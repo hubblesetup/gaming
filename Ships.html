@@ -348,7 +348,7 @@ nav button:hover {
       const card = document.createElement('div');
       card.className = 'ship-card';
       const hasVoted = document.cookie.includes(`upvoted_${ship.id}`);
-      const voteColor = hasVoted ? '#ADD8E6' : '#007bff';
+      const voteColor = hasVoted ? '#444' : '#007bff';
       card.innerHTML = `
         <div class="ship-title">${ship.name1} + ${ship.name2}</div>
         <div class="heart-preview">
