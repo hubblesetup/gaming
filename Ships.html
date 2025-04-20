@@ -347,6 +347,8 @@ nav button:hover {
     function createShipCard(ship) {
       const card = document.createElement('div');
       card.className = 'ship-card';
+      const hasVoted = document.cookie.includes(`upvoted_${ship.id}`);
+      const voteColor = hasVoted ? '#007bff' : '#ADD8E6';
       card.innerHTML = `
         <div class="ship-title">${ship.name1} + ${ship.name2}</div>
         <div class="heart-preview">
@@ -355,7 +357,7 @@ nav button:hover {
         </div>
         <div class="card-footer">
             <div>
-    <button onclick="upvote('${ship.id}', this)" title="Upvote"><i class="fas fa-arrow-up"></i></button>
+    <button onclick="upvote('${ship.id}', this)" title="Upvote"><i class="fas fa-arrow-up" style="color: ${voteColor};"></i></button>
     <span>${ship.upvotes}</span>
   </div>
   <div>
