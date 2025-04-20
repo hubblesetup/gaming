@@ -580,9 +580,12 @@ async function upvote(id, btn) {
       });
     }
 
-    function adminLogin() {
+   function adminLogin() {
+  fetch('config.json')
+    .then(res => res.json())
+    .then(config => {
       const password = prompt("Enter admin password:");
-      if (password === "admin123") {
+      if (password === config.secretCode) {
         isAdmin = true;
         document.getElementById('adminLoginButton').classList.add('hidden');
         document.getElementById('adminButton').classList.remove('hidden');
@@ -590,7 +593,12 @@ async function upvote(id, btn) {
       } else {
         alert("Incorrect password.");
       }
-    }
+    })
+    .catch(err => {
+      console.error("Error loading config:", err);
+      alert("Could not verify password.");
+    });
+}
 
     window.onload = () => {
       loadShips();
