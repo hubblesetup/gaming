@@ -256,6 +256,17 @@ nav button:hover {
   <div id="reportedPage" class="hidden">
     <div class="ships-container" id="reportedList"></div>
   </div>
+  
+<script>
+  let config = {};
+
+  fetch("config.json")
+    .then(response => response.json())
+    .then(json => {
+      config = json;
+      console.log("Config loaded:", config);
+    });
+</script>
 
   <script>
     const firebaseConfig = {
@@ -428,7 +439,7 @@ async function upvote(id, btn) {
 
     function adminLogin() {
       const password = prompt("Enter admin password:");
-      if (password === "admin123") {
+      if (password === config.secretCode) {
         isAdmin = true;
         document.getElementById('adminLoginButton').classList.add('hidden');
         document.getElementById('adminButton').classList.remove('hidden');
@@ -451,6 +462,17 @@ async function upvote(id, btn) {
     }, 1000);
   });
 }
+        // Anti-inspect
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key.toLowerCase() === "u")
+      ) {
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
