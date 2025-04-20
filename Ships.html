@@ -442,22 +442,6 @@ async function upvote(id, btn) {
     }, 1000);
   });
 }
-
-  // Check if this user has already upvoted
-  if (data.upvoters?.includes(userId)) {
-    alert("You've already voted!");
-    return;
-  }
-
-  // Update upvotes + add user to upvoters list
-  await ref.update({
-    upvotes: firebase.firestore.FieldValue.increment(1),
-    upvoters: firebase.firestore.FieldValue.arrayUnion(userId)
-  });
-
-  btn.style.color = 'blue';
-  loadShips();
-}
   </script>
 </body>
 </html>
