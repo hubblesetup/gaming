@@ -233,6 +233,8 @@ form.addEventListener("submit", async (e) => {
     successPopup.classList.remove("hidden");
     setTimeout(() => successPopup.classList.add("hidden"), 3000);
     form.reset();
+    loadLeaderboard("appel", "appelBoard", true);
+    loadLeaderboard("slope", "slopeBoard", false);
   } catch (error) {
     console.error("Error submitting score:", error);
   }
@@ -255,7 +257,7 @@ function loadLeaderboard(game, elementId, sortAsc = false) {
 
     board.innerHTML = "";
     if (scores.length === 0) {
-      board.innerHTML = "<li class='text-gray-400 italic'>No approved scores yet.</li>";
+      board.innerHTML = "<li class='text-gray-400 italic'>No approved scores yet in this catagory.</li>";
       return;
     }
 
@@ -333,6 +335,8 @@ confirmDelete.addEventListener("click", () => {
       firebase.database().ref(`${game}_scores/${key}/approved`).set(true);
       const item = document.getElementById(`pending-${key}`);
       if (item) item.remove();
+      loadLeaderboard("appel", "appelBoard", true);
+      loadLeaderboard("slope", "slopeBoard", false);
     }
 
     function denyEntry(game, key) {
