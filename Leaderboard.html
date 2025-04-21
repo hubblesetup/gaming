@@ -86,13 +86,15 @@
       </select>
       <!-- CHANGED: Split score into two inputs for Appel -->
       <div id="scoreLevelContainer" class="flex gap-2">
-        <input
-          type="number"
-          id="score"
-          placeholder="Time"
-          required
-          class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
-        />
+      <input
+        type="number"
+        id="score"
+        placeholder="Time"
+         required         step="any"
+        inputmode="decimal"
+        pattern="[0-9]*[.,]?[0-9]+"
+        class="w-full p-2 rounded bg-gray-900 text-white border border-gray-600"
+       />
         <input
           type="number"
           id="level"
