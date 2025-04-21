@@ -372,6 +372,9 @@ nav button:hover {
     .upvoted i {
   color: #007bff !important;
 }
+    .reported i {
+  color: red !important;
+}
 #createButton {
   background-color: #e63946; /* a warm, loving red */
   color: white;
@@ -523,6 +526,7 @@ nav button:hover {
       const userId = window.currentUser?.uid;
       const hasVoted = ship.upvoters?.includes(userId);
       const upvoteClass = hasVoted ? 'upvoted' : '';
+      const reportClass = ship.isReported ? 'reported' : '';
       card.innerHTML = `
         <div class="ship-title">${ship.name1} + ${ship.name2}</div>
         <div class="heart-preview">
@@ -537,7 +541,7 @@ nav button:hover {
     <span>${ship.upvotes}</span>
   </div>
   <div>
-    <button onclick="reportShip('${ship.id}')" title="Report"><i class="fas fa-flag"></i></button>
+    <button onclick="reportShip('${ship.id}', this)" class="${reportClass}"><i class="fas fa-flag"></i></button>
     ${isAdmin ? `<button onclick="deleteShip('${ship.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>` : ''}
   </div>
         </div>
