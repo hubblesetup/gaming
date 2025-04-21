@@ -541,7 +541,9 @@ nav button:hover {
     <span>${ship.upvotes}</span>
   </div>
   <div>
-    <button onclick="reportShip('${ship.id}', this)" class="${reportClass}"><i class="fas fa-flag"></i></button>
+<button onclick="reportShip('${ship.id}', this)" title="Report" class="${reportClass}">
+  <i class="fas fa-flag"></i>
+</button>
     ${isAdmin ? `<button onclick="deleteShip('${ship.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>` : ''}
   </div>
         </div>
