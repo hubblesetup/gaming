@@ -29,7 +29,10 @@
     }
   </style>
 </head>
-<body class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden m-0 p-0 w-screen">
+<body
+  onload="window.scrollTo(0,0)"
+  class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden m-0 p-0 w-screen"
+>
 
   <!-- Background Music -->
   <audio id="background-music" autoplay loop>
@@ -109,7 +112,7 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Particle canvas
+   // Particle canvas
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -126,6 +129,7 @@
         this.speedY = Math.random() * 4 + 2;
         this.opacity = Math.random() * 0.5 + 0.5;
       }
+
       update() {
         this.y -= this.speedY;
         if (this.y < -this.radius) {
@@ -133,6 +137,7 @@
           this.x = Math.random() * canvas.width;
         }
       }
+
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
