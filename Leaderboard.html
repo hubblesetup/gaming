@@ -282,7 +282,7 @@ scores.forEach((entry, index) => {
 
   // Add "Level: X" for Appel entries
   if (game === "appel" && entry.level) {
-    infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score} sec — Level: ${entry.level}`;
+    infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score} seconds — Level: ${entry.level}`;
   } else {
     infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score}`;
   }
