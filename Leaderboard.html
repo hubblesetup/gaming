@@ -274,24 +274,31 @@ function loadLeaderboard(game, elementId, sortAsc = false) {
       return;
     }
 
-    scores.forEach((entry, index) => {
-      const li = document.createElement("li");
-      li.className = "bg-gray-800 p-3 rounded shadow flex justify-between items-center";
+scores.forEach((entry, index) => {
+  const li = document.createElement("li");
+  li.className = "bg-gray-800 p-3 rounded shadow flex justify-between items-center";
 
-      const infoSpan = document.createElement("span");
-      infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score}`;
-      li.appendChild(infoSpan);
+  const infoSpan = document.createElement("span");
 
-      if (isAdmin) {
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-sm ml-2";
-        deleteBtn.textContent = "Delete";
-        deleteBtn.onclick = () => deleteScore(game, entry.key, elementId, sortAsc);
-        li.appendChild(deleteBtn);
-      }
+  // Add "Level: X" for Appel entries
+  if (game === "appel" && entry.level) {
+    infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score} sec — Level: ${entry.level}`;
+  } else {
+    infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score}`;
+  }
 
-      board.appendChild(li);
-    });
+  li.appendChild(infoSpan);
+
+  if (isAdmin) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-sm ml-2";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = () => deleteScore(game, entry.key, elementId, sortAsc);
+    li.appendChild(deleteBtn);
+  }
+
+  board.appendChild(li);
+});
   });
 }
 
