@@ -79,6 +79,15 @@
 
   <!-- Scripts -->
   <script>
+      // 0) NEVER restore previous scroll position
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  // 1) Force-scroll to top once absolutely everything is loaded
+  window.addEventListener('load', () => {
+    setTimeout(() => window.scrollTo(0, 0), 0);
+  });
     // Time display
     function updateTime() {
       const options = { weekday: 'long', hour: 'numeric', minute: '2-digit', hour12: true };
