@@ -99,10 +99,15 @@
   </main>
 
   <!-- Canvas Background -->
-  <canvas id="particleCanvas" class="absolute top-0 left-0 w-full h-full z-0"></canvas>
+  <canvas id="particleCanvas" class="absolute top-0 left-0 w-screen h-screen z-0"></canvas>
 
   <!-- Scripts -->
   <script>
+      // ensure the page really starts at the top once absolutely everything is loaded
+  window.addEventListener('load', () => {
+    // tiny timeout to let the browser settle any late reflows
+    setTimeout(() => window.scrollTo(0, 0), 0);
+  });
     // Time display
     function updateTime() {
       const options = { weekday: 'long', hour: 'numeric', minute: '2-digit', hour12: true };
