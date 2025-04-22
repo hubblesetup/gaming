@@ -479,20 +479,40 @@ nav button:hover {
       return id;
     }
 
-    async function submitShip() {
-      const name1 = document.getElementById('name1').value;
-      const name2 = document.getElementById('name2').value;
-      const creator = document.getElementById('creatorName').value || 'Anonymous';
-      if (!name1 || !name2) return alert("Please fill out both name fields.");
+      let blacklistWords = [];
 
-      const id = await generateUniqueID();
-      const ship = { id, name1, name2, creator, upvotes: 0, isReported: false, upvoters: [] };
+  fetch('blacklistwords.txt')
+    .then(response => response.text())
+    .then(data => {
+      blacklistWords = data.split('\n').map(word => word.trim().toLowerCase()).filter(Boolean);
+    });
+    
+  async function submitShip() {
+    const name1 = document.getElementById('name1').value.trim();
+    const name2 = document.getElementById('name2').value.trim();
+    const creator = document.getElementById('creatorName').value.trim() || 'Anonymous';
 
-      await db.collection("ships").doc(id).set(ship);
-      document.getElementById('confirmationMessage').innerText = `Your ship has been published and your ship ID is ${id}`;
-      showPage('confirmationPage');
-      loadShips();
+    if (!name1 || !name2) {
+      alert("Please fill out both name fields.");
+      return;
     }
+
+    const allFields = [name1, name2, creator].join(' ').toLowerCase();
+    for (const word of blacklistWords) {
+      if (allFields.includes(word)) {
+        alert("Your submission contains inappropriate content and cannot be published.");
+        return;
+      }
+    }
+
+    const id = await generateUniqueID();
+    const ship = { id, name1, name2, creator, upvotes: 0, isReported: false, upvoters: [] };
+
+    await db.collection("ships").doc(id).set(ship);
+    document.getElementById('confirmationMessage').innerText = `Your ship has been published and your ship ID is ${id}`;
+    showPage('confirmationPage');
+    loadShips();
+  }
 
     async function loadShips() {
       const snapshot = await db.collection("ships").get();
