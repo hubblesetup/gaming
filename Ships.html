@@ -505,8 +505,26 @@ nav button:hover {
       }
     }
 
+    const now = firebase.firestore.Timestamp.now();
+const sixtySecondsAgo = new Date(Date.now() - 60000);
+
+const duplicateQuery = await db.collection("ships")
+  .where("name1", "==", name1)
+  .where("name2", "==", name2)
+  .get();
+
+const duplicate = duplicateQuery.docs.find(doc => {
+  const data = doc.data();
+  return data.createdAt && data.createdAt.toDate() > sixtySecondsAgo;
+});
+
+if (duplicate) {
+  alert("This exact ship was already published within the last 60 seconds. Please do not send duplicate ships.");
+  return;
+}
+
     const id = await generateUniqueID();
-    const ship = { id, name1, name2, creator, upvotes: 0, isReported: false, upvoters: [] };
+    const ship = { id, name1, name2, creator, upvotes: 0, isReported: false, upvoters: [], createdAt: firebase.firestore.Timestamp.now() };
 
     await db.collection("ships").doc(id).set(ship);
     document.getElementById('confirmationMessage').innerText = `Your ship has been published and your ship ID is ${id}`;
