@@ -579,11 +579,12 @@ if (duplicate) {
           <img src="IMGS/Heart.png" alt="Heart" />
           <div class="ship-shortcode">${ship.name1.charAt(0)}+${ship.name2.charAt(0)}</div>
         </div>
-        <div class="card-footer">
-            <div>
+       <div class="card-footer">
+  <div>
     <button onclick="upvote('${ship.id}', this)" title="Upvote" class="${upvoteClass}">
-  <i class="fas fa-arrow-up"></i>
-</button>
+      <i class="fas fa-arrow-up"></i>
+    </button>
+    ${isAdmin ? `<button onclick="downvote('${ship.id}')" title="Remove Upvote"><i class="fas fa-arrow-down"></i></button>` : ''}
     <span>${ship.upvotes}</span>
   </div>
   <div>
@@ -611,17 +612,33 @@ async function upvote(id, btn) {
   const doc = await ref.get();
   const data = doc.data();
 
-  if (data.upvoters?.includes(userId)) {
+  if (!isAdmin && data.upvoters?.includes(userId)) {
     alert("You've already voted!");
     return;
   }
 
   await ref.update({
     upvotes: firebase.firestore.FieldValue.increment(1),
-    upvoters: firebase.firestore.FieldValue.arrayUnion(userId)
+    ...(isAdmin ? {} : { upvoters: firebase.firestore.FieldValue.arrayUnion(userId) })
   });
 
-  btn.classList.add('upvoted');
+  if (!isAdmin) btn.classList.add('upvoted');
+  loadShips();
+}
+
+    async function downvote(id) {
+  if (!isAdmin) return;
+
+  const ref = db.collection("ships").doc(id);
+  const doc = await ref.get();
+  const data = doc.data();
+
+  if (!doc.exists || data.upvotes <= 0) return;
+
+  await ref.update({
+    upvotes: firebase.firestore.FieldValue.increment(-1)
+  });
+
   loadShips();
 }
 
