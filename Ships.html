@@ -160,6 +160,7 @@
   <title>Afterlife | ShipSpace</title>
   <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <style>
@@ -455,18 +456,35 @@ nav button:hover {
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuaEVKu-LJpRiD-FuSFmY2JURgxhbol3c",
-      authDomain: "shipspace-cee83.firebaseapp.com",
-      projectId: "shipspace-cee83",
-      storageBucket: "shipspace-cee83.firebasestorage.app",
-      messagingSenderId: "701760005847",
-      appId: "1:701760005847:web:ce6977a9b05b2383b2f292",
-      measurementId: "G-4RPTWZFCVZ"
-    };
+  // — DEFAULT APP (ShipSpace data via Firestore) —
+  const dataConfig = {
+    apiKey: "AIzaSyAuaEVKu-LJpRiD-FuSFmY2JURgxhbol3c",
+    authDomain: "shipspace-cee83.firebaseapp.com",
+    projectId: "shipspace-cee83",
+    storageBucket: "shipspace-cee83.firebasestorage.app",
+    messagingSenderId: "701760005847",
+    appId: "1:701760005847:web:ce6977a9b05b2383b2f292",
+    measurementId: "G-4RPTWZFCVZ"
+  };
+  // this is your existing app
+  const defaultApp = firebase.initializeApp(dataConfig);
+  const db         = defaultApp.firestore();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  // — SECRET APP (secretCode storage in RTDB) —
+  const secretConfig = {
+    apiKey: "AIzaSyBaxpqErDqKEKQZ1fWRMViFC04YCiFdOo8",
+    authDomain: "passwordstorage-ca657.firebaseapp.com",
+    databaseURL: "https://passwordstorage-ca657-default-rtdb.firebaseio.com",
+    projectId: "passwordstorage-ca657",
+    storageBucket: "passwordstorage-ca657.firebasestorage.app",
+    messagingSenderId: "375299086403",
+    appId: "1:375299086403:web:c15c70d415bc1455e61cf6",
+    measurementId: "G-P36MVR9DYJ"
+  };
+  // give this a name so it co-exists alongside your default
+  const secretApp = firebase.initializeApp(secretConfig, "secretApp");
+  const secretDb  = secretApp.database();
+
 
     let ships = [];
     let isAdmin = false;
@@ -726,39 +744,48 @@ function closeAdminModal() {
   });
 }
     
-    function validateAdminLogin() {
-  const enteredPassword = document.getElementById('adminInput').value;
+function validateAdminLogin() {
+    const enteredPassword = document.getElementById('adminInput').value.trim();
+    const errEl = document.getElementById('adminError');
+    errEl.classList.add('hidden');
 
-  fetch('config.json')
-    .then(res => res.json())
-    .then(config => {
-      if (enteredPassword === config.secretCode) {
-        isAdmin = true;
-        document.getElementById('adminModal').classList.add('hidden');
-        document.getElementById('adminLoginButton').classList.add('hidden');
-        document.getElementById('adminButton').classList.remove('hidden');
-        loadShips();
-      } else {
-        document.getElementById('adminError').classList.remove('hidden');
-      }
-    })
-    .catch(err => {
-      console.error("Error loading config:", err);
-      document.getElementById('adminError').textContent = "Could not verify password.";
-      document.getElementById('adminError').classList.remove('hidden');
-    });
-}
+    secretDb
+      .ref('config/secretCode')
+      .once('value')
+      .then(snapshot => {
+        // Always treat the DB value as a string
+        const realCode = String(snapshot.val());
+
+        if (enteredPassword === realCode) {
+          isAdmin = true;
+          document.getElementById('adminModal').classList.add('hidden');
+          document.getElementById('adminLoginButton').classList.add('hidden');
+          document.getElementById('adminButton').classList.remove('hidden');
+          loadShips();
+        } else {
+          errEl.textContent = "Incorrect code.";
+          errEl.classList.remove('hidden');
+        }
+      })
+      .catch(() => {
+        errEl.textContent = "Could not verify password. Please try again later.";
+        errEl.classList.remove('hidden');
+      });
+  }
+
+
+
         // Anti-inspect
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
-    document.addEventListener("keydown", (e) => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-        (e.ctrlKey && e.key.toLowerCase() === "u")
-      ) {
-        e.preventDefault();
-      }
-    });
+   // document.addEventListener("contextmenu", (e) => e.preventDefault());
+   // document.addEventListener("keydown", (e) => {
+   //   if (
+   //     e.key === "F12" ||
+   //     (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+   //     (e.ctrlKey && e.key.toLowerCase() === "u")
+   //   ) {
+   //     e.preventDefault();
+   ///   }
+  //  });
   </script>
   </div>
 </div>

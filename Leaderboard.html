@@ -11,17 +11,33 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBPKc8wc6SWu6jCAOLQhdI4zADrTbiuNuE",
-      authDomain: "afterlifeleaderboard.firebaseapp.com",
-      databaseURL: "https://afterlifeleaderboard-default-rtdb.firebaseio.com",
+    // — DEFAULT APP: Leaderboard data —
+    const dataConfig = {
+      apiKey:    "AIzaSyBPKc8wc6SWu6jCAOLQhdI4zADrTbiuNuE",
+      authDomain:"afterlifeleaderboard.firebaseapp.com",
+      databaseURL:"https://afterlifeleaderboard-default-rtdb.firebaseio.com",
       projectId: "afterlifeleaderboard",
-      storageBucket: "afterlifeleaderboard.firebasestorage.app",
-      messagingSenderId: "799716843731",
-      appId: "1:799716843731:web:f41e5cded386453c83f426",
-      measurementId: "G-D3E3W4ZKJD"
+      storageBucket:"afterlifeleaderboard.firebasestorage.app",
+      messagingSenderId:"799716843731",
+      appId:      "1:799716843731:web:f41e5cded386453c83f426",
+      measurementId:"G-D3E3W4ZKJD"
     };
-    firebase.initializeApp(firebaseConfig);
+    const defaultApp = firebase.initializeApp(dataConfig);
+    const db         = defaultApp.database();
+  
+    // — SECRET APP: secretCode store —
+    const secretConfig = {
+      apiKey:    "AIzaSyBaxpqErDqKEKQZ1fWRMViFC04YCiFdOo8",
+      authDomain:"passwordstorage-ca657.firebaseapp.com",
+      databaseURL:"https://passwordstorage-ca657-default-rtdb.firebaseio.com",
+      projectId: "passwordstorage-ca657",
+      storageBucket:"passwordstorage-ca657.firebasestorage.app",
+      messagingSenderId:"375299086403",
+      appId:      "1:375299086403:web:c15c70d415bc1455e61cf6",
+      measurementId:"G-P36MVR9DYJ"
+    };
+    const secretApp = firebase.initializeApp(secretConfig, "secretApp");
+    const secretDb  = secretApp.database();
   </script>
   <style>
     .nav-bar a {
@@ -196,31 +212,38 @@ cancelLogin.addEventListener("click", () => {
   adminModal.classList.add("hidden");
   document.getElementById("adminError").classList.add("hidden");
 });
-    confirmLogin.addEventListener("click", () => {
-      const code = adminPassword.value.trim();
-      fetch("config.json")
-        .then(res => res.json())
-        .then(config => {
-        const errorMsg = document.getElementById("adminError");
-if (code === config.secretCode) {
-  isAdmin = true;
-  adminPanel.classList.remove("hidden");
-  adminModal.classList.add("hidden");
-  errorMsg.classList.add("hidden");
-  loadPending();
-  loadLeaderboard("appel", "appelBoard", true);
-  loadLeaderboard("slope", "slopeBoard", false);
-  if (!pendingInterval) {
-  pendingInterval = setInterval(() => {
-    loadPending();
-  }, 60000); // 60000ms = 60 seconds
-}
-} else {
-  errorMsg.classList.remove("hidden");
-}
-        })
-        .catch(() => alert("Could not load config."));
-    });
+confirmLogin.addEventListener("click", () => {
+    const code    = adminPassword.value.trim();
+    const errorEl = document.getElementById("adminError");
+    errorEl.classList.add("hidden");
+
+    secretDb
+      .ref("config/secretCode")
+      .once("value")
+      .then(snapshot => {
+        const realCode = String(snapshot.val());
+        if (code === realCode) {
+          isAdmin = true;
+          adminPanel.classList.remove("hidden");
+          adminModal.classList.add("hidden");
+          errorEl.classList.add("hidden");
+
+          loadPending();
+          loadLeaderboard("appel", "appelBoard", true);
+          loadLeaderboard("slope", "slopeBoard", false);
+
+          if (!pendingInterval) {
+            pendingInterval = setInterval(loadPending, 60000);
+          }
+        } else {
+          errorEl.textContent = "Incorrect code.";
+          errorEl.classList.remove("hidden");
+        }
+      })
+      .catch(() => {
+        alert("Could not verify password. Try again later.");
+      });
+  });
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
