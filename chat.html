@@ -8,12 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
   <script src="script.js"></script>
-  <!-- FIREBASE (put these before any code that does firebase.initializeApp) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
-    .nav-bar a {
+     .nav-bar a {
       position: relative;
     }
     .nav-bar a::after {
@@ -45,7 +41,8 @@
   <header class="w-full bg-gray-900 flex items-center justify-center py-6 px-4 space-x-4 relative z-10">
     <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
     <div class="text-center">
-      <h1 class="text-4xl font-bold cursor-pointer" onclick="openGame()">Afterlife Gaming</h1>
+      <h1 class="text-4xl font-bold cursor-pointer" onclick="openGame()">Afterlife Gaming 
+      </h1>
       <div id="time" class="text-sm text-gray-300"></div>
     </div>
   </header>
@@ -54,11 +51,7 @@
   <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
 
   <!-- Navigation -->
-  <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
-    <button id="menu-toggle"
-    class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-2xl z-20">
-<i class="fas fa-bars"></i>
-</button>
+    <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
     <a href="Home.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
     <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
     <a href="chatfeedback.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-comments"></i> Chat</a>
@@ -68,102 +61,21 @@
     <a href="Ships.html" class="hover:text-purple-400"><i class="fa-solid fa-heart"></i> ShipSpace</a>
   </nav>
 
-  <main class="relative z-10">
-    <div id="chat-page" class="flex h-[calc(100vh-128px)]">
-      <!-- Sidebar (hidden by default) -->
-      <div id="sidebar"
-           class="hidden w-1/4 bg-gray-900 text-white p-4 space-y-4">
-        <button id="menu-close"
-                class="text-2xl mb-4">&times;</button>
-        <nav class="flex flex-col space-y-2">
-          <button class="text-left">Global Chat</button>
-          <button class="text-left">Create Private Chat</button>
-          <button class="text-left">Join Private Chat</button>
-        </nav>
-      </div>
-
-      <!-- Main chat area -->
-      <div class="flex-1 flex flex-col">
-        <div id="messages"
-             class="flex-1 overflow-auto p-4 space-y-2 bg-transparent
-                    border border-gray-600 rounded-lg">
-          <!-- messages go here -->
-        </div>
-        <div class="flex items-center p-4 bg-gray-800">
-          <button id="login-btn"
-                  class="bg-purple-600 px-4 py-2 rounded mr-4">
-            Login
-          </button>
-          <input id="message-input"
-                 type="text"
-                 class="flex-1 bg-gray-700 text-white rounded p-2 mr-2"
-                 placeholder="Type a message"
-                 disabled />
-          <button id="send-btn"
-                  class="bg-purple-600 px-4 py-2 rounded"
-                  disabled>
-            Send
-          </button>
-        </div>
-      </div>
-
-      <!-- Active users list -->
-      <div class="w-1/4 bg-gray-900 text-white p-4">
-        <h2 class="font-bold mb-2">Active Users</h2>
-        <ul id="users-list" class="space-y-1">
-          <!-- user items go here -->
-        </ul>
-      </div>
-    </div>
-  </main>
- 
-  <!-- Particle Canvas Background -->
+  <!-- Canvas Background -->
   <canvas id="particleCanvas" class="absolute top-0 left-0 z-0"></canvas>
-
-    <!-- Login/Create Account Modal -->
-    <div id="login-modal"
-    class="fixed inset-0 bg-black bg-opacity-75
-           flex items-center justify-center hidden">
- <div class="bg-gray-800 text-white p-8 rounded-lg w-96">
-   <h2 class="text-2xl mb-4">Sign In or Create Account</h2>
-   <input id="email"
-          type="email" placeholder="Email"
-          class="w-full p-2 mb-2 bg-gray-700 rounded"/>
-   <input id="username"
-          type="text" placeholder="Username"
-          class="w-full p-2 mb-2 bg-gray-700 rounded"/>
-   <input id="password"
-          type="password" placeholder="Password"
-          class="w-full p-2 mb-2 bg-gray-700 rounded"/>
-   <input id="password-confirm"
-          type="password" placeholder="Confirm Password"
-          class="w-full p-2 mb-4 bg-gray-700 rounded"/>
-   <div class="flex justify-end space-x-2">
-     <button id="login-cancel"
-             class="px-4 py-2 bg-gray-600 rounded">
-       Cancel
-     </button>
-     <button id="login-submit"
-             class="px-4 py-2 bg-purple-600 rounded">
-       Submit
-     </button>
-   </div>
- </div>
-</div>
 
   <!-- Scripts -->
   <script>
-    // Disable scroll restoration
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
+      // 0) NEVER restore previous scroll position
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
 
-    // Scroll to top on load
-    window.addEventListener('load', () => {
-      setTimeout(() => window.scrollTo(0, 0), 0);
-    });
-
-    // Update time every second
+  // 1) Force-scroll to top once absolutely everything is loaded
+  window.addEventListener('load', () => {
+    setTimeout(() => window.scrollTo(0, 0), 0);
+  });
+    // Time display
     function updateTime() {
       const options = { weekday: 'long', hour: 'numeric', minute: '2-digit', hour12: true };
       const now = new Date();
@@ -172,103 +84,86 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Canvas particle effect
+   // Particle canvas
     const canvas = document.getElementById("particleCanvas");
-    const ctx = canvas.getContext("2d");
+  const ctx    = canvas.getContext("2d");
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = document.documentElement.scrollHeight;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = document.documentElement.scrollHeight + "px";
-    }
+  function resizeCanvas() {
+    const w = window.innerWidth;
+    const h = document.documentElement.scrollHeight;
+    canvas.width  = w;
+    canvas.height = h;
+    canvas.style.width  = w + "px";
+    canvas.style.height = h + "px";
+  }
 
-    window.addEventListener("load", resizeCanvas);
-    window.addEventListener("resize", resizeCanvas);
-
-    class Particle {
-      constructor() {
-        this.radius = Math.random() * 6 + 4;
-        this.x = Math.random() * canvas.width;
-        this.y = canvas.height + this.radius;
-        this.speedY = Math.random() * 4 + 2;
-        this.opacity = Math.random() * 0.5 + 0.5;
-      }
-      update() {
-        this.y -= this.speedY;
-        if (this.y < -this.radius) {
-          this.y = canvas.height + this.radius;
-          this.x = Math.random() * canvas.width;
-        }
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "rgba(82, 23, 124, 1)";
-        ctx.fillStyle = `rgba(82, 23, 124, ${this.opacity})`;
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
-
-    let particles = [];
-    function init() {
-      particles = [];
-      for (let i = 0; i < 100; i++) particles.push(new Particle());
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animate);
-    }
-
+  window.addEventListener("load", () => {
     resizeCanvas();
-    init();
-    animate();
+    setTimeout(() => window.scrollTo(0,0), 0);
+  });
+  window.addEventListener("resize", resizeCanvas);
 
-    // Open game link
+  // -- particle code unchanged except constructor uses new canvas.height --
+  class Particle {
+    constructor() {
+      this.radius = Math.random() * 6 + 4;
+      this.x      = Math.random() * canvas.width;
+      this.y      = canvas.height + this.radius;
+      this.speedY = Math.random() * 4 + 2;
+      this.opacity= Math.random() * 0.5 + 0.5;
+    }
+    update() {
+      this.y -= this.speedY;
+      if (this.y < -this.radius) {
+        this.y = canvas.height + this.radius;
+        this.x = Math.random() * canvas.width;
+      }
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.shadowBlur   = 20;
+      ctx.shadowColor  = "rgba(82, 23, 124, 1)";
+      ctx.fillStyle    = `rgba(82, 23, 124, ${this.opacity})`;
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+
+  let particles = [];
+  function init() {
+    particles = [];
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+
+  resizeCanvas();
+  init();
+  animate();
+  window.addEventListener("resize", resizeCanvas);
+
+    // openGame function
     function openGame() {
       var win = window.open();
       win.document.write('<html><body style="margin:0;padding:0;"><iframe src="Home.html" style="width:100%;height:100%;border:none;"></iframe></body></html>');
     }
 
-    // Disable inspect tools
-// Anti-inspect functionality disabled for now
-// document.addEventListener("contextmenu", e => e.preventDefault());
-// document.addEventListener("keydown", e => {
-//   if (
-//     e.key === "F12" ||
-//     (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-//     (e.ctrlKey && e.key.toLowerCase() === "u")
-//   ) {
-//     e.preventDefault();
-//   }
-// });
-document.addEventListener('DOMContentLoaded', () => {
-// -- Firebase Setup --
-const chatApp = firebase.initializeApp({
-    apiKey: "AIzaSyBzWoS83AlV4T00_GOiBWouVAmo0wvquCU",
-    authDomain: "afterlifesocial-60987.firebaseapp.com",
-    projectId: "afterlifesocial-60987",
-    databaseURL: "https://afterlifesocial-60987-default-rtdb.firebaseio.com",
-    storageBucket: "afterlifesocial-60987.appspot.com",
-    messagingSenderId: "467547693984",
-    appId: "1:467547693984:web:7d6ab8547b35c97542fac5",
-    measurementId: "G-Y6M0DEP9BM"
-  }, "chatApp");
-  const adminApp = firebase.initializeApp({
-    apiKey: "AIzaSyBaxpqErDqKEKQZ1fWRMViFC04YCiFdOo8",
-    authDomain: "passwordstorage-ca657.firebaseapp.com",
-    projectId: "passwordstorage-ca657",
-    databaseURL: "https://passwordstorage-ca657-default-rtdb.firebaseio.com",
-    storageBucket: "passwordstorage-ca657.appspot.com",
-    messagingSenderId: "375299086403",
-    appId: "1:375299086403:web:c15c70d415bc1455e61cf6",
-    measurementId: "G-P36MVR9DYJ"
-  }, "adminApp");
-});
+    // Anti-inspect
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key.toLowerCase() === "u")
+      ) {
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
