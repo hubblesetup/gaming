@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Afterlife | Social Space</title>
+  <title>Afterlife | Chat Room</title>
   <link rel="icon" href="IMGS/Orion.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
   <script src="script.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <!-- FIREBASE (put these before any code that does firebase.initializeApp) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
     .nav-bar a {
       position: relative;
@@ -76,8 +77,8 @@
                 class="text-2xl mb-4">&times;</button>
         <nav class="flex flex-col space-y-2">
           <button class="text-left">Global Chat</button>
-          <button class="text-left">Posts</button>
-          <button class="text-left">Private Chat</button>
+          <button class="text-left">Create Private Chat</button>
+          <button class="text-left">Join Private Chat</button>
         </nav>
       </div>
 
@@ -245,124 +246,29 @@
 //     e.preventDefault();
 //   }
 // });
-
 document.addEventListener('DOMContentLoaded', () => {
-const firebaseConfig = {
-  apiKey: "AIzaSyBzWoS83AlV4T00_GOiBWouVAmo0wvquCU",
-  authDomain: "afterlifesocial-60987.firebaseapp.com",
-  projectId: "afterlifesocial-60987",
-  storageBucket: "afterlifesocial-60987.firebasestorage.app",
-  messagingSenderId: "467547693984",
-  appId: "1:467547693984:web:7d6ab8547b35c97542fac5",
-  measurementId: "G-Y6M0DEP9BM"
-};
-firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-// ── Auth & UI refs ─────────────────────────────────────────────────────────
-const loginBtn    = document.getElementById('login-btn');
-const loginModal  = document.getElementById('login-modal');
-const loginCancel = document.getElementById('login-cancel');
-const loginSubmit = document.getElementById('login-submit');
-const emailInput  = document.getElementById('email');
-const userInput   = document.getElementById('username');
-const passInput   = document.getElementById('password');
-const confInput   = document.getElementById('password-confirm');
-const msgInput    = document.getElementById('message-input');
-const sendBtn     = document.getElementById('send-btn');
-const messagesDiv = document.getElementById('messages');
-const usersList   = document.getElementById('users-list');
-
-// ── Open/close login modal ───────────────────────────────────────────────────
-loginBtn   .addEventListener('click', () => loginModal.classList.remove('hidden'));
-loginCancel.addEventListener('click', () => loginModal.classList.add('hidden'));
-
-// ── Sign up / sign in flow ──────────────────────────────────────────────────
-loginSubmit.addEventListener('click', async () => {
-  const email = emailInput.value.trim();
-  const pass  = passInput.value;
-  const conf  = confInput.value;
-  const user  = userInput.value.trim();
-  if (!email || !user || !pass) { alert('All fields required'); return; }
-  if (pass !== conf) { alert('Passwords must match'); return; }
-  try {
-    let cred = await auth.createUserWithEmailAndPassword(email, pass);
-    await cred.user.updateProfile({ displayName: user });
-    loginModal.classList.add('hidden');
-  } catch (e) {
-    if (e.code === 'auth/email-already-in-use') {
-      try {
-        await auth.signInWithEmailAndPassword(email, pass);
-        loginModal.classList.add('hidden');
-      } catch(err) { alert(err.message); }
-    } else {
-      alert(e.message);
-    }
-  }
+// -- Firebase Setup --
+const chatApp = firebase.initializeApp({
+    apiKey: "AIzaSyBzWoS83AlV4T00_GOiBWouVAmo0wvquCU",
+    authDomain: "afterlifesocial-60987.firebaseapp.com",
+    projectId: "afterlifesocial-60987",
+    databaseURL: "https://afterlifesocial-60987-default-rtdb.firebaseio.com",
+    storageBucket: "afterlifesocial-60987.appspot.com",
+    messagingSenderId: "467547693984",
+    appId: "1:467547693984:web:7d6ab8547b35c97542fac5",
+    measurementId: "G-Y6M0DEP9BM"
+  }, "chatApp");
+  const adminApp = firebase.initializeApp({
+    apiKey: "AIzaSyBaxpqErDqKEKQZ1fWRMViFC04YCiFdOo8",
+    authDomain: "passwordstorage-ca657.firebaseapp.com",
+    projectId: "passwordstorage-ca657",
+    databaseURL: "https://passwordstorage-ca657-default-rtdb.firebaseio.com",
+    storageBucket: "passwordstorage-ca657.appspot.com",
+    messagingSenderId: "375299086403",
+    appId: "1:375299086403:web:c15c70d415bc1455e61cf6",
+    measurementId: "G-P36MVR9DYJ"
+  }, "adminApp");
 });
-
-// ── React to auth state ─────────────────────────────────────────────────────
-auth.onAuthStateChanged(user => {
-  if (user) {
-    loginBtn.textContent = 'Logout';
-    msgInput.disabled = sendBtn.disabled = false;
-    loginBtn.onclick = () => auth.signOut();
-
-    // add to active users
-    const uRef = db.ref('activeUsers/' + user.uid);
-    uRef.set({ displayName: user.displayName });
-    uRef.onDisconnect().remove();
-  } else {
-    loginBtn.textContent = 'Login';
-    msgInput.disabled = sendBtn.disabled = true;
-    loginBtn.onclick = () => loginModal.classList.remove('hidden');
-    usersList.innerHTML = '';
-  }
-});
-
-// ── Show active users ───────────────────────────────────────────────────────
-db.ref('activeUsers').on('value', snap => {
-  usersList.innerHTML = '';
-  snap.forEach(ch => {
-    let li = document.createElement('li');
-    li.textContent = ch.val().displayName;
-    usersList.appendChild(li);
-  });
-});
-
-// ── Sending messages ────────────────────────────────────────────────────────
-sendBtn.addEventListener('click', async () => {
-  const txt = msgInput.value.trim();
-  if (!txt) return;
-  await db.ref('messages').push({
-    uid : auth.currentUser.uid,
-    text: txt,
-    ts  : firebase.database.ServerValue.TIMESTAMP,
-    name: auth.currentUser.displayName
-  });
-  msgInput.value = '';
-});
-
-// ── Receiving & rendering ───────────────────────────────────────────────────
-db.ref('messages').limitToLast(50).on('child_added', snap => {
-  const m = snap.val();
-  const wrapper = document.createElement('div');
-  const b = document.createElement('div');
-  b.textContent = m.text;
-  b.classList.add('inline-block','px-4','py-2','rounded-xl','max-w-xs');
-  if (m.uid === (auth.currentUser && auth.currentUser.uid)) {
-    b.classList.add('bg-gray-600','ml-auto');
-  } else {
-    b.classList.add('bg-purple-600','mr-auto');
-  }
-  wrapper.appendChild(b);
-  messagesDiv.appendChild(wrapper);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-  // TODO: animate a “particle → bubble” effect here
-});
-}); 
   </script>
 </body>
 </html>
