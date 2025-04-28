@@ -53,4 +53,4 @@ Thanks for stopping by and exploring Afterlife!
 
 ## Afterlife Team
 
-Reach us at **aterlifegaminghelp@outlook.com** for any questions and concerns.
+Reach us at **afterlifegaminghelp@outlook.com** for any questions and concerns.

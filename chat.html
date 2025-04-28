@@ -54,6 +54,14 @@
       transition:transform 0.3s ease;
     }
     .nav-bar a:hover::after { transform:scaleX(1); }
+    .fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   </style>
 </head>
 <body class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden">
@@ -62,6 +70,8 @@
   <audio id="background-music" autoplay loop>
     <source src="background-music.mp3" type="audio/mpeg" />
   </audio>
+
+  <audio id="notification-sound" src="notification.mp3" preload="auto"></audio>
 
   <!-- Header -->
   <header class="w-full bg-gray-900 flex items-center justify-center py-6 px-4 space-x-4 relative z-10">
@@ -132,10 +142,14 @@
       </div>
     </div>
 
+    <div id="typing-indicator" class="text-sm text-yellow-400 px-4 py-1 hidden"></div>
+
     <!-- Message Area: scrollable -->
     <div id="messages" class="flex-grow overflow-y-auto flex flex-col space-y-2 mb-4 px-2">
       <!-- messages get injected here -->
     </div>
+    
+    <div id="typing-indicator" class="text-yellow-400 text-xs mb-2 px-2 h-4"></div>
 
     <!-- Input Form: pinned at bottom -->
     <form id="chat-form" class="flex">
@@ -303,7 +317,8 @@
           joinBtn       = document.getElementById('join-room-btn'),
           logoutBtn     = document.getElementById('logout-btn'),
           changeUserBtn = document.getElementById('change-username-btn');
-
+          const typingIndicator = document.getElementById('typing-indicator');
+let typingRef = null;
     globalBtn.onclick = () => setActiveRoom('global', null);
 
     createBtn.onclick = () => {
@@ -331,44 +346,54 @@
 
     let lastSent = 0;  // Track the last message sent time
 
+    input.addEventListener('input', () => {
+  if (!firebase.auth().currentUser) return;
+  if (isBanned) return; // << Block banned users from showing typing
+
+  if (!typingRef) {
+    typingRef = db.ref('typing/' + firebase.auth().currentUser.uid);
+    typingRef.onDisconnect().remove();
+  }
+  typingRef.set(currentUsername);
+});
+
 form.addEventListener('submit', e => {
   e.preventDefault();
   const text = input.value.trim();
-if (!text) return;
-if (text.length > 75) {
-  alert('Messages must be 75 characters or fewer.');
-  return;
-}
-if (isBanned) {
-  appendMessage({
-    username: 'SYSTEM',
-    text: "You are banned and can't send messages.",
-    ts: Date.now(),
-    uid: 'system',
-    id: 'banned-warning-' + Date.now()
-  }, true);
-  input.value = '';
-  return;
-}
+  if (!text) return;
+  if (text.length > 75) {
+    alert('Messages must be 75 characters or fewer.');
+    return;
+  }
 
   const now = Date.now();
-  if (now - lastSent < 2000) {  // 2 second cooldown
+  if (now - lastSent < 2000) {
     alert('Slow down! You’re sending messages too fast.');
     return;
   }
 
-  const msg = {
-    uid:      firebase.auth().currentUser.uid,
-    username: currentUsername,
-    text,
-    ts:       now
-  };
+  // 🔥 New: Check if banned
+  db.ref('onlineUsers/' + firebase.auth().currentUser.uid).once('value').then(snap => {
+    const data = snap.val();
+    if (data && data.banned) {
+      appendSystemMessage('🚫 You are banned and cannot send messages.');
+      input.value = '';
+      return;
+    }
 
-  input.value = '';
-  activeRef.push(msg).catch(console.error);
-  lastSent = now;
-  input.disabled = true;
-  setTimeout(() => input.disabled = false, 2000);
+    const msg = {
+      uid:      firebase.auth().currentUser.uid,
+      username: currentUsername,
+      text,
+      ts:       now
+    };
+
+    input.value = '';
+    activeRef.push(msg).catch(console.error);
+    lastSent = now;
+    input.disabled = true;
+    setTimeout(() => input.disabled = false, 2000);
+  });
 });
 
 
@@ -400,6 +425,7 @@ el.className = [
   bgClass
 ].join(' ');
 
+el.classList.add('fade-in');
 
   const time = new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -416,6 +442,20 @@ el.className = [
     </div>
     <div>${linkedText}</div>
   `;
+
+  messagesEl.appendChild(el);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // Play sound for incoming messages
+if (!self) {
+  document.getElementById('notification-sound').play().catch(() => {});
+}
+}
+
+function appendSystemMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'mb-2 px-4 py-2 rounded-lg max-w-xs bg-yellow-400 text-black self-center text-center text-sm font-semibold';
+  el.textContent = text;
 
   messagesEl.appendChild(el);
   messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -530,6 +570,7 @@ el.className = [
       document.getElementById('user-right').classList.remove('hidden');
       listenPrivateRooms();
       listenOnlineUsers();
+      listenTyping();
     }
 
     // Create default profile if not existing
@@ -637,6 +678,25 @@ function deleteMessage(id) {
     db.ref(`privateRooms/${activeCode}/messages/${id}`).remove();
   }
 }
+function listenTyping() {
+  firebase.database().ref('typing').on('value', snap => {
+    const typing = snap.val() || {};
+    const usernames = Object.values(typing).filter(name => name !== currentUsername);
+
+    let typingText = '';
+    if (usernames.length === 1) {
+      typingText = `${usernames[0]} is typing...`;
+    } else if (usernames.length === 2) {
+      typingText = `${usernames[0]}, ${usernames[1]} are typing...`;
+    } else if (usernames.length > 2) {
+      typingText = `${usernames[0]}, ${usernames[1]}, +${usernames.length - 2} more are typing...`;
+    }
+
+    document.getElementById('typing-indicator').textContent = typingText;
+typingIndicator.classList.toggle('hidden', !typingText);
+  });
+}
+
   </script>
 </body>
 </html>
