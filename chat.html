@@ -320,12 +320,21 @@ let typingRef = null;
     globalBtn.onclick = () => setActiveRoom('global', null);
 
     createBtn.onclick = () => {
-      const code = makeCode(),
-            uid  = firebase.auth().currentUser.uid;
-      db.ref(`privateRooms/${code}/members/${uid}`)
-        .set(true)
-        .then(() => setActiveRoom('private', code));
-    };
+  const code = makeCode(),
+        uid  = firebase.auth().currentUser.uid;
+  db.ref(`privateRooms/${code}/members/${uid}`)
+    .set(true)
+    .then(() => {
+      // ✅ Create a dummy message so the room actually exists
+      db.ref(`privateRooms/${code}/messages`).push({
+        uid: 'system',
+        username: 'system',
+        text: 'Private room created',
+        ts: Date.now()
+      });
+    })
+    .then(() => setActiveRoom('private', code));
+};
 
     joinBtn.onclick = () => {
       const raw = prompt('Enter 4-character room code:');
@@ -671,14 +680,14 @@ function listenOnlineUsers() {
       btn.className = 'block w-full text-left rounded px-2 py-1 ' + 
         (banned ? 'bg-red-500' : 'bg-green-500');
 
-      btn.textContent = username || uid;
+        btn.textContent = (username || uid) + (banned ? ' (BANNED)' : '');
 
       if (isAdmin) {
         btn.classList.add('hover:bg-red-600', 'hover:bg-green-600');
         btn.onclick = () => toggleBan(uid, banned);
       } else {
         btn.disabled = true; // <--- 🔥 Non-admins can't click
-        btn.classList.add('opacity-50', 'cursor-not-allowed'); // grey out visually
+        btn.classList.add('cursor-not-allowed');
       }
 
       container.appendChild(btn);
@@ -688,7 +697,11 @@ function listenOnlineUsers() {
 
 // When clicked, toggle ban status
 function toggleBan(uid, banned) {
-  db.ref('onlineUsers/' + uid + '/banned').set(!banned);
+  db.ref('onlineUsers/' + uid + '/banned').set(!banned)
+    .then(() => {
+      console.log(`User ${uid} ban toggled to ${!banned}`);
+    })
+    .catch(console.error);
 }
 
 function deleteMessage(id) {
