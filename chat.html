@@ -677,16 +677,19 @@ function listenOnlineUsers() {
       const uid = userSnap.key;
 
       const btn = document.createElement('button');
-      btn.className = 'block w-full text-left rounded px-2 py-1 ' + 
-        (banned ? 'bg-red-500' : 'bg-green-500');
+      btn.className = 'block w-full text-left rounded px-2 py-1 font-semibold ' +
+                      (banned ? 'bg-red-500' : 'bg-green-500');
 
-        btn.textContent = (username || uid) + (banned ? ' (BANNED)' : '');
+      btn.textContent = (username || uid) + (banned ? ' (BANNED)' : '');
 
       if (isAdmin) {
         btn.classList.add('hover:bg-red-600', 'hover:bg-green-600');
-        btn.onclick = () => toggleBan(uid, banned);
+        btn.onclick = () => {
+          // When admin clicks, flip banned state
+          db.ref('onlineUsers/' + uid).update({ banned: !banned });
+        };
       } else {
-        btn.disabled = true; // <--- 🔥 Non-admins can't click
+        btn.disabled = true;
         btn.classList.add('cursor-not-allowed');
       }
 
