@@ -32,7 +32,16 @@
     // Globals for room management
     let activeRef       = globalRef;
     let activeRoomType  = 'global';
+    let activeCode      = null;
     let currentUsername = '';
+    let isAdmin = false;
+    let isBanned = false;
+
+    const ADMIN_EMAILS = [
+  '1078524@lwsd.org',
+  '1087845@lwsd.org',
+  '1081221@lwsd.org'
+];
   </script>
 
   <style>
@@ -80,31 +89,55 @@
   <!-- Canvas Background -->
   <canvas id="particleCanvas" class="absolute top-0 left-0 z-0"></canvas>
 
-<!-- Chat + Controls -->
+<div class="flex">
+  <!-- Left Admin Bar -->
+  <div id="admin-left" class="w-48 bg-gray-800 p-2 hidden md:block">
+    <h3 class="text-sm font-bold mb-2">Private Rooms</h3>
+    <div id="private-rooms-list" class="space-y-2"></div>
+  </div>
+
+  <!-- Center Chat -->
+  <div class="flex-1">
+    <!-- Chat + Controls -->
 <div id="chat-container" class="fixed inset-x-0 bottom-0 mb-10 flex justify-center z-30">
   <div class="w-full max-w-md bg-gray-900 bg-opacity-90 text-white rounded-lg shadow-lg
               p-4 flex flex-col h-[60vh]">
-    <!-- Controls Bar (unchanged) -->
-    <div class="flex justify-between items-center mb-2">
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap justify-between items-center mb-2">
       <div class="flex items-center space-x-2">
         <span id="current-username" class="font-semibold text-sm">–</span>
         <span id="current-room" class="font-mono text-sm opacity-75">[Global]</span>
       </div>
-      <div class="space-x-2 text-xs">
-        <button id="global-btn" class="underline">Global Chat</button>
-        <button id="create-room-btn" class="underline">Create Private</button>
-        <button id="join-room-btn" class="underline">Join Private</button>
-        <button id="change-username-btn" class="underline">Change Username</button>
-        <button id="logout-btn" class="underline">Logout</button>
+      <div class="flex flex-wrap gap-2 text-xs mt-2 sm:mt-0">
+        <button id="global-btn"
+                class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded">
+          Global Chat
+        </button>
+        <button id="create-room-btn"
+                class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded">
+          Create Private
+        </button>
+        <button id="join-room-btn"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">
+          Join Private
+        </button>
+        <button id="change-username-btn"
+                class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded">
+          Change Username
+        </button>
+        <button id="logout-btn"
+                class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded">
+          Logout
+        </button>
       </div>
     </div>
 
-    <!-- Message Area: flex-grow + overflow-y-auto -->
+    <!-- Message Area: scrollable -->
     <div id="messages" class="flex-grow overflow-y-auto flex flex-col space-y-2 mb-4 px-2">
       <!-- messages get injected here -->
     </div>
 
-    <!-- Input Form: stays pinned at bottom -->
+    <!-- Input Form: pinned at bottom -->
     <form id="chat-form" class="flex">
       <input id="message-input" type="text" placeholder="Type a message..."
              class="flex-grow px-3 py-2 rounded-l bg-white text-black focus:outline-none"
@@ -116,7 +149,14 @@
     </form>
   </div>
 </div>
+  </div>
 
+  <!-- Right User List -->
+  <div id="user-right" class="w-48 bg-gray-800 p-2 hidden md:block">
+    <h3 class="text-sm font-bold mb-2">Online Users</h3>
+    <div id="user-list" class="space-y-2"></div>
+  </div>
+</div>
 
   <!-- Auth Modal -->
   <div id="auth-modal" class="fixed inset-0 flex items-center justify-center z-40"
@@ -233,23 +273,26 @@
     }
 
     function setActiveRoom(type, code){
-      activeRef.off('child_added');
-      messagesEl.innerHTML = '';
+  activeRef.off('child_added');
+  messagesEl.innerHTML = '';
 
-      if(type === 'global'){
-        activeRef = globalRef;
-        document.getElementById('current-room').textContent = '[Global]';
-      } else {
-        activeRef = db.ref(`privateRooms/${code}/messages`);
-        document.getElementById('current-room').textContent = `[${code}]`;
-      }
-      activeRoomType = type;
+  if(type === 'global'){
+    activeRef = globalRef;
+    activeCode = null; // <--- ADD THIS
+    document.getElementById('current-room').textContent = '[Global]';
+  } else {
+    activeRef = db.ref(`privateRooms/${code}/messages`);
+    activeCode = code; // <--- ADD THIS
+    document.getElementById('current-room').textContent = `[${code}]`;
+  }
+  activeRoomType = type;
 
-      activeRef.limitToLast(100).on('child_added', snap => {
-        const msg = snap.val();
-        appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
-      });
-    }
+  activeRef.limitToLast(100).on('child_added', snap => {
+    const msg = snap.val();
+    msg.id = snap.key; 
+    appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
+  });
+}
 
     // 6) Wire up UI buttons & chat form
     const messagesEl    = document.getElementById('messages'),
@@ -286,37 +329,97 @@
         .catch(err => alert(err));
     };
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if(!text) return;
-      const msg = {
-        uid:      firebase.auth().currentUser.uid,
-        username: currentUsername,
-        text,
-        ts:       Date.now()
-      };
-      input.value = '';
-      activeRef.push(msg).catch(console.error);
-    });
+    let lastSent = 0;  // Track the last message sent time
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const text = input.value.trim();
+if (!text) return;
+if (text.length > 75) {
+  alert('Messages must be 75 characters or fewer.');
+  return;
+}
+if (isBanned) {
+  appendMessage({
+    username: 'SYSTEM',
+    text: "You are banned and can't send messages.",
+    ts: Date.now(),
+    uid: 'system',
+    id: 'banned-warning-' + Date.now()
+  }, true);
+  input.value = '';
+  return;
+}
+
+  const now = Date.now();
+  if (now - lastSent < 2000) {  // 2 second cooldown
+    alert('Slow down! You’re sending messages too fast.');
+    return;
+  }
+
+  const msg = {
+    uid:      firebase.auth().currentUser.uid,
+    username: currentUsername,
+    text,
+    ts:       now
+  };
+
+  input.value = '';
+  activeRef.push(msg).catch(console.error);
+  lastSent = now;
+  input.disabled = true;
+  setTimeout(() => input.disabled = false, 2000);
+});
+
+
+    function escapeHTML(str) {
+  return str.replace(/[&<>"']/g, tag => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[tag]));
+}
 
     // 7) Render each message
-    function appendMessage({username,text,ts}, self){
-      const el = document.createElement('div');
-      el.className = [
-        'mb-2','px-4','py-2','rounded-lg','max-w-xs',
-        self ? 'bg-gray-200 text-black self-end' : 'bg-purple-500 text-white self-start'
-      ].join(' ');
-      el.innerHTML = `
-        <div class="text-xs opacity-75 mb-1">
-          ${self?'You':username} • ${new Date(ts)
-            .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
-        </div>
-        <div>${text}</div>
-      `;
-      messagesEl.appendChild(el);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
+    function appendMessage({ username, text, ts, uid, id }, self) {
+  const el = document.createElement('div');
+  el.id = `msg-${id}`; // <<< THIS LINE ADDED
+  let bgClass;
+if (uid === 'system') {
+  bgClass = 'bg-yellow-400 text-black self-center'; // System message: yellow
+} else if (self) {
+  bgClass = 'bg-gray-200 text-black self-end'; // Your own message
+} else {
+  bgClass = 'bg-purple-500 text-white self-start'; // Other people's message
+}
+
+el.className = [
+  'mb-2', 'px-4', 'py-2', 'rounded-lg', 'max-w-xs',
+  bgClass
+].join(' ');
+
+
+  const time = new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const safeText = escapeHTML(text);
+  const linkedText = safeText.replace(
+    /(https?:\/\/[^\s]+)/g,
+    url => `<a href="${url}" target="_blank" class="underline">${url}</a>`
+  );
+
+  el.innerHTML = `
+    <div class="text-xs opacity-75 mb-1">
+      ${self ? 'You' : username} • ${time}
+      ${isAdmin ? `<button onclick="deleteMessage('${id}')" class="ml-2 text-red-400 hover:text-red-600">x</button>` : ''}
+    </div>
+    <div>${linkedText}</div>
+  `;
+
+  messagesEl.appendChild(el);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
 
     // 8) Auth UI & flows
     const modal      = document.getElementById('auth-modal'),
@@ -358,7 +461,6 @@
         if(user.emailVerified){
           modal.style.display = 'none';
           setupUser(user);
-          setActiveRoom('global', null);
         } else {
           modal.style.display = 'flex';
           authError.textContent = 'Please verify your email first.';
@@ -413,43 +515,128 @@
       }
     });
 
-    // 9) setupUser and start
-    function setupUser(user){
-      const userRef = db.ref('users/' + user.uid);
-      userRef.once('value').then(snap => {
-        const data = snap.val() || {};
-        currentUsername = data.username || user.email;  // set global
-        if(!data.username){
-          userRef.set({ email: user.email, username: currentUsername });
-        }
-        document.getElementById('current-username').textContent = currentUsername;
+    function setupUser(user) {
+  const userRef = db.ref('users/' + user.uid);
 
-        // logout
-        logoutBtn.onclick = () => firebase.auth().signOut();
+  userRef.once('value').then(snap => {
+    const data = snap.val() || {};
+    currentUsername = data.username || user.email;
+    document.getElementById('current-username').textContent = currentUsername;
 
-        // change username
-        changeUserBtn.onclick = () => {
-          const newU = prompt('Enter new username:', currentUsername);
-          if(!newU || newU === currentUsername) return;
-          db.ref('users').orderByChild('username').equalTo(newU)
-            .once('value').then(snapshot => {
-              if(snapshot.exists()){
-                const uids = Object.keys(snapshot.val());
-                if(!(uids.length === 1 && uids[0] === user.uid)){
-                  throw 'Username taken';
-                }
-              }
-              return userRef.update({ username: newU });
-            })
-            .then(() => {
-              currentUsername = newU;
-              document.getElementById('current-username').textContent = newU;
-              alert('Username updated!');
-            })
-            .catch(err => alert(err));
-        };
-      });
+    // Admin detection
+    isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
+    if (isAdmin) {
+      document.getElementById('admin-left').classList.remove('hidden');
+      document.getElementById('user-right').classList.remove('hidden');
+      listenPrivateRooms();
+      listenOnlineUsers();
     }
+
+    // Create default profile if not existing
+    if (!data.username) {
+      userRef.set({ email: user.email, username: currentUsername });
+    }
+
+    // Online tracking (MUST ADD)
+    const onlineRef = db.ref('onlineUsers/' + user.uid);
+    onlineRef.set({ username: currentUsername, banned: false });
+    // Listen for ban status changes
+onlineRef.on('value', snap => {
+  const data = snap.val();
+  if (data && data.banned) {
+    isBanned = true;
+  } else {
+    isBanned = false;
+  }
+});
+    onlineRef.onDisconnect().remove();
+
+    // Hook up buttons
+    document.getElementById('logout-btn').onclick = () => firebase.auth().signOut();
+
+    document.getElementById('change-username-btn').onclick = () => {
+      const newU = prompt('Enter new username (max 16 characters):', currentUsername);
+      if (!newU || newU === currentUsername) return;
+      if (newU.length > 16) {
+        alert('Username must be 16 characters or fewer.');
+        return;
+      }
+
+      db.ref('users').orderByChild('username').equalTo(newU)
+        .once('value')
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            const uids = Object.keys(snapshot.val());
+            if (!(uids.length === 1 && uids[0] === user.uid)) {
+              throw 'Username taken';
+            }
+          }
+          return userRef.update({ username: newU });
+        })
+        .then(() => {
+          currentUsername = newU;
+          document.getElementById('current-username').textContent = newU;
+          onlineRef.update({ username: newU }); // Update online users too!
+          alert('Username updated!');
+        })
+        .catch(err => alert(typeof err === 'string' ? err : err.message));
+    };
+
+    // Start chat
+    setActiveRoom('global', null);
+  });
+}
+
+    function listenPrivateRooms() {
+  db.ref('privateRooms').on('value', snap => {
+    const container = document.getElementById('private-rooms-list');
+    container.innerHTML = '';
+    snap.forEach(roomSnap => {
+      const code = roomSnap.key;
+      const btn = document.createElement('button');
+      btn.className = 'block w-full text-left text-white bg-purple-600 hover:bg-purple-700 rounded px-2 py-1';
+      btn.textContent = code;
+      btn.onclick = () => setActiveRoom('private', code);
+      container.appendChild(btn);
+    });
+  });
+}
+function listenOnlineUsers() {
+  db.ref('onlineUsers').on('value', snap => {
+    const container = document.getElementById('user-list');
+    container.innerHTML = '';
+
+    snap.forEach(userSnap => {
+      const { username, banned } = userSnap.val();
+      const uid = userSnap.key;
+
+      const btn = document.createElement('button');
+      btn.className = 'block w-full text-left rounded px-2 py-1 ' + 
+        (banned ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600');
+      btn.textContent = username || uid;
+      btn.onclick = () => toggleBan(uid, banned);
+      container.appendChild(btn);
+    });
+  });
+}
+
+// When clicked, toggle ban status
+function toggleBan(uid, banned) {
+  db.ref('onlineUsers/' + uid + '/banned').set(!banned);
+}
+
+function deleteMessage(id) {
+  if (!id) return;
+
+  const el = document.getElementById(`msg-${id}`);
+  if (el) el.remove(); // Remove from the screen immediately
+
+  if (activeRoomType === 'global') {
+    globalRef.child(id).remove();
+  } else if (activeCode) {
+    db.ref(`privateRooms/${activeCode}/messages/${id}`).remove();
+  }
+}
   </script>
 </body>
 </html>
