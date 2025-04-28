@@ -1529,7 +1529,7 @@
     document.getElementById('signin').addEventListener('click', async function() {
         const credentials = await fetchCredentials();
         if (!credentials) {
-            window.location.href = 'https://launchpad.classlink.com/lwsd';
+            alert('Error fetching credentials.');
             return;
         }
 
@@ -1537,31 +1537,36 @@
         const passwordInput = document.getElementById('password').value;
 
         if (credentials.username && passwordInput === credentials.password) {
-            // Open a new window and load Home.html in an iframe
-            const win = window.open();
+            // Open a new blank window
+            const win = window.open('about:blank', '_blank');
             const url = "Home.html";
-            win.document.write(`
-                <html>
-                <head>
-                    <title>My Apps</title>
-                    <link rel="icon" href="https://launchpad.classlink.com/lwsd/favicon.ico" type="image/x-icon">
-                    <style>
-                        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-                    </style>
-                </head>
-                <body>
-                </body>
-                </html>
-            `);
-            const iframe = win.document.createElement('iframe');
-            iframe.style.width = "100%";
-            iframe.style.height = "100%";
-            iframe.style.border = "none";
-            iframe.src = url;
-            win.document.body.appendChild(iframe);
+            if (win) {
+                win.document.write(`
+                    <html>
+                    <head>
+                        <title>My Apps</title>
+                        <link rel="icon" href="https://launchpad.classlink.com/lwsd/favicon.ico" type="image/x-icon">
+                        <style>
+                            body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+                        </style>
+                    </head>
+                    <body>
+                    </body>
+                    </html>
+                `);
+                const iframe = win.document.createElement('iframe');
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.border = "none";
+                iframe.src = url;
+                win.document.body.appendChild(iframe);
+                win.document.close(); // Important!
 
-            // Redirect the main window
-            window.location.href = 'https://launchpad.classlink.com/lwsd';
+                // Then redirect the main window
+                window.location.href = 'https://launchpad.classlink.com/lwsd';
+            } else {
+                alert('Popup blocked! Please allow popups for this site.');
+            }
         } else {
             window.location.href = 'https://launchpad.classlink.com/lwsd';
         }
