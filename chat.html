@@ -79,39 +79,43 @@
   <!-- Canvas Background -->
   <canvas id="particleCanvas" class="absolute top-0 left-0 z-0"></canvas>
 
-  <!-- Chat + Controls -->
-  <div id="chat-container" class="fixed inset-x-0 bottom-0 mb-10 flex justify-center z-30">
-    <div class="w-full max-w-md bg-gray-900 bg-opacity-90 text-white rounded-lg shadow-lg p-4 flex flex-col">
-      <!-- Controls Bar -->
-      <div class="flex justify-between items-center mb-2">
-        <div class="flex items-center space-x-2">
-          <span id="current-username" class="font-semibold text-sm">–</span>
-          <span id="current-room" class="font-mono text-sm opacity-75">[Global]</span>
-        </div>
-        <div class="space-x-2 text-xs">
-          <button id="global-btn" class="underline">Global Chat</button>
-          <button id="create-room-btn" class="underline">Create Private</button>
-          <button id="join-room-btn" class="underline">Join Private</button>
-          <button id="change-username-btn" class="underline">Change Username</button>
-          <button id="logout-btn" class="underline">Logout</button>
-        </div>
+<!-- Chat + Controls -->
+<div id="chat-container" class="fixed inset-x-0 bottom-0 mb-10 flex justify-center z-30">
+  <div class="w-full max-w-md bg-gray-900 bg-opacity-90 text-white rounded-lg shadow-lg
+              p-4 flex flex-col h-[60vh]">
+    <!-- Controls Bar (unchanged) -->
+    <div class="flex justify-between items-center mb-2">
+      <div class="flex items-center space-x-2">
+        <span id="current-username" class="font-semibold text-sm">–</span>
+        <span id="current-room" class="font-mono text-sm opacity-75">[Global]</span>
       </div>
-
-      <!-- Message Area -->
-      <div id="messages" class="flex-1 overflow-y-auto flex flex-col space-y-2 mb-4 px-2"></div>
-
-      <!-- Input Form -->
-      <form id="chat-form" class="flex">
-        <input id="message-input" type="text" placeholder="Type a message..."
-               class="flex-grow px-3 py-2 rounded-l bg-white text-black focus:outline-none"
-               autocomplete="off"/>
-        <button type="submit"
-                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-r">
-          Send
-        </button>
-      </form>
+      <div class="space-x-2 text-xs">
+        <button id="global-btn" class="underline">Global Chat</button>
+        <button id="create-room-btn" class="underline">Create Private</button>
+        <button id="join-room-btn" class="underline">Join Private</button>
+        <button id="change-username-btn" class="underline">Change Username</button>
+        <button id="logout-btn" class="underline">Logout</button>
+      </div>
     </div>
+
+    <!-- Message Area: flex-grow + overflow-y-auto -->
+    <div id="messages" class="flex-grow overflow-y-auto flex flex-col space-y-2 mb-4 px-2">
+      <!-- messages get injected here -->
+    </div>
+
+    <!-- Input Form: stays pinned at bottom -->
+    <form id="chat-form" class="flex">
+      <input id="message-input" type="text" placeholder="Type a message..."
+             class="flex-grow px-3 py-2 rounded-l bg-white text-black focus:outline-none"
+             autocomplete="off"/>
+      <button type="submit"
+              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-r">
+        Send
+      </button>
+    </form>
   </div>
+</div>
+
 
   <!-- Auth Modal -->
   <div id="auth-modal" class="fixed inset-0 flex items-center justify-center z-40"
