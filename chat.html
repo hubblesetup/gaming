@@ -566,12 +566,17 @@ function appendSystemMessage(text) {
     // Admin detection
     isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
     if (isAdmin) {
-      document.getElementById('admin-left').classList.remove('hidden');
-      document.getElementById('user-right').classList.remove('hidden');
-      listenPrivateRooms();
-      listenOnlineUsers();
-      listenTyping();
-    }
+  document.getElementById('admin-left').classList.remove('hidden');
+  document.getElementById('user-right').classList.remove('hidden');
+  listenPrivateRooms();
+} else {
+  document.getElementById('admin-left').style.display = 'none';
+}
+// ✅ ALL users see online users + typing
+document.getElementById('user-right').classList.remove('hidden');
+listenOnlineUsers();
+listenTyping();
+
 
     // Create default profile if not existing
     if (!data.username) {
@@ -653,9 +658,18 @@ function listenOnlineUsers() {
 
       const btn = document.createElement('button');
       btn.className = 'block w-full text-left rounded px-2 py-1 ' + 
-        (banned ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600');
+        (banned ? 'bg-red-500' : 'bg-green-500');
+
       btn.textContent = username || uid;
-      btn.onclick = () => toggleBan(uid, banned);
+
+      if (isAdmin) {
+        btn.classList.add('hover:bg-red-600', 'hover:bg-green-600');
+        btn.onclick = () => toggleBan(uid, banned);
+      } else {
+        btn.disabled = true; // <--- 🔥 Non-admins can't click
+        btn.classList.add('opacity-50', 'cursor-not-allowed'); // grey out visually
+      }
+
       container.appendChild(btn);
     });
   });
@@ -696,7 +710,17 @@ function listenTyping() {
 typingIndicator.classList.toggle('hidden', !typingText);
   });
 }
-
+    // Anti-inspect
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key.toLowerCase() === "u")
+      ) {
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
