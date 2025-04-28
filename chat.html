@@ -142,14 +142,12 @@
       </div>
     </div>
 
-    <div id="typing-indicator" class="text-sm text-yellow-400 px-4 py-1 hidden"></div>
-
     <!-- Message Area: scrollable -->
     <div id="messages" class="flex-grow overflow-y-auto flex flex-col space-y-2 mb-4 px-2">
       <!-- messages get injected here -->
     </div>
     
-    <div id="typing-indicator" class="text-yellow-400 text-xs mb-2 px-2 h-4"></div>
+    <div id="typing-indicator" class="text-sm text-yellow-400 px-4 py-1 hidden"></div>
 
     <!-- Input Form: pinned at bottom -->
     <form id="chat-form" class="flex">
@@ -376,7 +374,7 @@ form.addEventListener('submit', e => {
   db.ref('onlineUsers/' + firebase.auth().currentUser.uid).once('value').then(snap => {
     const data = snap.val();
     if (data && data.banned) {
-      appendSystemMessage('🚫 You are banned and cannot send messages.');
+      appendSystemMessage('You are banned and cannot send messages.');
       input.value = '';
       return;
     }
@@ -409,6 +407,8 @@ form.addEventListener('submit', e => {
 
     // 7) Render each message
     function appendMessage({ username, text, ts, uid, id }, self) {
+      const shouldScroll = messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight - 50;
+
   const el = document.createElement('div');
   el.id = `msg-${id}`; // <<< THIS LINE ADDED
   let bgClass;
@@ -444,7 +444,10 @@ el.classList.add('fade-in');
   `;
 
   messagesEl.appendChild(el);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  
+  if (shouldScroll) {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
 
   // Play sound for incoming messages
 if (!self) {
@@ -453,12 +456,20 @@ if (!self) {
 }
 
 function appendSystemMessage(text) {
+  const shouldScroll = messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight - 100;
+
   const el = document.createElement('div');
   el.className = 'mb-2 px-4 py-2 rounded-lg max-w-xs bg-yellow-400 text-black self-center text-center text-sm font-semibold';
   el.textContent = text;
 
   messagesEl.appendChild(el);
   messagesEl.scrollTop = messagesEl.scrollHeight;
+
+messagesEl.appendChild(el);
+
+if (shouldScroll) {
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
 }
 
     // 8) Auth UI & flows
@@ -706,7 +717,7 @@ function listenTyping() {
       typingText = `${usernames[0]}, ${usernames[1]}, +${usernames.length - 2} more are typing...`;
     }
 
-    document.getElementById('typing-indicator').textContent = typingText;
+    typingIndicator.textContent = typingText;
 typingIndicator.classList.toggle('hidden', !typingText);
   });
 }
