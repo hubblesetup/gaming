@@ -299,11 +299,40 @@
   }
   activeRoomType = type;
 
-  activeRef.limitToLast(100).on('child_added', snap => {
-    const msg = snap.val();
-    msg.id = snap.key; 
-    appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
-  });
+  function setActiveRoom(type, code){
+  activeRef.off('child_added');
+  messagesEl.innerHTML = '';
+
+  if(type === 'global'){
+    activeRef = globalRef;
+    activeCode = null;
+    document.getElementById('current-room').textContent = '[Global]';
+  } else {
+    activeRef = db.ref(`privateRooms/${code}/messages`);
+    activeCode = code;
+    document.getElementById('current-room').textContent = `[${code}]`;
+  }
+  activeRoomType = type;
+
+  // Now listen for new messages
+  if (type === 'global') {
+    const startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0); // 12:00am today
+    const todayTimestamp = startOfToday.getTime();
+
+    activeRef.orderByChild('ts').startAt(todayTimestamp).on('child_added', snap => {
+      const msg = snap.val();
+      msg.id = snap.key;
+      appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
+    });
+  } else {
+    activeRef.limitToLast(100).on('child_added', snap => {
+      const msg = snap.val();
+      msg.id = snap.key;
+      appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
+    });
+  }
+}
 }
 
     // 6) Wire up UI buttons & chat form
@@ -657,6 +686,9 @@ onlineRef.on('value', snap => {
     // Start chat
     setActiveRoom('global', null);
   });
+      if (user) {
+  scheduleMidnightMessage();
+}
 }
 
     function listenPrivateRooms() {
@@ -742,6 +774,23 @@ function listenTyping() {
     typingIndicator.textContent = typingText;
 typingIndicator.classList.toggle('hidden', !typingText);
   });
+}
+    function scheduleMidnightMessage() {
+  const now = new Date();
+  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5) - now;
+
+  setTimeout(() => {
+    // Post a system message at 12:00:05am
+    db.ref('chat/messages').push({
+      uid: 'system',
+      username: 'system',
+      text: "There's no messages yet today.",
+      ts: Date.now()
+    });
+
+    // After posting the midnight message, reschedule for next day
+    scheduleMidnightMessage();
+  }, msUntilMidnight);
 }
     // Anti-inspect
     document.addEventListener("contextmenu", (e) => e.preventDefault());
