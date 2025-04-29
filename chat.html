@@ -299,40 +299,11 @@
   }
   activeRoomType = type;
 
-  function setActiveRoom(type, code){
-  activeRef.off('child_added');
-  messagesEl.innerHTML = '';
-
-  if(type === 'global'){
-    activeRef = globalRef;
-    activeCode = null;
-    document.getElementById('current-room').textContent = '[Global]';
-  } else {
-    activeRef = db.ref(`privateRooms/${code}/messages`);
-    activeCode = code;
-    document.getElementById('current-room').textContent = `[${code}]`;
-  }
-  activeRoomType = type;
-
-  // Now listen for new messages
-  if (type === 'global') {
-    const startOfToday = new Date();
-    startOfToday.setHours(0,0,0,0); // 12:00am today
-    const todayTimestamp = startOfToday.getTime();
-
-    activeRef.orderByChild('ts').startAt(todayTimestamp).on('child_added', snap => {
-      const msg = snap.val();
-      msg.id = snap.key;
-      appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
-    });
-  } else {
-    activeRef.limitToLast(100).on('child_added', snap => {
-      const msg = snap.val();
-      msg.id = snap.key;
-      appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
-    });
-  }
-}
+  activeRef.limitToLast(100).on('child_added', snap => {
+    const msg = snap.val();
+    msg.id = snap.key; 
+    appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
+  });
 }
 
     // 6) Wire up UI buttons & chat form
@@ -614,38 +585,42 @@ if (shouldScroll) {
 
     // Admin detection
     isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
-    const adminLeft = document.getElementById('admin-left');
-    const userRight = document.getElementById('user-right');
+const adminLeft = document.getElementById('admin-left');
+const userRight = document.getElementById('user-right');
 
-    if (isAdmin) {
-      adminLeft.style.visibility = 'visible';
-      adminLeft.style.background = ''; // reset any background
-      userRight.classList.remove('hidden');
-      listenPrivateRooms();
-    } else {
-      adminLeft.style.visibility = 'hidden';
-      adminLeft.style.background = 'none';
-    }
+if (isAdmin) {
+  adminLeft.style.visibility = 'visible';
+  adminLeft.style.background = ''; // reset any background
+  userRight.classList.remove('hidden');
+  listenPrivateRooms();
+} else {
+  adminLeft.style.visibility = 'hidden';
+  adminLeft.style.background = 'none';
+}
 
-    // ✅ ALL users see online users + typing
-    document.getElementById('user-right').classList.remove('hidden');
-    listenOnlineUsers();
-    listenTyping();
+// ✅ ALL users see online users + typing
+document.getElementById('user-right').classList.remove('hidden');
+listenOnlineUsers();
+listenTyping();
+
 
     // Create default profile if not existing
     if (!data.username) {
       userRef.set({ email: user.email, username: currentUsername });
     }
 
-    // Online tracking
+    // Online tracking (MUST ADD)
     const onlineRef = db.ref('onlineUsers/' + user.uid);
     onlineRef.set({ username: currentUsername, banned: false });
-    
     // Listen for ban status changes
-    onlineRef.on('value', snap => {
-      const data = snap.val();
-      isBanned = data && data.banned;
-    });
+onlineRef.on('value', snap => {
+  const data = snap.val();
+  if (data && data.banned) {
+    isBanned = true;
+  } else {
+    isBanned = false;
+  }
+});
     onlineRef.onDisconnect().remove();
 
     // Hook up buttons
@@ -679,11 +654,8 @@ if (shouldScroll) {
         .catch(err => alert(typeof err === 'string' ? err : err.message));
     };
 
-    // Start chat in global room
+    // Start chat
     setActiveRoom('global', null);
-
-    // ✅ Schedule midnight system message AFTER setting up user
-    scheduleMidnightMessage();
   });
 }
 
@@ -770,23 +742,6 @@ function listenTyping() {
     typingIndicator.textContent = typingText;
 typingIndicator.classList.toggle('hidden', !typingText);
   });
-}
-    function scheduleMidnightMessage() {
-  const now = new Date();
-  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5) - now;
-
-  setTimeout(() => {
-    // Post a system message at 12:00:05am
-    db.ref('chat/messages').push({
-      uid: 'system',
-      username: 'system',
-      text: "There's no messages yet today.",
-      ts: Date.now()
-    });
-
-    // After posting the midnight message, reschedule for next day
-    scheduleMidnightMessage();
-  }, msUntilMidnight);
 }
     // Anti-inspect
     document.addEventListener("contextmenu", (e) => e.preventDefault());
