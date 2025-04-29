@@ -69,6 +69,12 @@
   left: 0;
   z-index: 0;
   pointer-events: none;
+
+  .hidden-width {
+    visibility: hidden;
+    width: 0 !important;
+    padding: 0 !important;
+  }
 }
   </style>
 </head>
@@ -584,7 +590,7 @@ if (shouldScroll) {
   document.getElementById('user-right').classList.remove('hidden');
   listenPrivateRooms();
 } else {
-  document.getElementById('admin-left').style.display = 'none';
+  document.getElementById('admin-left').classList.add('hidden-width');
 }
 // ✅ ALL users see online users + typing
 document.getElementById('user-right').classList.remove('hidden');
