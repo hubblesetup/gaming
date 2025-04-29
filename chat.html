@@ -683,15 +683,14 @@ function listenOnlineUsers() {
       btn.textContent = (username || uid) + (banned ? ' (BANNED)' : '');
 
       if (isAdmin) {
-        btn.classList.add('hover:bg-red-600', 'hover:bg-green-600');
-        btn.onclick = () => {
-          // When admin clicks, flip banned state
-          db.ref('onlineUsers/' + uid).update({ banned: !banned });
-        };
-      } else {
-        btn.disabled = true;
-        btn.classList.add('cursor-not-allowed');
-      }
+  document.getElementById('admin-left').classList.remove('hidden-width');
+  listenPrivateRooms();
+} else {
+  document.getElementById('admin-left').classList.add('hidden-width');
+}
+document.getElementById('user-right').classList.remove('hidden');
+listenOnlineUsers();
+listenTyping();
 
       container.appendChild(btn);
     });
