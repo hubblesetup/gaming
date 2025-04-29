@@ -614,42 +614,38 @@ if (shouldScroll) {
 
     // Admin detection
     isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
-const adminLeft = document.getElementById('admin-left');
-const userRight = document.getElementById('user-right');
+    const adminLeft = document.getElementById('admin-left');
+    const userRight = document.getElementById('user-right');
 
-if (isAdmin) {
-  adminLeft.style.visibility = 'visible';
-  adminLeft.style.background = ''; // reset any background
-  userRight.classList.remove('hidden');
-  listenPrivateRooms();
-} else {
-  adminLeft.style.visibility = 'hidden';
-  adminLeft.style.background = 'none';
-}
+    if (isAdmin) {
+      adminLeft.style.visibility = 'visible';
+      adminLeft.style.background = ''; // reset any background
+      userRight.classList.remove('hidden');
+      listenPrivateRooms();
+    } else {
+      adminLeft.style.visibility = 'hidden';
+      adminLeft.style.background = 'none';
+    }
 
-// ✅ ALL users see online users + typing
-document.getElementById('user-right').classList.remove('hidden');
-listenOnlineUsers();
-listenTyping();
-
+    // ✅ ALL users see online users + typing
+    document.getElementById('user-right').classList.remove('hidden');
+    listenOnlineUsers();
+    listenTyping();
 
     // Create default profile if not existing
     if (!data.username) {
       userRef.set({ email: user.email, username: currentUsername });
     }
 
-    // Online tracking (MUST ADD)
+    // Online tracking
     const onlineRef = db.ref('onlineUsers/' + user.uid);
     onlineRef.set({ username: currentUsername, banned: false });
+    
     // Listen for ban status changes
-onlineRef.on('value', snap => {
-  const data = snap.val();
-  if (data && data.banned) {
-    isBanned = true;
-  } else {
-    isBanned = false;
-  }
-});
+    onlineRef.on('value', snap => {
+      const data = snap.val();
+      isBanned = data && data.banned;
+    });
     onlineRef.onDisconnect().remove();
 
     // Hook up buttons
@@ -683,12 +679,12 @@ onlineRef.on('value', snap => {
         .catch(err => alert(typeof err === 'string' ? err : err.message));
     };
 
-    // Start chat
+    // Start chat in global room
     setActiveRoom('global', null);
+
+    // ✅ Schedule midnight system message AFTER setting up user
+    scheduleMidnightMessage();
   });
-      if (user) {
-  scheduleMidnightMessage();
-}
 }
 
     function listenPrivateRooms() {
