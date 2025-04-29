@@ -585,13 +585,19 @@ if (shouldScroll) {
 
     // Admin detection
     isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
-    if (isAdmin) {
-  document.getElementById('admin-left').classList.remove('hidden');
-  document.getElementById('user-right').classList.remove('hidden');
+const adminLeft = document.getElementById('admin-left');
+const userRight = document.getElementById('user-right');
+
+if (isAdmin) {
+  adminLeft.style.visibility = 'visible';
+  adminLeft.style.background = ''; // reset any background
+  userRight.classList.remove('hidden');
   listenPrivateRooms();
 } else {
-  document.getElementById('admin-left').classList.add('hidden-width');
+  adminLeft.style.visibility = 'hidden';
+  adminLeft.style.background = 'none';
 }
+
 // ✅ ALL users see online users + typing
 document.getElementById('user-right').classList.remove('hidden');
 listenOnlineUsers();
