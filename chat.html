@@ -69,12 +69,6 @@
   left: 0;
   z-index: 0;
   pointer-events: none;
-
-  .hidden-width {
-    visibility: hidden;
-    width: 0 !important;
-    padding: 0 !important;
-  }
 }
   </style>
 </head>
@@ -590,7 +584,7 @@ if (shouldScroll) {
   document.getElementById('user-right').classList.remove('hidden');
   listenPrivateRooms();
 } else {
-  document.getElementById('admin-left').classList.add('hidden-width');
+  document.getElementById('admin-left').style.display = 'none';
 }
 // ✅ ALL users see online users + typing
 document.getElementById('user-right').classList.remove('hidden');
@@ -683,14 +677,15 @@ function listenOnlineUsers() {
       btn.textContent = (username || uid) + (banned ? ' (BANNED)' : '');
 
       if (isAdmin) {
-  document.getElementById('admin-left').classList.remove('hidden-width');
-  listenPrivateRooms();
-} else {
-  document.getElementById('admin-left').classList.add('hidden-width');
-}
-document.getElementById('user-right').classList.remove('hidden');
-listenOnlineUsers();
-listenTyping();
+        btn.classList.add('hover:bg-red-600', 'hover:bg-green-600');
+        btn.onclick = () => {
+          // When admin clicks, flip banned state
+          db.ref('onlineUsers/' + uid).update({ banned: !banned });
+        };
+      } else {
+        btn.disabled = true;
+        btn.classList.add('cursor-not-allowed');
+      }
 
       container.appendChild(btn);
     });
