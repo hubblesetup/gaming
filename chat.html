@@ -39,7 +39,7 @@
 
     const ADMIN_EMAILS = [
   '1078524@lwsd.org',
-  // '1087845@lwsd.org',
+  '1087845@lwsd.org',
   '1081221@lwsd.org'
 ];
   </script>
@@ -69,6 +69,12 @@
   left: 0;
   z-index: 0;
   pointer-events: none;
+
+  .hidden-width {
+    visibility: hidden;
+    width: 0 !important;
+    padding: 0 !important;
+  }
 }
   </style>
 </head>
@@ -109,7 +115,7 @@
 
 <div class="flex">
   <!-- Left Admin Bar -->
-  <div id="admin-left" class="w-48 bg-gray-800 p-2 hidden md:block">
+  <div id="admin-left" class="w-48 bg-gray-800 p-2 md:block" style="visibility:hidden; background:none;">
     <h3 class="text-sm font-bold mb-2">Private Rooms</h3>
     <div id="private-rooms-list" class="space-y-2"></div>
   </div>
@@ -278,27 +284,60 @@
       return code;
     }
 
-    function setActiveRoom(type, code){
-  activeRef.off('child_added');
+    function setActiveRoom(type, code) {
+  // 1) Tear down previous listeners & clear UI
+  activeRef.off();
   messagesEl.innerHTML = '';
 
-  if(type === 'global'){
+  // 2) Point to the new room
+  if (type === 'global') {
     activeRef = globalRef;
-    activeCode = null; // <--- ADD THIS
+    activeCode = null;
     document.getElementById('current-room').textContent = '[Global]';
   } else {
     activeRef = db.ref(`privateRooms/${code}/messages`);
-    activeCode = code; // <--- ADD THIS
+    activeCode = code;
     document.getElementById('current-room').textContent = `[${code}]`;
   }
   activeRoomType = type;
 
-  activeRef.limitToLast(100).on('child_added', snap => {
-    const msg = snap.val();
-    msg.id = snap.key; 
-    appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
-  });
+  // 3) GLOBAL: pull last 100, then filter client-side by today (±2 days for admins)
+  if (type === 'global') {
+    const now           = new Date();
+    const startOfToday  = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const endOfWindow   = startOfToday + 24 * 60 * 60 * 1000;            // midnight tomorrow
+    const startOfWindow = isAdmin
+      ? startOfToday - 2 * 24 * 60 * 60 * 1000  // 2 days before today
+      : startOfToday;                           // midnight today
+
+    activeRef
+      .limitToLast(100)
+      .on('child_added', snap => {
+        const msg = snap.val();
+        msg.id = snap.key;
+
+        // DEBUG: inspect incoming timestamps
+        console.log('got msg ts=', msg.ts, 'text=', msg.text);
+
+        // filter out anything outside our window
+        if (msg.ts < startOfWindow || msg.ts >= endOfWindow) {
+          console.log(' → filtered out');
+          return;
+        }
+
+        appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
+      });
+
+  // 4) PRIVATE: show every message ever
+  } else {
+    activeRef.on('child_added', snap => {
+      const msg = snap.val();
+      msg.id = snap.key;
+      appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
+    });
+  }
 }
+
 
     // 6) Wire up UI buttons & chat form
     const messagesEl    = document.getElementById('messages'),
@@ -579,13 +618,19 @@ if (shouldScroll) {
 
     // Admin detection
     isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
-    if (isAdmin) {
-  document.getElementById('admin-left').classList.remove('hidden');
-  document.getElementById('user-right').classList.remove('hidden');
+const adminLeft = document.getElementById('admin-left');
+const userRight = document.getElementById('user-right');
+
+if (isAdmin) {
+  adminLeft.style.visibility = 'visible';
+  adminLeft.style.background = ''; // reset any background
+  userRight.classList.remove('hidden');
   listenPrivateRooms();
 } else {
-  document.getElementById('admin-left').style.display = 'none';
+  adminLeft.style.visibility = 'hidden';
+  adminLeft.style.background = 'none';
 }
+
 // ✅ ALL users see online users + typing
 document.getElementById('user-right').classList.remove('hidden');
 listenOnlineUsers();
