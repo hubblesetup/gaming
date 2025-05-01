@@ -401,8 +401,8 @@ form.addEventListener('submit', e => {
   e.preventDefault();
   const text = input.value.trim();
   if (!text) return;
-  if (text.length > 75) {
-    alert('Messages must be 75 characters or fewer.');
+  if (text.length > 140) {
+    alert('Messages must be 140 characters or fewer.');
     return;
   }
 
