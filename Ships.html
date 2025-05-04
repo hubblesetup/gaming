@@ -59,15 +59,12 @@
 </head>
 <body class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden m-0 p-0 w-screen">
 
-  <!-- Canvas Background -->
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
 
-  <!-- Background Music -->
   <audio id="background-music" autoplay loop>
     <source src="background-music.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- Header -->
   <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
     <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
     <div class="text-center">
@@ -76,10 +73,8 @@
     </div>
   </header>
 
-  <!-- Divider -->
   <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
 
-  <!-- Navigation -->
   <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
     <a href="index.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
     <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
@@ -90,7 +85,6 @@
     <a href="Ships.html" class="hover:text-purple-400"><i class="fa-solid fa-heart"></i> ShipSpace</a>
   </nav>
 
-  <!-- Canvas Background -->
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
   <script>
     const canvas = document.getElementById("particleCanvas");
@@ -456,7 +450,6 @@ nav button:hover {
   </div>
 
   <script>
-  // — DEFAULT APP (ShipSpace data via Firestore) —
   const dataConfig = {
     apiKey: "AIzaSyAuaEVKu-LJpRiD-FuSFmY2JURgxhbol3c",
     authDomain: "shipspace-cee83.firebaseapp.com",
@@ -466,11 +459,9 @@ nav button:hover {
     appId: "1:701760005847:web:ce6977a9b05b2383b2f292",
     measurementId: "G-4RPTWZFCVZ"
   };
-  // this is your existing app
   const defaultApp = firebase.initializeApp(dataConfig);
   const db         = defaultApp.firestore();
 
-  // — SECRET APP (secretCode storage in RTDB) —
   const secretConfig = {
     apiKey: "AIzaSyBaxpqErDqKEKQZ1fWRMViFC04YCiFdOo8",
     authDomain: "passwordstorage-ca657.firebaseapp.com",
@@ -481,7 +472,6 @@ nav button:hover {
     appId: "1:375299086403:web:c15c70d415bc1455e61cf6",
     measurementId: "G-P36MVR9DYJ"
   };
-  // give this a name so it co-exists alongside your default
   const secretApp = firebase.initializeApp(secretConfig, "secretApp");
   const secretDb  = secretApp.database();
 
@@ -689,10 +679,8 @@ async function upvote(id, btn) {
   const currentStatus = doc.data().isReported;
 
   if (isAdmin) {
-    // Admins can toggle
     await ref.update({ isReported: !currentStatus });
   } else {
-    // Regular users can only report if not already reported
     if (!currentStatus) {
       await ref.update({ isReported: true });
     } else {
@@ -753,7 +741,6 @@ function validateAdminLogin() {
       .ref('config/secretCode')
       .once('value')
       .then(snapshot => {
-        // Always treat the DB value as a string
         const realCode = String(snapshot.val());
 
         if (enteredPassword === realCode) {

@@ -6,15 +6,11 @@
   <title>Afterlife | Chat Room</title>
   <link rel="icon" href="IMGS/Orion.png" />
   <script src="https://kit.fontawesome.com/d063d200ea.js" crossorigin="anonymous"></script>
-
-  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   <script>
-    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBzWoS83AlV4T00_GOiBWouVAmo0wvquCU",
       authDomain: "afterlifesocial-60987.firebaseapp.com",
@@ -29,7 +25,6 @@
     const db        = firebase.database();
     const globalRef = db.ref('chat/messages');
 
-    // Globals for room management
     let activeRef       = globalRef;
     let activeRoomType  = 'global';
     let activeCode      = null;
@@ -84,14 +79,12 @@
 </head>
 <body class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden">
 
-  <!-- Background Music -->
   <audio id="background-music" autoplay loop>
     <source src="background-music.mp3" type="audio/mpeg" />
   </audio>
 
   <audio id="notification-sound" src="notification.mp3" preload="auto"></audio>
 
-  <!-- Header -->
   <header class="w-full bg-gray-900 flex items-center justify-center py-6 px-4 space-x-4 relative z-10">
     <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
     <div class="text-center">
@@ -100,10 +93,8 @@
     </div>
   </header>
 
-  <!-- Divider -->
   <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
 
-  <!-- Navigation -->
   <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
     <a href="index.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
     <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
@@ -114,17 +105,14 @@
     <a href="Ships.html" class="hover:text-purple-400"><i class="fa-solid fa-heart"></i> ShipSpace</a>
   </nav>
 
-  <!-- Canvas Background -->
   <canvas id="particleCanvas" class="absolute top-0 left-0 z-0"></canvas>
 
 <div class="flex">
-  <!-- Left Admin Bar -->
   <div id="admin-left" class="w-48 bg-gray-800 p-2 md:block" style="visibility:hidden; background:none;">
     <h3 class="text-sm font-bold mb-2">Private Rooms</h3>
     <div id="private-rooms-list" class="space-y-2"></div>
   </div>
 
-  <!-- Center Chat -->
   <div class="flex-1 flex flex-col items-center">
 
     <div class="flex flex-wrap justify-center gap-2 p-4">
@@ -134,11 +122,8 @@
       <button id="change-username-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">Change Username</button>
       <button id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Logout</button>
     </div>
-
-    <!-- Chat + Controls -->
     <div id="chat-container" class="fixed bottom-0 left-60 right-60 mb-10 flex justify-center z-30">
       <div class="w-full max-w-4xl bg-gray-900 bg-opacity-90 text-white rounded-lg shadow-lg p-4 flex flex-col h-[60vh]">
-    <!-- Controls Bar -->
     <div class="flex flex-wrap justify-between items-center mb-2">
       <div class="flex items-center space-x-2">
         <span id="current-username" class="font-semibold text-sm">–</span>
@@ -146,14 +131,11 @@
       </div>
     </div>
 
-    <!-- Message Area: scrollable -->
     <div id="messages" class="flex-grow overflow-y-auto flex flex-col space-y-2 mb-4 px-2">
-      <!-- messages get injected here -->
     </div>
     
     <div id="typing-indicator" class="text-sm text-yellow-400 px-4 py-1 hidden"></div>
 
-    <!-- Input Form: pinned at bottom -->
     <form id="chat-form" class="flex">
       <input id="message-input" type="text" placeholder="Type a message..."
              class="flex-grow px-3 py-2 rounded-l bg-white text-black focus:outline-none"
@@ -167,14 +149,12 @@
 </div>
   </div>
 
-  <!-- Right User List -->
   <div id="user-right" class="w-48 bg-gray-800 p-2 hidden md:block">
     <h3 class="text-sm font-bold mb-2">Online Users</h3>
     <div id="user-list" class="space-y-2"></div>
   </div>
 </div>
 
-  <!-- Auth Modal -->
   <div id="auth-modal" class="fixed inset-0 flex items-center justify-center z-40"
        style="background: rgba(0,0,0,0.75);">
     <div class="bg-gray-900 text-white rounded-lg shadow-lg p-6 w-full max-w-sm">
@@ -203,7 +183,6 @@
   </div>
 
   <script>
-    // 1) Email verification flow
     window.addEventListener('load', () => {
       const params = new URLSearchParams(location.search);
       if (params.get('mode') === 'verifyEmail' && params.get('oobCode')) {
@@ -214,7 +193,6 @@
       }
     });
 
-    // 2) Time display
     function updateTime() {
       const opts = { weekday:'long', hour:'numeric', minute:'2-digit', hour12:true };
       document.getElementById('time').textContent = new Date().toLocaleString('en-US', opts);
@@ -222,7 +200,6 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // 3) Particle background
     const canvas = document.getElementById('particleCanvas'),
           ctx    = canvas.getContext('2d');
     function resizeCanvas() {
@@ -268,7 +245,6 @@
     initParticles();
     animate();
 
-    // 4) openGame helper
     function openGame(){
       const win = window.open();
       win.document.write(
@@ -278,7 +254,6 @@
       );
     }
 
-    // 5) Private room & global chat management
     function makeCode(){
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let code = '';
@@ -289,11 +264,9 @@
     }
 
     function setActiveRoom(type, code) {
-  // 1) Tear down previous listeners & clear UI
   activeRef.off();
   messagesEl.innerHTML = '';
 
-  // 2) Point to the new room
   if (type === 'global') {
     activeRef = globalRef;
     activeCode = null;
@@ -305,14 +278,13 @@
   }
   activeRoomType = type;
 
-  // 3) GLOBAL: pull last 100, then filter client-side by today (±2 days for admins)
   if (type === 'global') {
     const now           = new Date();
     const startOfToday  = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    const endOfWindow   = startOfToday + 24 * 60 * 60 * 1000;            // midnight tomorrow
+    const endOfWindow   = startOfToday + 24 * 60 * 60 * 1000;            
     const startOfWindow = isAdmin
-      ? startOfToday - 2 * 24 * 60 * 60 * 1000  // 2 days before today
-      : startOfToday;                           // midnight today
+      ? startOfToday - 2 * 24 * 60 * 60 * 1000  
+      : startOfToday;                           
 
     activeRef
       .limitToLast(100)
@@ -320,10 +292,8 @@
         const msg = snap.val();
         msg.id = snap.key;
 
-        // DEBUG: inspect incoming timestamps
         console.log('got msg ts=', msg.ts, 'text=', msg.text);
 
-        // filter out anything outside our window
         if (msg.ts < startOfWindow || msg.ts >= endOfWindow) {
           console.log(' → filtered out');
           return;
@@ -332,7 +302,6 @@
         appendMessage(msg, msg.uid === firebase.auth().currentUser.uid);
       });
 
-  // 4) PRIVATE: show every message ever
   } else {
     activeRef.on('child_added', snap => {
       const msg = snap.val();
@@ -343,7 +312,6 @@
 }
 
 
-    // 6) Wire up UI buttons & chat form
     const messagesEl    = document.getElementById('messages'),
           form          = document.getElementById('chat-form'),
           input         = document.getElementById('message-input'),
@@ -362,7 +330,6 @@ let typingRef = null;
   db.ref(`privateRooms/${code}/members/${uid}`)
     .set(true)
     .then(() => {
-      // ✅ Create a dummy message so the room actually exists
       db.ref(`privateRooms/${code}/messages`).push({
         uid: 'system',
         username: 'system',
@@ -388,11 +355,11 @@ let typingRef = null;
         .catch(err => alert(err));
     };
 
-    let lastSent = 0;  // Track the last message sent time
+    let lastSent = 0;
 
     input.addEventListener('input', () => {
   if (!firebase.auth().currentUser) return;
-  if (isBanned) return; // << Block banned users from showing typing
+  if (isBanned) return;
 
   if (!typingRef) {
     typingRef = db.ref('typing/' + firebase.auth().currentUser.uid);
@@ -416,7 +383,6 @@ form.addEventListener('submit', e => {
     return;
   }
 
-  // 🔥 New: Check if banned
   db.ref('onlineUsers/' + firebase.auth().currentUser.uid).once('value').then(snap => {
     const data = snap.val();
     if (data && data.banned) {
@@ -451,19 +417,18 @@ form.addEventListener('submit', e => {
   }[tag]));
 }
 
-    // 7) Render each message
     function appendMessage({ username, text, ts, uid, id }, self) {
       const shouldScroll = messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight - 50;
 
   const el = document.createElement('div');
-  el.id = `msg-${id}`; // <<< THIS LINE ADDED
+  el.id = `msg-${id}`;
   let bgClass;
 if (uid === 'system') {
-  bgClass = 'bg-yellow-400 text-black self-center'; // System message: yellow
+  bgClass = 'bg-yellow-400 text-black self-center';
 } else if (self) {
-  bgClass = 'bg-gray-200 text-black self-end'; // Your own message
+  bgClass = 'bg-gray-200 text-black self-end';
 } else {
-  bgClass = 'bg-purple-500 text-white self-start'; // Other people's message
+  bgClass = 'bg-purple-500 text-white self-start';
 }
 
 el.className = [
@@ -495,7 +460,6 @@ el.classList.add('fade-in');
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
-  // Play sound for incoming messages
 if (!self) {
   document.getElementById('notification-sound').play().catch(() => {});
 }
@@ -518,7 +482,6 @@ if (shouldScroll) {
 }
 }
 
-    // 8) Auth UI & flows
     const modal      = document.getElementById('auth-modal'),
           authForm   = document.getElementById('auth-form'),
           emailInput = document.getElementById('auth-email'),
@@ -620,14 +583,13 @@ if (shouldScroll) {
     currentUsername = data.username || user.email;
     document.getElementById('current-username').textContent = currentUsername;
 
-    // Admin detection
-    isAdmin = ADMIN_EMAILS.includes(user.email); // set isAdmin globally
+    isAdmin = ADMIN_EMAILS.includes(user.email);
 const adminLeft = document.getElementById('admin-left');
 const userRight = document.getElementById('user-right');
 
 if (isAdmin) {
   adminLeft.style.visibility = 'visible';
-  adminLeft.style.background = ''; // reset any background
+  adminLeft.style.background = '';
   userRight.classList.remove('hidden');
   listenPrivateRooms();
 } else {
@@ -635,21 +597,17 @@ if (isAdmin) {
   adminLeft.style.background = 'none';
 }
 
-// ✅ ALL users see online users + typing
 document.getElementById('user-right').classList.remove('hidden');
 listenOnlineUsers();
 listenTyping();
 
 
-    // Create default profile if not existing
     if (!data.username) {
       userRef.set({ email: user.email, username: currentUsername });
     }
 
-    // Online tracking (MUST ADD)
     const onlineRef = db.ref('onlineUsers/' + user.uid);
     onlineRef.set({ username: currentUsername, banned: false });
-    // Listen for ban status changes
 onlineRef.on('value', snap => {
   const data = snap.val();
   if (data && data.banned) {
@@ -660,7 +618,6 @@ onlineRef.on('value', snap => {
 });
     onlineRef.onDisconnect().remove();
 
-    // Hook up buttons
     document.getElementById('logout-btn').onclick = () => firebase.auth().signOut();
 
     document.getElementById('change-username-btn').onclick = () => {
@@ -685,13 +642,12 @@ onlineRef.on('value', snap => {
         .then(() => {
           currentUsername = newU;
           document.getElementById('current-username').textContent = newU;
-          onlineRef.update({ username: newU }); // Update online users too!
+          onlineRef.update({ username: newU });
           alert('Username updated!');
         })
         .catch(err => alert(typeof err === 'string' ? err : err.message));
     };
 
-    // Start chat
     setActiveRoom('global', null);
   });
 }
@@ -728,7 +684,6 @@ function listenOnlineUsers() {
       if (isAdmin) {
         btn.classList.add('hover:bg-red-600', 'hover:bg-green-600');
         btn.onclick = () => {
-          // When admin clicks, flip banned state
           db.ref('onlineUsers/' + uid).update({ banned: !banned });
         };
       } else {
@@ -741,7 +696,6 @@ function listenOnlineUsers() {
   });
 }
 
-// When clicked, toggle ban status
 function toggleBan(uid, banned) {
   db.ref('onlineUsers/' + uid + '/banned').set(!banned)
     .then(() => {
@@ -754,7 +708,7 @@ function deleteMessage(id) {
   if (!id) return;
 
   const el = document.getElementById(`msg-${id}`);
-  if (el) el.remove(); // Remove from the screen immediately
+  if (el) el.remove();
 
   if (activeRoomType === 'global') {
     globalRef.child(id).remove();
@@ -780,7 +734,6 @@ function listenTyping() {
 typingIndicator.classList.toggle('hidden', !typingText);
   });
 }
-    // Anti-inspect
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (

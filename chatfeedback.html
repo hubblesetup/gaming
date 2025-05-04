@@ -34,13 +34,11 @@
   class="bg-black text-white font-sans relative min-h-screen overflow-x-hidden m-0 p-0 w-screen"
 >
 
-  <!-- Background Music -->
   <audio id="background-music" autoplay loop>
     <source src="background-music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
 
-  <!-- Header -->
   <header class="w-full bg-gray-900 flex items-center justify-center py-6 px-4 space-x-4 relative z-10">
     <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
     <div class="text-center">
@@ -49,10 +47,8 @@
     </div>
   </header>
 
-  <!-- Divider -->
   <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
 
-  <!-- Navigation -->
   <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
     <a href="index.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-home"></i> Home</a>
     <a href="Games.html" class="hover:text-purple-400 nav-tab"><i class="fas fa-gamepad"></i> Games</a>
@@ -63,17 +59,14 @@
     <a href="Ships.html" class="hover:text-purple-400"><i class="fa-solid fa-heart"></i> ShipSpace</a>
   </nav>
 
-  <!-- Main Content -->
   <main class="px-6 py-10 max-w-3xl mx-auto z-10 relative space-y-8">
 
-    <!-- iMessage‑style Bubble -->
     <div class="bg-white text-black rounded-2xl p-6 shadow-lg max-w-md mx-auto"
          style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
       <p>
 Please help us by fill out the form below. We are always looking to improve our chat experience and your feedback is invaluable. Your responses will be used to enhance the chat experience for all users.<br></b>
       </p>
     
-    <!-- Embedded Form -->
     <div class="w-full">
       <object
         data="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__5Wp-IVUOVlNWUdPUjlLVUhEWlA1NzIyVVRZUU5NVi4u"
@@ -82,7 +75,6 @@ Please help us by fill out the form below. We are always looking to improve our 
         height="1200px"
         style="border:none;"
       >
-        <!-- Fallback link -->
         <p class="text-center text-gray-400">
           Your browser doesn't support embedded forms. 
           <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__5Wp-IVUOVlNWUdPUjlLVUhEWlA1NzIyVVRZUU5NVi4u"
@@ -94,17 +86,12 @@ Please help us by fill out the form below. We are always looking to improve our 
 
   </main>
 
-  <!-- Canvas Background -->
   <canvas id="particleCanvas" class="absolute top-0 left-0 z-0"></canvas>
 
-  <!-- Scripts -->
   <script>
-      // ensure the page really starts at the top once absolutely everything is loaded
-  window.addEventListener('load', () => {
-    // tiny timeout to let the browser settle any late reflows
+      window.addEventListener('load', () => {
     setTimeout(() => window.scrollTo(0, 0), 0);
   });
-    // Time display
     function updateTime() {
       const options = { weekday: 'long', hour: 'numeric', minute: '2-digit', hour12: true };
       const now = new Date();
@@ -113,7 +100,6 @@ Please help us by fill out the form below. We are always looking to improve our 
     setInterval(updateTime, 1000);
     updateTime();
 
-   // Particle canvas
     const canvas = document.getElementById("particleCanvas");
   const ctx    = canvas.getContext("2d");
 
@@ -132,7 +118,6 @@ Please help us by fill out the form below. We are always looking to improve our 
   });
   window.addEventListener("resize", resizeCanvas);
 
-  // -- particle code unchanged except constructor uses new canvas.height --
   class Particle {
     constructor() {
       this.radius = Math.random() * 6 + 4;
@@ -176,13 +161,11 @@ Please help us by fill out the form below. We are always looking to improve our 
   animate();
     window.addEventListener("resize", resizeCanvas);
 
-    // openGame function
     function openGame() {
       var win = window.open();
       win.document.write('<html><body style="margin:0;padding:0;"><iframe src="Home.html" style="width:100%;height:100%;border:none;"></iframe></body></html>');
     }
 
-    // Anti-inspect
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (

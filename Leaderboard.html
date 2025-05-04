@@ -11,7 +11,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <script>
-    // — DEFAULT APP: Leaderboard data —
     const dataConfig = {
       apiKey:    "AIzaSyBPKc8wc6SWu6jCAOLQhdI4zADrTbiuNuE",
       authDomain:"afterlifeleaderboard.firebaseapp.com",
@@ -25,7 +24,6 @@
     const defaultApp = firebase.initializeApp(dataConfig);
     const db         = defaultApp.database();
   
-    // — SECRET APP: secretCode store —
     const secretConfig = {
       apiKey:    "AIzaSyBaxpqErDqKEKQZ1fWRMViFC04YCiFdOo8",
       authDomain:"passwordstorage-ca657.firebaseapp.com",
@@ -66,7 +64,6 @@
 </head>
 <body class="bg-black text-white min-h-screen font-sans overflow-x-hidden">
   <canvas id="particleCanvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
-   <!-- Header -->
   <header class="w-screen bg-gray-900 flex items-center justify-center py-6 px-0 space-x-4 m-0 relative z-10">
     <img src="IMGS/Orion.png" alt="Logo" class="w-16 h-16" />
     <div class="text-center">
@@ -75,7 +72,6 @@
     </div>
   </header>
 
-  <!-- Nav + UI -->
   <div class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 z-20 relative"></div>
   <nav class="nav-bar w-screen bg-gray-800 p-4 flex justify-center gap-6 text-lg m-0 z-10 relative">
     <a href="index.html" class="hover:text-purple-400"><i class="fas fa-home"></i> Home</a>
@@ -88,7 +84,6 @@
     <button id="adminLoginBtn" class="text-white bg-purple-600 px-3 py-1 rounded hover:bg-purple-700">Admin Login</button>
   </nav>
 
-    <!-- Background Music -->
   <audio id="background-music" autoplay loop>
     <source src="background-music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
@@ -101,7 +96,6 @@
         <option value="slope">Slope</option>
         <option value="appel">Appel</option>
       </select>
-      <!-- CHANGED: Split score into two inputs for Appel -->
       <div id="scoreLevelContainer" class="flex gap-2">
       <input
         type="number"
@@ -167,7 +161,7 @@
 
   <script>
     let pendingInterval = null;
-    let isAdmin = false; // Track admin login state
+    let isAdmin = false;
     let deleteTarget = null;
     const deleteModal = document.getElementById("deleteModal");
     const cancelDelete = document.getElementById("cancelDelete");
@@ -184,7 +178,6 @@
     const adminPanel = document.getElementById("adminPanel");
     const successPopup = document.getElementById("successPopup");
 
-    // UPDATED: toggle time vs score + level inputs
     gameSelect.addEventListener("change", () => {
       const isAppel = gameSelect.value === "appel";
       scoreInput.placeholder = isAppel ? "Time" : "Score";
@@ -251,7 +244,7 @@ form.addEventListener("submit", async (e) => {
   const lastSubmit = localStorage.getItem("lastSubmitTime");
   const now = Date.now();
   if (lastSubmit && now - parseInt(lastSubmit) < 30000) {
-    return; // too soon
+    return;
   }
 
   const name = document.getElementById("name").value.trim();
@@ -304,7 +297,6 @@ scores.forEach((entry, index) => {
 
   const infoSpan = document.createElement("span");
 
-  // Add "Level: X" for Appel entries
   if (game === "appel" && entry.level) {
     infoSpan.textContent = `#${index + 1} ${entry.name}: ${entry.score} seconds — Level: ${entry.level}`;
   } else {
@@ -392,7 +384,6 @@ confirmDelete.addEventListener("click", () => {
     loadLeaderboard("appel", "appelBoard", true);
     loadLeaderboard("slope", "slopeBoard", false);
 
-      // Time display
     function updateTime() {
       const options = { weekday: 'long', hour: 'numeric', minute: '2-digit', hour12: true };
       const now = new Date();
@@ -451,10 +442,8 @@ confirmDelete.addEventListener("click", () => {
     init();
     animate();
     window.addEventListener("resize", resizeCanvas);
-    // ✅ Add this logic inside your <script> tag if it's not already there
 
 
-// 📥 Load pending entries for admin review
 function loadPending() {
   const pendingList = document.getElementById("pendingList");
   pendingList.innerHTML = "";
@@ -477,7 +466,6 @@ function loadPending() {
   });
 }
 
-// ✅ Approval logic
 function approveEntry(game, key) {
   firebase.database().ref(`${game}_scores/${key}/approved`).set(true);
   const item = document.getElementById(`pending-${key}`);
@@ -490,7 +478,6 @@ function denyEntry(game, key) {
   if (item) item.remove();
 }
 
-        // Anti-inspect
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (
