@@ -1,3 +1,3 @@
 ## I don't think you should be here... 
 
-Reach us at **[afterlifegaminghelp@outlook.com](mailto:afterlifegaminghelp@outlook.com?subject=Afterlife%20HSupport%20lib)** for any questions and concerns.
+Reach us at **[afterlifegaminghelp@outlook.com](mailto:afterlifegaminghelp@outlook.com?subject=Afterlife%20Support%20)** for any questions and concerns.
